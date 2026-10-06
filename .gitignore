@@ -1,0 +1,46 @@
+# v0 sandbox internal files
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+.snowflake/
+.v0-trash/
+.vercel/
+next.user-config.*
+
+# Environment variables
+.env*.local
+# Common ignores
+node_modules
+.next/
+.DS_Store
+.vercel
+.env*
+*.tsbuildinfo
+Nouveau Document texte.txt
+# Build / tooling artifacts
+eng.traineddata
+*.log
+final-audit.mjs
+.od-skills/
+launch*.log
+tsconfig.tsbuildinfo
+# Local env
+.env.local
+# Identity documents - NEVER commit these. Passport/CNI scans contain
+# passport numbers, dates of birth and MRZ data.
+passports/
+passport*/
+*passport*.jpg
+*passport*.jpeg
+*passport*.png
+*passport*.pdf
+*carte*.jpg
+*carte*.png
+*identity*.jpg
+# OCR tooling cache and the output of an extraction run. Both are derived
+# from identity documents, so neither belongs in the repository.
+__pycache__/
+*.pyc
+extracted.json
+inserted.json
+squad_token.txt

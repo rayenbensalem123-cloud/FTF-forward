@@ -1,0 +1,1322 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600;700&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(0.97 0.01 30);
+  --foreground: oklch(0.2 0.02 30);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.02 30);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.02 30);
+  --primary: oklch(0.55 0.22 25);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.02 30);
+  --secondary-foreground: oklch(0.2 0.02 30);
+  --muted: oklch(0.93 0.01 30);
+  --muted-foreground: oklch(0.45 0.02 30);
+  --accent: oklch(0.92 0.03 45);
+  --accent-foreground: oklch(0.2 0.02 30);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.88 0.02 30);
+  --input: oklch(0.92 0.01 30);
+  --ring: oklch(0.55 0.22 25);
+  --chart-1: oklch(0.55 0.22 25);
+  --chart-2: oklch(0.65 0.15 145);
+  --chart-3: oklch(0.6 0.12 250);
+  --chart-4: oklch(0.75 0.15 85);
+  --chart-5: oklch(0.7 0.18 320);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.55 0.22 25);
+  --sidebar-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(1 0 0);
+  --sidebar-primary-foreground: oklch(0.55 0.22 25);
+  --sidebar-accent: oklch(0.45 0.18 25);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.45 0.18 25);
+  --sidebar-ring: oklch(1 0 0);
+
+  /* ── FTF theme palette (dark default) ── */
+  --c-deep: #0b111e;
+  --c-surface: #0d1526;
+  --c-raised: #101725;
+  --c-bg: #0c1f3d;
+  --c-header: rgba(12, 31, 61, .72);
+  --c-panel: #112950;
+  --c-panel2: #12294e;
+  --c-panel3: #101b33;
+  --c-panel4: #0e2345;
+  --c-panelG1: #142c52;
+  --c-panelG2: #0e1f3e;
+  --c-input: #0a1f3c;
+  --c-input2: #0b1220;
+  --c-ink: #0b1322;
+  --c-body: #0a1c38;
+  --c-grad1: #0f172e;
+  --c-hover: #2a4568;
+  --c-hover2: #17335f;
+  --c-blue: #4a6fa5;
+  --c-blueDk: #1b3a66;
+  --c-bluePan: #12305a;
+  --c-blueSoft: #9cb8e4;
+  --c-text: #EDEFF4;
+  --c-text2: #e9edf4;
+  --c-textDim: #54647d;
+  --c-textMid: #73849e;
+  --c-textFaint: #8fa0bd;
+  --c-textBlue: #a4b2c8;
+  --c-textBlue2: #c3cfe0;
+  --c-textBlue3: #9aa8be;
+  --c-textWarm: #a89c8a;
+  --c-textWarm2: #c2b7a6;
+  --c-textClose: #7e8fa8;
+  --c-textPlace: #9b8f7d;
+  --c-cream: #f7f1e6;
+  --c-cream2: #faf8f3;
+  --c-cream3: #f3f0e8;
+  --c-cream4: #e8dcc8;
+  --line-rgb: 148,170,210;
+  --acc-gold: #f6c744;
+  --acc-red: #ff5f72;
+  --acc-blue: #7ec3ff;
+
+  /* Native form controls (date/number inputs, <select>, etc.) default to the
+     browser's light-mode appearance unless told otherwise — that's what made
+     the calendar-icon button on date inputs nearly invisible on these dark
+     panels, and made the native calendar popup itself open in jarring white
+     instead of matching the rest of the app. This one line fixes every such
+     native control app-wide, including ones not covered by this file. */
+  color-scheme: dark;
+}
+
+/* ── Light theme ── */
+html[data-theme="light"] {
+  --c-deep: #f0f4fa;
+  --c-surface: #ffffff;
+  --c-raised: #f5f8fc;
+  --c-bg: #eef2f8;
+  --c-header: rgba(238, 242, 248, .72);
+  --c-panel: #ffffff;
+  --c-panel2: #f0f5fb;
+  --c-panel3: #f8fafd;
+  --c-panel4: #eef3fa;
+  --c-panelG1: #dde6f4;
+  --c-panelG2: #e5ecf6;
+  --c-input: #ffffff;
+  --c-input2: #f8f9fc;
+  --c-ink: #eef2f8;
+  --c-body: #eef2f8;
+  --c-grad1: #f0f5fb;
+  --c-hover: #c8d5e6;
+  --c-hover2: #c0d0e8;
+  --c-blue: #3d6090;
+  --c-blueDk: #3d5a80;
+  --c-bluePan: #5580b0;
+  --c-blueSoft: #6a8ab8;
+  --c-text: #0f172a;
+  --c-text2: #1e293b;
+  --c-textDim: #64748b;
+  --c-textMid: #94a3b8;
+  --c-textFaint: #94a3b8;
+  --c-textBlue: #64748b;
+  --c-textBlue2: #475569;
+  --c-textBlue3: #64748b;
+  --c-textWarm: #78716c;
+  --c-textWarm2: #78716c;
+  --c-textClose: #64748b;
+  --c-textPlace: #94a3b8;
+  --c-cream: #44403c;
+  --c-cream2: #44403c;
+  --c-cream3: #57534e;
+  --c-cream4: #78716c;
+  --line-rgb: 40,55,80;
+  --acc-gold: #8a6100;
+  --acc-red: #c2253c;
+  --acc-blue: #1e66a8;
+  color-scheme: light;
+}
+
+/* Football operations identity — the dashboard is intentionally built around
+   matchday navy, Tunisian red, and broadcast-style information hierarchy. */
+body {
+  background: var(--c-body);
+  background-image:
+    radial-gradient(circle at 12% -10%, rgba(224, 14, 47, .28), transparent 34rem),
+    linear-gradient(135deg, var(--c-body) 0%, var(--c-panelG1) 52%, var(--c-body) 100%);
+}
+html[data-theme="light"] body {
+  background-image: none;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   THE FULL PLATFORM DESIGN — "SÉLECTION TUNISIENNE" BROADCAST DATA CENTRE
+   Identity: deep matchday navy, Tunisian red, gold highlights.
+   Surfaces are dark by design; the player cards already match this.
+   Utility classes are remapped in-scope so every panel inherits the look.
+   ═════════════════════════════════════════════════════════════════════ */
+.ftf-portal {
+  --ftf-navy: #0c1f3d;
+  --ftf-blue: #12305a;
+  --ftf-red: #e3062c;
+  --ftf-gold: #f6c744;
+  --ftf-panel: #112950;
+  --ftf-panel-2: #0e2345;
+  --ftf-line: rgba(148, 170, 210, .16);
+  min-height: 100vh;
+  color: var(--c-text);
+  background-color: var(--c-bg) !important;
+  background-image:
+    radial-gradient(1100px 520px at 12% -8%, rgba(227, 6, 44, .18), transparent 60%),
+    radial-gradient(900px 500px at 95% 0%, rgba(246, 199, 68, .04), transparent 55%),
+    radial-gradient(600px 400px at 50% 110%, rgba(18, 48, 90, .35), transparent 65%),
+    linear-gradient(180deg, var(--c-panelG2) 0%, var(--c-bg) 55%, var(--c-panel4) 100%);
+  background-size: auto, auto, auto, auto;
+  font-family: 'Oswald', 'Arial Narrow', Arial, sans-serif !important;
+  letter-spacing: .02em;
+}
+html[data-theme="light"] .ftf-portal {
+  background-image: linear-gradient(180deg, #eef2f8 0%, #f4f7fb 55%, #eef2f8 100%) !important;
+}
+.ftf-portal :not(code):not(pre):not(svg):not([class*="font-mono"]) {
+  font-family: 'Oswald', 'Arial Narrow', Arial, sans-serif !important;
+}
+
+/* ── Broadcast header: navy bar, solid red baseline rail, red crest line ── */
+.ftf-portal header.border-b {
+  background: linear-gradient(180deg, rgba(14, 37, 71, .78) 0%, rgba(11, 31, 61, .72) 60%, rgba(8, 26, 53, .8) 100%) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  backdrop-filter: blur(14px) !important;
+  border-bottom: 3px solid #e3062c !important;
+  border-bottom-color: #e3062c !important;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .6);
+}
+.ftf-portal header h1 {
+  color: #fff; letter-spacing: .06em; font-weight: 700;
+  text-transform: uppercase; font-style: normal !important;
+}
+.ftf-portal header .text-zinc-500 { color: #cdc2b0 !important; }
+.ftf-portal header .text-zinc-400 { color: #a89c89 !important; }
+.ftf-portal header .border-zinc-200 { border-color: rgba(148, 170, 210, .22) !important; }
+.ftf-portal header .bg-white,
+.ftf-portal header .bg-zinc-50 {
+  background-color: rgba(18, 48, 90, .8) !important;
+}
+.ftf-portal header .bg-zinc-100 { background-color: rgba(24, 60, 106, .85) !important; }
+.ftf-portal header input { color: #EDEFF4 !important; }
+  .ftf-portal header input::placeholder { color: #8fa0bd !important; }
+.ftf-portal header .bg-\[\#E30613\]:not([class*="/"]) { background: linear-gradient(135deg, #ef183e, #bf0020) !important; }
+.ftf-portal header .bg-blue-600 { background-color: #12305a !important; }
+.ftf-portal header .bg-amber-500 { background-color: #f6c744 !important; color: #0c1f3d !important; }
+.ftf-portal header .hover\:bg-zinc-100:hover,
+.ftf-portal header .hover\:bg-zinc-50:hover { background-color: rgba(26, 62, 108, .9) !important; }
+
+/* ── Global surface inversion inside the portal ── */
+.ftf-portal .bg-white,
+.ftf-portal [class*="bg-white/"] {
+  background-color: #112950 !important;
+}
+.ftf-portal .bg-zinc-50 { background-color: #0e2345 !important; }
+.ftf-portal .bg-zinc-100 { background-color: #12294e !important; }
+.ftf-portal .bg-zinc-200 { background-color: #1a355f !important; }
+.ftf-portal [class*="hover:bg-zinc-50"]:hover { background-color: #142c52 !important; }
+.ftf-portal [class*="hover:bg-zinc-100"]:hover { background-color: #17335f !important; }
+.ftf-portal [class*="hover:bg-zinc-200"]:hover { background-color: #1e3d6d !important; }
+
+/* ── Text inversion inside the portal ── */
+.ftf-portal .text-zinc-900 { color: #EDEFF4 !important; }
+.ftf-portal .text-zinc-800 { color: #E3E9F2 !important; }
+.ftf-portal .text-zinc-700 { color: #C3CFE0 !important; }
+.ftf-portal .text-zinc-600 { color: #c2b7a6 !important; }
+.ftf-portal .text-zinc-500 { color: #a89c8a !important; }
+.ftf-portal .text-zinc-400 { color: #877a68 !important; }
+.ftf-portal .text-zinc-300 { color: #66594a !important; }
+.ftf-portal .text-zinc-200 { color: #4a4034 !important; }
+.ftf-portal .text-zinc-100 { color: #383029 !important; }
+.ftf-portal .text-red-500,
+.ftf-portal .text-red-600 { color: #ff5f72 !important; }
+.ftf-portal .text-blue-600 { color: #7fb3ff !important; }
+.ftf-portal .text-green-600 { color: #6ee7a0 !important; }
+
+/* ── Border inversion inside the portal ── */
+.ftf-portal .border-zinc-100,
+.ftf-portal .border-zinc-200,
+.ftf-portal .border-zinc-300 { border-color: rgba(148, 170, 210, .16) !important; }
+.ftf-portal .border-red-200, .ftf-portal .border-red-300 { border-color: rgba(255, 95, 114, .35) !important; }
+.ftf-portal .border-blue-200, .ftf-portal .border-blue-300 { border-color: rgba(127, 179, 255, .35) !important; }
+.ftf-portal .border-purple-200 { border-color: rgba(180, 150, 255, .3) !important; }
+.ftf-portal .border-green-200 { border-color: rgba(110, 231, 160, .3) !important; }
+
+/* ── Header search bar: well-style, no white box ── */
+.ftf-portal header .portal-search {
+  background-color: rgba(255, 255, 255, .04) !important;
+  border-color: rgba(148, 170, 210, .22) !important;
+}
+.ftf-portal header .portal-search input { background-color: transparent !important; }
+html[data-theme="light"] .ftf-portal header .portal-search {
+  background-color: #dfe6f0 !important;
+  border-color: rgba(15, 23, 42, .14) !important;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, .06) !important;
+}
+html[data-theme="light"] .ftf-portal header .portal-search input { background-color: transparent !important; }
+
+/* ── Form controls inside the portal ── */
+.ftf-portal input, .ftf-portal select, .ftf-portal textarea {
+  background-color: #0a1f3c !important;
+  color: #EDEFF4 !important;
+  border-color: rgba(148, 170, 210, .24) !important;
+}
+.ftf-portal input::placeholder, .ftf-portal textarea::placeholder { color: #9b8f7d !important; }
+
+/* ── Scoreboard cards: navy panel, red header rail, hard offset shadow ── */
+.ftf-portal .shadow-sm {
+  box-shadow: 0 6px 0 rgba(4, 12, 26, .35), 0 0 0 1px rgba(148, 170, 210, .1) !important;
+  border-radius: .35rem !important;
+  border-color: rgba(148, 170, 210, .14) !important;
+  border-top: 3px solid #e3062c !important;
+}
+
+/* ── Rounded corners: tighten the "product/AI" feel into broadcast panels ── */
+.ftf-portal .rounded-xl { border-radius: .4rem; }
+.ftf-portal .rounded-2xl { border-radius: .55rem; }
+.ftf-portal .rounded-3xl { border-radius: .7rem; }
+.ftf-portal [class*="rounded-2xl"] { border-radius: .55rem !important; }
+
+/* ── Strict, compact controls like a competition data centre ── */
+.ftf-portal button { letter-spacing: .055em; }
+.ftf-portal button[class*="bg-[#E30613]"]:not([class*="bg-[#E30613]/"]) {
+  background: linear-gradient(135deg, #ef183e, #c60024) !important;
+  box-shadow: 0 5px 13px rgba(198, 0, 36, .25) !important;
+}
+.ftf-portal button[class*="hover:bg-zinc"]:hover {
+  background-color: #13305a !important;
+  color: #fff !important;
+}
+.ftf-portal button[class*="hover:bg-red-50"]:hover { background-color: rgba(227, 6, 44, .16) !important; }
+.ftf-portal button[class*="hover:bg-blue-50"]:hover { background-color: rgba(30, 120, 255, .16) !important; }
+.ftf-portal button[class*="hover:bg-green-50"]:hover { background-color: rgba(34, 197, 94, .14) !important; }
+
+/* Give team/player cards the feeling of official squad tiles, not generic AI cards. */
+.ftf-portal .group.cursor-pointer > div:not(.absolute) {
+  box-shadow: none;
+}
+.ftf-portal .group.cursor-pointer:hover > div:not(.absolute) {
+  transform: none;
+  box-shadow: none;
+}
+
+.player-squad-card {
+  border-radius: .8rem !important;
+  box-shadow: 0 0 0 1px rgba(42, 69, 104, .9), 0 18px 40px rgba(2, 8, 20, .45) !important;
+  transition: transform .55s cubic-bezier(.16, .84, .44, 1), translate .55s cubic-bezier(.16, .84, .44, 1), box-shadow .55s ease;
+}
+.player-squad-card:hover {
+  transform: perspective(900px) translateZ(60px) scale(1.07);
+  box-shadow: 0 0 0 1px rgba(42, 69, 104, .9), 0 34px 60px rgba(2, 8, 20, .55), 0 18px 40px rgba(227, 6, 44, .25) !important;
+}
+.ftf-portal .group.cursor-pointer:hover { z-index: 40; }
+
+/* Motion only — the portrait celebrates (hops) inside its frame on hover */
+@keyframes card-celebrate {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.1) translateY(-5px); }
+  50%  { transform: scale(1); }
+  75%  { transform: scale(1.05) translateY(-3px); }
+  100% { transform: scale(1); }
+}
+.player-squad-card:hover .player-card-photo img {
+  animation: card-celebrate .7s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* Modal system: all operations are presented as match-centre panels. */
+.ftf-portal .fixed.inset-0:not(.pointer-events-none) {
+  backdrop-filter: blur(7px);
+}
+.ftf-portal .fixed.inset-0 > div:not(.absolute):not(.pointer-events-none) {
+  background: #112950 !important;
+  border: 1px solid rgba(148, 170, 210, .22) !important;
+  border-radius: .65rem !important;
+  box-shadow: 0 28px 80px rgba(1, 8, 18, .65) !important;
+}
+.ftf-portal .fixed.inset-0 input,
+.ftf-portal .fixed.inset-0 select,
+.ftf-portal .fixed.inset-0 textarea {
+  border-radius: .45rem !important;
+  border-color: rgba(148, 170, 210, .26) !important;
+  background: #0a1f3c !important;
+  color: #EDEFF4 !important;
+}
+.ftf-portal .fixed.inset-0 input::placeholder,
+.ftf-portal .fixed.inset-0 textarea::placeholder { color: #9b8f7d !important; }
+.ftf-portal .fixed.inset-0 input:focus,
+.ftf-portal .fixed.inset-0 select:focus,
+.ftf-portal .fixed.inset-0 textarea:focus {
+  border-color: #e3062c !important;
+  box-shadow: 0 0 0 3px rgba(227, 6, 44, .14);
+}
+.ftf-portal .fixed.inset-0 button:not([class*="bg-\["]) {
+  border-radius: .45rem;
+}
+
+@media (max-width: 640px) {
+  .ftf-portal header .max-w-7xl { padding-left: 1rem; padding-right: 1rem; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   LIGHT THEME — remap every dark surface to light equivalents.
+   ═════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body {
+  background: #f0f4fa;
+}
+html[data-theme="light"] .ftf-portal {
+  color: #0f172a;
+}
+/* Header */
+html[data-theme="light"] .ftf-portal header.border-b {
+  background: linear-gradient(180deg, #ffffff 0%, #f4f7fb 60%, #eef2f8 100%) !important;
+  border-bottom: 3px solid #e3062c !important;
+  box-shadow: 0 4px 14px rgba(15,23,42,.08) !important;
+}
+html[data-theme="light"] .ftf-portal header h1 { color: #0f172a !important; }
+html[data-theme="light"] .ftf-portal header .text-zinc-500,
+html[data-theme="light"] .ftf-portal header .text-zinc-400 { color: #64748b !important; }
+html[data-theme="light"] .ftf-portal header .border-zinc-200 { border-color: #e2e8f0 !important; }
+html[data-theme="light"] .ftf-portal header .bg-white,
+html[data-theme="light"] .ftf-portal header .bg-zinc-50 { background-color: #ffffff !important; }
+html[data-theme="light"] .ftf-portal header .bg-zinc-100 { background-color: #f8fafc !important; }
+html[data-theme="light"] .ftf-portal header input { color: #0f172a !important; }
+html[data-theme="light"] .ftf-portal header input::placeholder { color: #94a3b8 !important; }
+html[data-theme="light"] .ftf-portal header .hover\:bg-zinc-100:hover,
+html[data-theme="light"] .ftf-portal header .hover\:bg-zinc-50:hover { background-color: #f1f5f9 !important; }
+
+/* Surface inversion — light panels */
+html[data-theme="light"] .ftf-portal .bg-white,
+html[data-theme="light"] .ftf-portal [class*="bg-white/"] { background-color: #ffffff !important; }
+html[data-theme="light"] .ftf-portal .bg-zinc-50 { background-color: #f8fafc !important; }
+html[data-theme="light"] .ftf-portal .bg-zinc-100 { background-color: #f1f5f9 !important; }
+html[data-theme="light"] .ftf-portal .bg-zinc-200 { background-color: #e2e8f0 !important; }
+html[data-theme="light"] .ftf-portal [class*="hover:bg-zinc-50"]:hover { background-color: #f1f5f9 !important; }
+html[data-theme="light"] .ftf-portal [class*="hover:bg-zinc-100"]:hover { background-color: #e8edf4 !important; }
+html[data-theme="light"] .ftf-portal [class*="hover:bg-zinc-200"]:hover { background-color: #dbe3ed !important; }
+
+/* Text inversion — light text */
+html[data-theme="light"] .ftf-portal .text-zinc-900 { color: #0f172a !important; }
+html[data-theme="light"] .ftf-portal .text-zinc-800 { color: #1e293b !important; }
+html[data-theme="light"] .ftf-portal .text-zinc-700 { color: #334155 !important; }
+html[data-theme="light"] .ftf-portal .text-zinc-600 { color: #475569 !important; }
+html[data-theme="light"] .ftf-portal .text-zinc-500 { color: #64748b !important; }
+html[data-theme="light"] .ftf-portal .text-zinc-400 { color: #94a3b8 !important; }
+html[data-theme="light"] .ftf-portal .text-zinc-300 { color: #94a3b8 !important; }
+html[data-theme="light"] .ftf-portal .text-zinc-200 { color: #cbd5e1 !important; }
+html[data-theme="light"] .ftf-portal .text-zinc-100 { color: #e2e8f0 !important; }
+html[data-theme="light"] .ftf-portal .text-red-500,
+html[data-theme="light"] .ftf-portal .text-red-600 { color: #dc2626 !important; }
+html[data-theme="light"] .ftf-portal .text-blue-600 { color: #2563eb !important; }
+html[data-theme="light"] .ftf-portal .text-green-600 { color: #16a34a !important; }
+
+/* Border inversion */
+html[data-theme="light"] .ftf-portal .border-zinc-100,
+html[data-theme="light"] .ftf-portal .border-zinc-200,
+html[data-theme="light"] .ftf-portal .border-zinc-300 { border-color: #e2e8f0 !important; }
+
+/* Form controls */
+html[data-theme="light"] .ftf-portal input,
+html[data-theme="light"] .ftf-portal select,
+html[data-theme="light"] .ftf-portal textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+html[data-theme="light"] .ftf-portal input::placeholder,
+html[data-theme="light"] .ftf-portal textarea::placeholder { color: #94a3b8 !important; }
+
+/* Scoreboard cards */
+html[data-theme="light"] .ftf-portal .shadow-sm {
+  box-shadow: 0 4px 12px rgba(15,23,42,.06), 0 0 0 1px rgba(15,23,42,.08) !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Hover states */
+html[data-theme="light"] .ftf-portal button[class*="hover:bg-zinc"]:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Modals — light panels */
+html[data-theme="light"] .ftf-portal .fixed.inset-0 > div:not(.absolute):not(.pointer-events-none) {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 28px 80px rgba(15,23,42,.18) !important;
+}
+html[data-theme="light"] .ftf-portal .fixed.inset-0 input,
+html[data-theme="light"] .ftf-portal .fixed.inset-0 select,
+html[data-theme="light"] .ftf-portal .fixed.inset-0 textarea {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+html[data-theme="light"] .ftf-portal .fixed.inset-0 input::placeholder,
+html[data-theme="light"] .ftf-portal .fixed.inset-0 textarea::placeholder { color: #94a3b8 !important; }
+
+/* Player card heavy styles — lighter on light */
+html[data-theme="light"] .player-squad-card {
+  box-shadow: 0 0 0 1px #e2e8f0, 0 8px 24px rgba(15,23,42,.08) !important;
+}
+html[data-theme="light"] .player-squad-card:hover {
+  box-shadow: 0 0 0 1px #e2e8f0, 0 18px 40px rgba(15,23,42,.12), 0 8px 24px rgba(227,6,44,.08) !important;
+}
+
+/* ── PM (profile modal) system — light overrides ── */
+html[data-theme="light"] .pm-backdrop { background: rgba(15,23,42,.45); }
+html[data-theme="light"] .pm-panel { background: #ffffff; border-color: #e2e8f0; box-shadow: 0 28px 60px rgba(15,23,42,.12); }
+html[data-theme="light"] .pm-head { border-bottom-color: #e2e8f0; }
+html[data-theme="light"] .pm-title { color: #0f172a; }
+html[data-theme="light"] .pm-sub { color: #64748b; }
+html[data-theme="light"] .pm-close { color: #94a3b8; }
+html[data-theme="light"] .pm-close:hover { color: #0f172a; background: #f1f5f9; border-color: #e2e8f0; }
+html[data-theme="light"] .pm-body { color: #334155; }
+html[data-theme="light"] .pm-foot { border-top-color: #e2e8f0; background: #f8fafc; }
+html[data-theme="light"] .pm-label { color: #64748b; }
+html[data-theme="light"] .pm-field,
+html[data-theme="light"] .pm-select {
+  background: #f8fafc; border-color: #e2e8f0; color: #0f172a;
+}
+html[data-theme="light"] .pm-field::placeholder,
+html[data-theme="light"] .pm-select::placeholder { color: #94a3b8; }
+html[data-theme="light"] .pm-select option { background: #ffffff; color: #0f172a; }
+html[data-theme="light"] .pm-chip { background: #f1f5f9; border-color: #e2e8f0; color: #475569; }
+html[data-theme="light"] .pm-chip:hover { color: #0f172a; border-color: #cbd5e1; }
+html[data-theme="light"] .pm-btn-ghost { border-color: #e2e8f0; color: #64748b; }
+html[data-theme="light"] .pm-btn-ghost:hover { color: #0f172a; border-color: #cbd5e1; }
+html[data-theme="light"] .pm-tile { background: #f8fafc; border-color: #e2e8f0; }
+html[data-theme="light"] .pm-tile-val { color: #0f172a; }
+html[data-theme="light"] .pm-tile-lbl { color: #64748b; }
+html[data-theme="light"] .pm-dim { color: #94a3b8; }
+html[data-theme="light"] .pm-hr { background: #e2e8f0; }
+html[data-theme="light"] .pm-note { color: #64748b; }
+
+/* ── FED entry screens — lighter in light mode ── */
+html[data-theme="light"] .fed-screen {
+  background:
+    radial-gradient(1100px 560px at 50% -12%, rgba(227, 6, 44, .06), transparent 62%),
+    radial-gradient(900px 520px at 88% 112%, rgba(246, 199, 68, .04), transparent 60%),
+    #eef2f8;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Shake animation for profile modal */
+@keyframes shake-in {
+  0% { transform: translateX(0); }
+  10% { transform: translateX(-4px); }
+  20% { transform: translateX(4px); }
+  30% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+  90% { transform: translateX(0); }
+}
+
+.animate-shake-in {
+  animation: shake-in 0.6s ease-in-out;
+}
+
+/* Hide scrollbar for horizontal scroll */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+[dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+[dir="rtl"] .ml-auto {
+  margin-left: unset;
+  margin-right: auto;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   BUTTON DESIGN SYSTEM — professional, tactile, consistent.
+   Applied globally so every control in the portal inherits the upgrade.
+   ═════════════════════════════════════════════════════════════════════ */
+.ftf-portal button,
+button {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Accessible focus ring + tactile press feedback for every control */
+.ftf-portal button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(227, 6, 44, .25) !important;
+}
+.ftf-portal button:active:not(:disabled):not([class*="animate-"]) {
+  transform: translateY(1px) scale(.985);
+}
+.ftf-portal button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+  filter: saturate(.6);
+}
+
+/* ── ALL PORTAL BUTTONS: calm, modern, consistent ── */
+.ftf-portal button {
+  border-radius: .45rem !important;
+  font-weight: 600;
+  transition:
+    transform .16s ease,
+    background-color .16s ease,
+    border-color .16s ease,
+    color .16s ease,
+    box-shadow .16s ease !important;
+}
+.ftf-portal button[class*="rounded-full"]:not([class*="px-"]):not([class*="w-7"]):not([class*="w-8"]) {
+  border-radius: 9999px !important;
+}
+.ftf-portal button:hover:not(:disabled):not([class*="animate-"]) {
+  transform: translateY(-1px);
+}
+
+/* ── PRIMARY (solid red) — reserved for the main action only ── */
+.ftf-portal button[class*="bg-[#E30613]"]:not([class*="bg-[#E30613]/"]):not([class*="rounded-full"]) {
+  background: linear-gradient(180deg, #f01630 0%, #dd0523 100%) !important;
+  color: #fff !important;
+  border-color: #c2071d !important;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .16) !important;
+  animation: btn-in .32s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+.ftf-portal button[class*="bg-[#E30613]"]:not([class*="bg-[#E30613]/"]):not([class*="rounded-full"]):hover:not(:disabled) {
+  background: linear-gradient(180deg, #f52b43 0%, #e70c29 100%) !important;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .14) !important;
+}
+.ftf-portal button[class*="bg-[#E30613]"]:not([class*="bg-[#E30613]/"]):not([class*="rounded-full"]):active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18) !important;
+}
+
+/* Circular red FABs: same clean red, no heaviness */
+.ftf-portal button[class*="bg-[#E30613]"][class*="rounded-full"] {
+  background: linear-gradient(180deg, #f01630 0%, #dd0523 100%) !important;
+  color: #fff !important;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .16) !important;
+  animation: btn-in .32s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+.ftf-portal button[class*="bg-[#E30613]"][class*="rounded-full"]:hover:not(:disabled) {
+  background: linear-gradient(180deg, #f52b43 0%, #e70c29 100%) !important;
+}
+.ftf-portal button[class*="bg-[#E30613]"][class*="rounded-full"]:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18) !important;
+}
+
+/* ── OUTLINE / SECONDARY — lighter navy panel, warm keyline, quiet hover ── */
+.ftf-portal button[class*="border-zinc-200"],
+.ftf-portal button[class*="border-zinc-300"] {
+  background-color: #112950 !important;
+  color: #d8cfc0 !important;
+  border-color: rgba(148, 170, 210, .2) !important;
+  box-shadow: none !important;
+  animation: btn-in .32s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+.ftf-portal button[class*="border-zinc-200"]:hover:not(:disabled),
+.ftf-portal button[class*="border-zinc-300"]:hover:not(:disabled) {
+  background-color: #17335f !important;
+  color: #fff !important;
+  border-color: rgba(148, 170, 210, .34) !important;
+}
+.ftf-portal button[class*="border-zinc-200"]:active:not(:disabled),
+.ftf-portal button[class*="border-zinc-300"]:active:not(:disabled) {
+  background-color: #0e2345 !important;
+}
+
+/* Light mode — outline/secondary buttons: white panels, dark text */
+html[data-theme="light"] .ftf-portal button[class*="border-zinc-200"],
+html[data-theme="light"] .ftf-portal button[class*="border-zinc-300"] {
+  background-color: #ffffff !important;
+  color: #475569 !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 2px rgba(15,23,42,.04) !important;
+}
+html[data-theme="light"] .ftf-portal button[class*="border-zinc-200"]:hover:not(:disabled),
+html[data-theme="light"] .ftf-portal button[class*="border-zinc-300"]:hover:not(:disabled) {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+html[data-theme="light"] .ftf-portal button[class*="border-zinc-200"]:active:not(:disabled),
+html[data-theme="light"] .ftf-portal button[class*="border-zinc-300"]:active:not(:disabled) {
+  background-color: #e8edf4 !important;
+}
+
+/* ── SEGMENTED TABS (Stats/Players/Staff + team pills) ── */
+.ftf-portal div.flex.p-1.rounded-xl {
+  background: #0a1f3c !important;
+  border-color: rgba(148, 170, 210, .14) !important;
+}
+.ftf-portal div.flex.p-1.rounded-xl > button {
+  border-radius: .4rem !important;
+  font-weight: 600;
+  transition: color .16s ease, background-color .16s ease, box-shadow .16s ease !important;
+}
+.ftf-portal div.flex.p-1.rounded-xl > button[class*="bg-[#E30613]"]:not([class*="bg-[#E30613]/"]) {
+  background: linear-gradient(180deg, #f01630 0%, #dd0523 100%) !important;
+  color: #fff !important;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .16) !important;
+}
+.ftf-portal div.flex.p-1.rounded-xl > button:not([class*="bg-[#E30613]"]):not([class*="bg-[#E30613]/"]):hover {
+  color: #fff !important;
+  background: #17335f !important;
+}
+
+/* Light mode — segmented tabs: light well, dark inactive text */
+html[data-theme="light"] .ftf-portal div.flex.p-1.rounded-xl {
+  background: #e8edf4 !important;
+  border-color: #e2e8f0 !important;
+}
+html[data-theme="light"] .ftf-portal div.flex.p-1.rounded-xl > button:not([class*="bg-[#E30613]"]):not([class*="bg-[#E30613]/"]) {
+  color: #64748b !important;
+}
+html[data-theme="light"] .ftf-portal div.flex.p-1.rounded-xl > button:not([class*="bg-[#E30613]"]):not([class*="bg-[#E30613]/"]):hover {
+  color: #0f172a !important;
+  background: #ffffff !important;
+}
+
+/* ── PILL FILTER CHIPS (positions/ALL) ── */
+.ftf-portal div.flex.gap-1\.5.flex-wrap > button {
+  border-radius: .4rem !important;
+}
+.ftf-portal div.flex.gap-1\.5.flex-wrap > button[class*="border-zinc-200"][class*="bg-white"] {
+  background: #0e2345 !important;
+}
+
+/* Light mode — pill filter chips */
+html[data-theme="light"] .ftf-portal div.flex.gap-1\.5.flex-wrap > button[class*="border-zinc-200"][class*="bg-white"] {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+/* ── ICON-only buttons (plus, close, back chevron, etc.) ── */
+.ftf-portal button[class*="p-1.5"]:not([class*="bg-[#E30613]"]):not([class*="fc-keep"]),
+.ftf-portal button[class*="p-2"]:not([class*="px-"]):not([class*="bg-[#E30613]"]):not([class*="fc-keep"]),
+.ftf-portal button[class*="w-7"]:not([class*="px-"]):not([class*="fc-keep"]),
+.ftf-portal button[class*="w-8"]:not([class*="px-"]):not([class*="fc-keep"]) {
+  background: #0a1f3c !important;
+  color: #d8cfc0 !important;
+  border-color: rgba(148, 170, 210, .16) !important;
+  border-radius: .4rem !important;
+}
+.ftf-portal button[class*="p-1.5"]:not([class*="bg-[#E30613]"]):not([class*="fc-keep"]):hover,
+.ftf-portal button[class*="p-2"]:not([class*="px-"]):not([class*="bg-[#E30613]"]):not([class*="fc-keep"]):hover,
+.ftf-portal button[class*="w-7"]:not([class*="px-"]):not([class*="fc-keep"]):hover,
+.ftf-portal button[class*="w-8"]:not([class*="px-"]):not([class*="fc-keep"]):hover {
+  background: #17335f !important;
+  color: #fff !important;
+}
+
+/* Light mode — icon buttons: white panels, dark icons */
+html[data-theme="light"] .ftf-portal button[class*="p-1.5"]:not([class*="bg-[#E30613]"]):not([class*="fc-keep"]),
+html[data-theme="light"] .ftf-portal button[class*="p-2"]:not([class*="px-"]):not([class*="bg-[#E30613]"]):not([class*="fc-keep"]),
+html[data-theme="light"] .ftf-portal button[class*="w-7"]:not([class*="px-"]):not([class*="fc-keep"]),
+html[data-theme="light"] .ftf-portal button[class*="w-8"]:not([class*="px-"]):not([class*="fc-keep"]) {
+  background: #ffffff !important;
+  color: #475569 !important;
+  border-color: #e2e8f0 !important;
+}
+html[data-theme="light"] .ftf-portal button[class*="p-1.5"]:not([class*="bg-[#E30613]"]):not([class*="fc-keep"]):hover,
+html[data-theme="light"] .ftf-portal button[class*="p-2"]:not([class*="px-"]):not([class*="bg-[#E30613]"]):not([class*="fc-keep"]):hover,
+html[data-theme="light"] .ftf-portal button[class*="w-7"]:not([class*="px-"]):not([class*="fc-keep"]):hover,
+html[data-theme="light"] .ftf-portal button[class*="w-8"]:not([class*="px-"]):not([class*="fc-keep"]):hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* ── FLAT GHOST menu buttons (dropdown rows, header links) ── */
+.ftf-portal button[class*="hover:bg-zinc-50"]:not([class*="px-3.5"]):not([class*="px-3"]),
+.ftf-portal button[class*="hover:bg-zinc-100"]:not([class*="px-3.5"]):not([class*="px-3"]) {
+  border-radius: .4rem !important;
+}
+
+/* ── Login / Register screens (outside .ftf-portal): clean red primary ── */
+button[class*="w-full"][class*="bg-[#E30613]"] {
+  -webkit-tap-highlight-color: transparent;
+  border-radius: .55rem !important;
+  background: linear-gradient(180deg, #f01630 0%, #dd0523 100%) !important;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .16) !important;
+  transition: transform .16s ease, box-shadow .16s ease, background .3s ease !important;
+  animation: btn-in .32s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+button[class*="w-full"][class*="bg-[#E30613]"]:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #f52b43 0%, #e70c29 100%) !important;
+}
+button[class*="w-full"][class*="bg-[#E30613]"]:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18) !important;
+}
+button[class*="w-full"][class*="bg-[#E30613]"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(227, 6, 44, .3) !important;
+}
+
+/* ── SEGMENT TABS: pop-out on selection ── */
+@keyframes tile-pop {
+  0% { transform: scale(.4); }
+  55% { transform: scale(1.12); }
+  75% { transform: scale(.97); }
+  100% { transform: scale(1); }
+}
+.ftf-portal div.flex.p-1.rounded-xl > button[class*="bg-[#E30613]"] {
+  animation: tile-pop .34s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   BUTTON & PAGE MOTION — broadcast-grade movement, no more static UI.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Buttons snap in with a springy pop when they appear */
+@keyframes btn-in {
+  0% { opacity: 0; transform: translateY(6px) scale(.92); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Segmented tab container: subtle slide-down when the page mounts */
+.ftf-portal div.flex.p-1.rounded-xl {
+  animation: seg-in .45s cubic-bezier(.16, .84, .44, 1) both;
+}
+@keyframes seg-in {
+  0% { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Sticky header: slides down into place with the red rail */
+.ftf-portal header {
+  animation: header-in .5s cubic-bezier(.16, .84, .44, 1) both;
+}
+@keyframes header-in {
+  0% { opacity: 0; transform: translateY(-100%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Content blocks: fade + rise per view (StatsView, grids, leaderboards) */
+.ftf-portal main > *:not(.fixed):not(.sticky) {
+  animation: view-in .55s cubic-bezier(.16, .84, .44, 1) both;
+}
+.ftf-portal .p-4.sm\:p-5.space-y-4 {
+  animation: view-in .55s cubic-bezier(.16, .84, .44, 1) both;
+}
+@keyframes view-in {
+  0% { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Modals: rise from the bottom + scale with a hard fall shadow */
+.ftf-portal .fixed.inset-0:not(.z-0) > div:not(.absolute):not(.pointer-events-none) {
+  animation: modal-in .38s cubic-bezier(.16, .84, .44, 1) both;
+}
+@keyframes modal-in {
+  0% { opacity: 0; transform: translateY(28px) scale(.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Stat tiles pop in with stagger-friendly timing */
+.ftf-portal .grid.grid-cols-2 > div,
+.ftf-portal .grid.grid-cols-3 > div,
+.ftf-portal .grid.grid-cols-4 > div {
+  animation: tile-in .4s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+@keyframes tile-in {
+  0% { opacity: 0; transform: scale(.9) translateY(8px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Loading screen → content hand-off: loader ghosts away while the
+   team-select/login screen rises in beneath it. */
+@keyframes loader-ghost {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-26px); }
+}
+@keyframes content-reveal {
+  0% { opacity: 0; transform: translateY(18px) scale(.985); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.loader-ghost { animation: loader-ghost .75s ease-out both; }
+.content-reveal { animation: content-reveal .8s cubic-bezier(.2, .7, .3, 1) both; }
+
+/* ── Mobile / tablet support ──
+   These rules only apply on small viewports and never alter desktop sizing. */
+html { -webkit-text-size-adjust: 100%; }
+/* The player-card grid overhangs its cells by a few px on tablets; clip only that
+   (never the whole .ftf-portal — a global overflow-x: clip breaks Safari's touch
+   scrolling and sticky/fixed positioning) */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .ftf-portal .grid.justify-items-center { overflow-x: clip; }
+}
+.safe-top { margin-top: env(safe-area-inset-top); }
+.font-tight { letter-spacing: -0.01em; }
+@media (max-width: 767px) {
+  table { -webkit-overflow-scrolling: touch; }
+  .ftf-portal [class*="overflow-y-auto"],
+  .ftf-portal [class*="overflow-y-scroll"] {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Reduced motion: respect accessibility preferences */
+@media (prefers-reduced-motion: reduce) {
+  .ftf-portal button, .ftf-portal header,
+  .ftf-portal main > *:not(.fixed),
+  .ftf-portal .grid.grid-cols-2 > div,
+  .ftf-portal .grid.grid-cols-3 > div,
+  .ftf-portal .grid.grid-cols-4 > div {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── Full-screen loading / auth screens (outside .ftf-portal) ──
+   Give them the same broadcast navy so no white "blank page" breaks the flow. */
+.min-h-screen.flex.flex-col.items-center.justify-center.bg-white,
+.min-h-screen.flex.items-center.justify-center.bg-zinc-50 {
+  background-color: #0a1c38 !important;
+  background-image:
+    radial-gradient(800px 400px at 50% -10%, rgba(227, 6, 44, .2), transparent 60%),
+    linear-gradient(180deg, #0e2343 0%, #091b36 100%) !important;
+  color: #EDEFF4 !important;
+}
+.min-h-screen.flex.flex-col.items-center.justify-center.bg-white .text-zinc-900,
+.min-h-screen.flex.items-center.justify-center.bg-zinc-50 .text-zinc-900 { color: #EDEFF4 !important; }
+.min-h-screen.flex.flex-col.items-center.justify-center.bg-white .text-zinc-500,
+.min-h-screen.flex.items-center.justify-center.bg-zinc-50 .text-zinc-500 { color: #8fa0bd !important; }
+.min-h-screen.flex.flex-col.items-center.justify-center.bg-white .border-zinc-100,
+.min-h-screen.flex.items-center.justify-center.bg-zinc-50 .border-zinc-100,
+.min-h-screen.flex.flex-col.items-center.justify-center.bg-white .border-zinc-200,
+.min-h-screen.flex.items-center.justify-center.bg-zinc-50 .border-zinc-200 { border-color: rgba(148, 170, 210, .2) !important; }
+.min-h-screen.flex.items-center.justify-center.bg-zinc-50 input {
+  background-color: #0a1f3c !important;
+  color: #EDEFF4 !important;
+  border-color: rgba(148, 170, 210, .28) !important;
+}
+.min-h-screen.flex.items-center.justify-center.bg-zinc-50 input::placeholder { color: #5e6f8d !important; }
+.min-h-screen.flex.items-center.justify-center.bg-zinc-50 input:focus { border-color: #e3062c !important; }
+
+/* ── Team selector card re-skin (dark panels on the selection screen) ── */
+.relative.z-10 .rounded-\[2rem\].bg-white,
+.relative.z-10 div[class*="rounded-[2rem]"] {
+  background: #112950 !important;
+  border: 1px solid rgba(148, 170, 210, .18) !important;
+}
+.min-h-screen.flex.flex-col.items-center.justify-center.bg-white .w-20.h-20.rounded-2xl.bg-white {
+  background: #12305a !important;
+  border-color: rgba(148, 170, 210, .2) !important;
+}
+
+/* Custom scrollbars — match the app's design instead of the default browser/OS scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #E30613 #0c1f3d;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: #0c1f3d;
+}
+*::-webkit-scrollbar-thumb {
+  background: #E30613;
+  border-radius: 8px;
+  border: 2px solid #0c1f3d;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #b8050f;
+}
+
+@media print {
+  @page { margin: 1cm; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white; }
+  header, .fixed, .sticky, button, select, input, .group, .animate-shake-in { display: none !important; }
+  main { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+  .max-w-7xl { max-width: 100% !important; padding: 0 !important; }
+  .grid { display: grid !important; gap: 0.5rem !important; page-break-inside: avoid; }
+  img { max-height: 120px !important; }
+  [class*="bg-"] { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Official match sheet: isolate it and hide everything else while printing */
+  body:has(.match-sheet-print) header,
+  body:has(.match-sheet-print) > main { display: none !important; }
+  .match-sheet-print { display: block !important; position: static !important; inset: auto !important; background: white !important; padding: 0 !important; }
+  .match-sheet-print .match-sheet-print-btn { display: none !important; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   GENERIC-SURFACE CLEANUP — catches every leftover "AI template" surface
+   (arbitrary cream classes, soft status chips, tables, etc.) and forces
+   the broadcast navy/red identity. Added last so it wins the cascade.
+   ═════════════════════════════════════════════════════════════════════ */
+.ftf-portal [class*="bg-[#FAF8F3]"],
+.ftf-portal [class*="bg-[#faf8f3]"],
+body [class*="bg-[#FAF8F3]"],
+body [class*="bg-[#F3F0E8]"] { background-color: #112950 !important; }
+body [class*="bg-[#F3F0E8]"] { background-color: #0e2345 !important; }
+
+/* Status chip surfaces → night-table navy */
+.ftf-portal .bg-purple-50 { background-color: rgba(96, 62, 156, .18) !important; }
+.ftf-portal .bg-blue-50  { background-color: rgba(30, 120, 255, .14) !important; }
+.ftf-portal .bg-green-50 { background-color: rgba(34, 197, 94, .12) !important; }
+.ftf-portal .bg-amber-50 { background-color: rgba(246, 199, 68, .12) !important; }
+.ftf-portal .bg-yellow-50{ background-color: rgba(246, 199, 68, .12) !important; }
+.ftf-portal .bg-red-50   { background-color: rgba(227, 6, 44, .14) !important; }
+
+/* Status chip text → alive broadcast colours */
+.ftf-portal .text-purple-600, .ftf-portal .text-purple-700 { color: #c4a9ff !important; }
+.ftf-portal .text-amber-600, .ftf-portal .text-amber-700, .ftf-portal .text-amber-900 { color: #f3c869 !important; }
+.ftf-portal .text-green-700 { color: #6ee7a0 !important; }
+.ftf-portal .text-blue-500 { color: #7fb3ff !important; }
+.ftf-portal .text-yellow-700 { color: #f3c869 !important; }
+
+/* Status chip borders */
+.ftf-portal .border-purple-200 { border-color: rgba(196, 169, 255, .3) !important; }
+.ftf-portal .border-amber-200 { border-color: rgba(246, 199, 68, .3) !important; }
+.ftf-portal .border-yellow-200 { border-color: rgba(246, 199, 68, .3) !important; }
+.ftf-portal .border-green-200 { border-color: rgba(110, 231, 160, .3) !important; }
+.ftf-portal .border-green-300 { border-color: rgba(110, 231, 160, .4) !important; }
+.ftf-portal .border-amber-300 { border-color: rgba(246, 199, 68, .4) !important; }
+.ftf-portal .border-red-300 { border-color: rgba(255, 95, 114, .4) !important; }
+
+/* Amber gradient tiles in staff bio */
+.ftf-portal .from-amber-50 { --tw-gradient-from: #2e2410 !important; }
+.ftf-portal .to-amber-100  { --tw-gradient-to: #3d3016 !important; }
+
+/* Solid gold chips stay gold on dark */
+.ftf-portal .bg-amber-400, .ftf-portal .bg-yellow-400 { background-color: #f6c744 !important; }
+
+/* Divider hairlines that escaped the border remap */
+.ftf-portal .divide-zinc-100 > :not([hidden]) ~ :not([hidden]),
+.ftf-portal .divide-zinc-200 > :not([hidden]) ~ :not([hidden]),
+.ftf-portal .divide-y > :not([hidden]) ~ :not([hidden]) { border-color: rgba(148, 170, 210, .13) !important; }
+
+/* Disciplinary ring SVG fills/strokes */
+.ftf-portal .stroke-\[\#e4e4e7\] { stroke: rgba(148, 170, 210, .2) !important; }
+.ftf-portal .fill-\[\#fee2e2\] { fill: rgba(227, 6, 44, .16) !important; }
+.ftf-portal .fill-\[\#18181b\] { fill: #EDEFF4 !important; }
+.ftf-portal .fill-\[\#a1a1aa\] { fill: #877a68 !important; }
+.ftf-portal .fill-\[\#791F1F\] { fill: #ff5f72 !important; }
+
+/* Any remaining :focus ring nudges to the brand red */
+.ftf-portal .focus\:ring-\[\#E30613\] { --tw-ring-color: rgba(227, 6, 44, .35) !important; }
+
+/* ── Radix/portal surfaces that render on <body> OUTSIDE .ftf-portal
+   (toasts, dialog, sheet, drawer, sonner) → same broadcast identity ── */
+[data-slot="toast"] {
+  background: #112950 !important;
+  color: #EDEFF4 !important;
+  border: 1px solid rgba(148, 170, 210, .22) !important;
+  border-top: 3px solid #e3062c !important;
+  border-radius: .55rem !important;
+  box-shadow: 0 18px 50px rgba(1, 8, 18, .6) !important;
+  font-family: 'Oswald', 'Arial Narrow', Arial, sans-serif;
+}
+[data-slot="toast"] [data-slot="toast-title"] { color: #EDEFF4 !important; }
+[data-slot="toast"] [data-slot="toast-description"] { color: #a89c8a !important; }
+[data-slot="toast-close"] { color: #d8cfc0; }
+[data-slot="toast-viewport"] button[data-slot="toast-close"] svg { color: #a89c8a; }
+
+[data-slot="dialog-content"],
+[data-slot="alert-dialog-content"],
+[data-slot="sheet-content"],
+[data-slot="drawer-content"] {
+  background: #112950 !important;
+  color: #EDEFF4 !important;
+  border: 1px solid rgba(148, 170, 210, .22) !important;
+  border-top: 3px solid #e3062c !important;
+  border-radius: .65rem !important;
+  box-shadow: 0 28px 80px rgba(1, 8, 18, .65) !important;
+}
+[data-slot="dialog-title"], [data-slot="alert-dialog-title"],
+[data-slot="sheet-title"], [data-slot="drawer-title"] { color: #EDEFF4 !important; }
+[data-slot="dialog-description"], [data-slot="alert-dialog-description"],
+[data-slot="sheet-description"], [data-slot="drawer-description"] { color: #a89c8a !important; }
+[data-slot="dialog-content"] input, [data-slot="dialog-content"] select, [data-slot="dialog-content"] textarea,
+[data-slot="sheet-content"] input, [data-slot="sheet-content"] select, [data-slot="sheet-content"] textarea,
+[data-slot="drawer-content"] input, [data-slot="drawer-content"] select, [data-slot="drawer-content"] textarea {
+  background: #0a1f3c !important;
+  color: #EDEFF4 !important;
+  border-color: rgba(148, 170, 210, .24) !important;
+}
+[data-slot="sheet-content"] button, [data-slot="drawer-content"] button,
+[data-slot="dialog-content"] button, [data-slot="alert-dialog-content"] button {
+  font-family: 'Oswald', 'Arial Narrow', Arial, sans-serif;
+  letter-spacing: .05em;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PM — PROFESSIONAL POPUP SYSTEM (from-scratch modal language)
+   Single accent (red), flat matte navy surfaces, hairline borders,
+   restrained hierarchy. Replaces the "AI glow" look everywhere.
+   ══════════════════════════════════════════════════════════════ */
+.pm-backdrop {
+  position: fixed; inset: 0; z-index: 220;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.25rem;
+  background: rgba(3, 8, 16, .74);
+  backdrop-filter: blur(3px);
+}
+.pm-panel {
+  width: 100%; margin: auto;
+  background: #101725;
+  border: 1px solid rgba(148, 170, 210, .16);
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .35);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  max-height: calc(100dvh - 2.5rem);
+}
+.pm-panel-sm { max-width: 380px; }
+.pm-panel-md { max-width: 520px; }
+.pm-panel-lg { max-width: 720px; }
+.pm-panel-xl { max-width: 920px; }
+
+.pm-head {
+  display: flex; align-items: center; gap: .75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(148, 170, 210, .12);
+  flex-shrink: 0;
+}
+.pm-tick {
+  width: 3px; height: 18px; border-radius: 2px;
+  background: #e3062c; flex-shrink: 0;
+}
+.pm-title {
+  font-size: .6875rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .16em;
+  color: #EDEFF4; line-height: 1;
+}
+.pm-sub {
+  margin-top: .3rem; font-size: .625rem; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; color: #73849e;
+}
+.pm-grow { flex: 1; }
+.pm-close {
+  width: 28px; height: 28px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 7px; color: #7e8fa8;
+  border: 1px solid transparent; transition: all .15s ease;
+}
+.pm-close:hover { color: #fff; background: rgba(148, 170, 210, .1); border-color: rgba(148, 170, 210, .16); }
+
+.pm-body { padding: 1.25rem; overflow-y: auto; }
+.pm-foot {
+  display: flex; align-items: center; justify-content: flex-end; gap: .625rem;
+  padding: .875rem 1.25rem;
+  border-top: 1px solid rgba(148, 170, 210, .12);
+  flex-shrink: 0; background: rgba(11, 17, 30, .4);
+}
+
+.pm-label {
+  display: block; margin-bottom: .45rem;
+  font-size: .5625rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .13em; color: #7e8fa8;
+}
+.pm-field, .pm-select {
+  width: 100%;
+  background: #0b111e;
+  border: 1px solid rgba(148, 170, 210, .18);
+  border-radius: 8px;
+  padding: .625rem .75rem;
+  font-size: .6875rem; font-weight: 600; color: #e9edf4;
+  outline: none; transition: border-color .15s ease, box-shadow .15s ease;
+}
+.pm-field::placeholder, .pm-select::placeholder { color: #54647d; }
+.pm-field:focus, .pm-select:focus {
+  border-color: rgba(227, 6, 44, .7);
+  box-shadow: 0 0 0 3px rgba(227, 6, 44, .16);
+}
+.pm-select option { background: #101725; color: #e9edf4; }
+
+.pm-chip {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .4rem .7rem; border-radius: 7px;
+  background: #141d31; border: 1px solid rgba(148, 170, 210, .16);
+  color: #9aa8be; font-size: .5625rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .09em;
+  transition: all .15s ease; cursor: pointer; user-select: none;
+}
+.pm-chip:hover { color: #e9edf4; border-color: rgba(148, 170, 210, .32); }
+.pm-chip-on {
+  background: rgba(227, 6, 44, .14);
+  border-color: rgba(227, 6, 44, .52);
+  color: #ffdfe4;
+}
+
+.pm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  padding: .55rem 1rem; border-radius: 8px;
+  font-size: .625rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .12em;
+  transition: all .15s ease; cursor: pointer;
+  border: 1px solid transparent; white-space: nowrap;
+}
+.pm-btn-red { background: #e3062c; color: #fff; }
+.pm-btn-red:hover { background: #ff1f44; box-shadow: 0 6px 18px rgba(227, 6, 44, .3); }
+.pm-btn-red:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+.pm-btn-ghost { background: transparent; border-color: rgba(148, 170, 210, .22); color: #9aa8be; }
+.pm-btn-ghost:hover { color: #fff; border-color: rgba(148, 170, 210, .4); }
+.pm-btn-soft { background: rgba(227, 6, 44, .12); color: #ffbfca; border-color: rgba(227, 6, 44, .35); }
+.pm-btn-soft:hover { background: rgba(227, 6, 44, .2); color: #fff; }
+
+.pm-tile {
+  background: #0b111e; border: 1px solid rgba(148, 170, 210, .14);
+  border-radius: 8px; padding: .625rem .875rem;
+}
+.pm-tile-val {
+  font-size: 1rem; font-weight: 700; color: #e9edf4; line-height: 1.1;
+  letter-spacing: .01em;
+}
+.pm-tile-lbl {
+  margin-top: .25rem; font-size: .5rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .13em; color: #73849e;
+}
+
+.pm-section { margin-top: 1.25rem; }
+.pm-section:first-child { margin-top: 0; }
+.pm-hr { height: 1px; background: rgba(148, 170, 210, .12); margin: 1.1rem 0; border: 0; }
+.pm-note { font-size: .625rem; color: #73849e; line-height: 1.5; }
+.pm-scroll { overflow-y: auto; max-height: calc(100dvh - 14rem); }
+
+/* Status colors — desaturated, only when meaning is required */
+.pm-ok   { color: #7fd6a8; }
+.pm-warn { color: #f6c744; }
+.pm-err  { color: #ff4f66; }
+.pm-dim  { color: #73849e; }
+
+/* ── FED — federation entry screens (login / register / team select) ──
+   Deep navy stadium stage: red aura top, faint stripes, gold kickers. */
+.fed-screen {
+  background:
+    radial-gradient(1100px 560px at 50% -12%, rgba(227, 6, 44, .16), transparent 62%),
+    radial-gradient(900px 520px at 88% 112%, rgba(246, 199, 68, .05), transparent 60%),
+    #0a1226;
+}
+.fed-screen::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none;
+  background-image: repeating-linear-gradient(-55deg, transparent 0 26px, rgba(148, 170, 210, .03) 26px 27px);
+}
+
+/* ── Shared picker popups (components/pickers.tsx) ── */
+@keyframes pk-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+.pk-pop { animation: pk-pop .14s ease-out; transform-origin: top center; }
+.pk-scroll { scrollbar-width: thin; scrollbar-color: rgba(148, 170, 210, .3) transparent; }
+.pk-scroll::-webkit-scrollbar { width: 6px; }
+.pk-scroll::-webkit-scrollbar-thumb { background: rgba(148, 170, 210, .3); border-radius: 999px; }
+@media (prefers-reduced-motion: reduce) { .pk-pop { animation: none; } }
+
+/* ── Staff games: motion (components/games) ── */
+@keyframes gm-flip   { 0% { transform: perspective(520px) rotateX(-90deg); opacity: 0; } 100% { transform: perspective(520px) rotateX(0); opacity: 1; } }
+@keyframes gm-stamp  { 0% { transform: scale(2.6) rotate(-14deg); opacity: 0; } 60% { transform: scale(.88) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+@keyframes gm-slide  { from { transform: translateX(-16px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes gm-shake  { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); } }
+@keyframes gm-draw   { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes gm-pop    { 0% { transform: scale(.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+@keyframes gm-confetti { 0% { transform: translate3d(0, -12vh, 0) rotate(0); opacity: 1; } 100% { transform: translate3d(var(--dx, 0), 108vh, 0) rotate(var(--rot, 540deg)); opacity: .9; } }
+
+.gm-flip  { animation: gm-flip .5s cubic-bezier(.2, .8, .2, 1) both; transform-origin: top center; }
+.gm-stamp { animation: gm-stamp .42s cubic-bezier(.2, .8, .2, 1) both; }
+.gm-slide { animation: gm-slide .32s ease-out both; }
+.gm-shake { animation: gm-shake .45s ease-in-out both; }
+.gm-pop   { animation: gm-pop .28s ease-out both; }
+.gm-draw  { stroke-dasharray: 1; animation: gm-draw .55s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gm-flip, .gm-stamp, .gm-slide, .gm-shake, .gm-pop { animation: none !important; }
+  .gm-draw { animation: none !important; stroke-dashoffset: 0; }
+}
