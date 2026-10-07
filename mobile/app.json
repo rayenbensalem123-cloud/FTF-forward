@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
-    "backgroundColor": "#0A1C38",
+    "backgroundColor": "#0C1F3D",
     "plugins": [
       "expo-router",
       "expo-notifications"
@@ -17,7 +17,7 @@
     "android": {
       "package": "tn.tunisiawnt.app",
       "versionCode": 1,
-      "backgroundColor": "#0A1C38"
+      "backgroundColor": "#0C1F3D"
     }
   }
 }

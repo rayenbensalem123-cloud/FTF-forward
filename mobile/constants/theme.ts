@@ -1,20 +1,25 @@
+/**
+ * Dark theme taken from the website (app/globals.css, the FTF palette):
+ * --c-bg, --c-panel3, --c-panel, --line-rgb, --c-text, --c-textFaint, --acc-gold.
+ * Keep these in step with the platform so both look like one product.
+ */
 export const colors = {
   red: '#E30613',
-  navy: '#0A1C38',
-  navyDeep: '#071326',
-  card: '#121A2E',
-  cardRaised: '#18233D',
-  gold: '#F6C744',
-  goldBorder: 'rgba(246, 199, 68, 0.2)',
-  white: '#FFFFFF',
-  muted: '#9CA3AF',
+  navy: '#0C1F3D', // --c-bg: page background
+  navyDeep: '#0B111E', // --c-deep
+  card: '#101B33', // --c-panel3: cards
+  cardRaised: '#112950', // --c-panel: raised panels
+  gold: '#F6C744', // --acc-gold
+  goldBorder: 'rgba(148, 170, 210, 0.18)', // platform card border: rgba(var(--line-rgb), .18)
+  white: '#EDEFF4', // --c-text
+  muted: '#8FA0BD', // --c-textFaint
   green: '#22C55E',
   amber: '#F59E0B',
   redSoft: 'rgba(227, 6, 19, 0.18)',
   greenSoft: 'rgba(34, 197, 94, 0.16)',
   amberSoft: 'rgba(245, 158, 11, 0.16)',
   goldSoft: 'rgba(246, 199, 68, 0.14)',
-  line: 'rgba(255, 255, 255, 0.08)',
+  line: 'rgba(148, 170, 210, 0.14)',
   scrim: 'rgba(3, 8, 20, 0.7)',
 } as const;
 
