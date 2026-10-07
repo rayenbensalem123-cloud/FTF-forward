@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Tunisia WNT",
+    "slug": "tunisia-wnt",
+    "scheme": "tunisiawnt",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0A1C38",
+    "plugins": [
+      "expo-router",
+      "expo-notifications"
+    ],
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "tn.tunisiawnt.app",
+      "versionCode": 1,
+      "backgroundColor": "#0A1C38"
+    }
+  }
+}
