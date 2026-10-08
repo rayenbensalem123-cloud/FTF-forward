@@ -58,7 +58,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <AppHeader showBell={false} />
+        <AppHeader showBell={false} back />
 
         <Card style={styles.profile}>
           <Avatar name={user?.name ?? 'Staff'} size={64} />

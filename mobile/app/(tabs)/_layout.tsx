@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BarChart3, Home, User, Users } from 'lucide-react-native';
+import { Home, Menu, Shirt, Trophy } from 'lucide-react-native';
 import { colors } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -34,9 +34,10 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen name="index" options={{ title: t('tabHome'), tabBarIcon: ({ color, size }) => <Home color={color} size={size} /> }} />
-      <Tabs.Screen name="squad" options={{ title: t('tabSquad'), tabBarIcon: ({ color, size }) => <Users color={color} size={size} /> }} />
-      <Tabs.Screen name="stats" options={{ title: t('tabStats'), tabBarIcon: ({ color, size }) => <BarChart3 color={color} size={size} /> }} />
-      <Tabs.Screen name="profile" options={{ title: t('tabProfile'), tabBarIcon: ({ color, size }) => <User color={color} size={size} /> }} />
+      <Tabs.Screen name="matches" options={{ title: t('tabMatches'), tabBarIcon: ({ color, size }) => <Trophy color={color} size={size} /> }} />
+      <Tabs.Screen name="lineup" options={{ title: t('tabLineup'), tabBarIcon: ({ color, size }) => <Shirt color={color} size={size} /> }} />
+      {/* Squad, Stats and Profile live behind "More", so the bar stays short. */}
+      <Tabs.Screen name="more" options={{ title: t('tabMore'), tabBarIcon: ({ color, size }) => <Menu color={color} size={size} /> }} />
     </Tabs>
   );
 }

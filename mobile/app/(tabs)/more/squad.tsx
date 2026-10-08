@@ -52,7 +52,7 @@ export default function SquadScreen() {
         ItemSeparatorComponent={() => <View style={{ height: space.sm + 2 }} />}
         ListHeaderComponent={
           <View style={styles.header}>
-            <AppHeader showBell={false} />
+            <AppHeader showBell={false} back />
             <SyncBanner />
             <Segmented options={categories} value={category} onChange={setCategory} />
             <Chips options={positions} value={position} onChange={setPosition} />

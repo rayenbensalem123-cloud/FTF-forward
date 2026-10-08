@@ -36,7 +36,7 @@ export default function StatsScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <AppHeader showBell={false} />
+        <AppHeader showBell={false} back />
 
         {/* Team form */}
         <Card>

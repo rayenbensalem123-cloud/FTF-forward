@@ -1,6 +1,6 @@
 # Tunisia WNT: Expo app
 
-React Native + Expo Router + TypeScript. Four tabs (Home, Squad, Stats, Profile), an animated player card, and modal screens for match details, lineup building, player editing, adding players and notifications.
+React Native + Expo Router + TypeScript. Four tabs (Home, Matches, Lineup, More). "More" opens Squad, Stats, Notifications and Profile. Also an animated player card, and modal screens for match details, lineup building, player editing, adding players and notifications.
 
 This app lives in the `mobile/` folder of the platform repo and reads and writes **the same Supabase project as the website**. A change made on the website shows up here, and a change made here shows up on the website.
 

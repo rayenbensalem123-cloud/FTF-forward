@@ -166,6 +166,17 @@ const en = {
   noAnnouncementsAdmin: 'Nothing posted yet. Tap + to write the first announcement.',
   confirmDeleteAnnouncement: 'Delete this announcement for everyone?',
   announcementRequired: 'Add a title and a message.',
+  tabMatches: 'Matches',
+  tabLineup: 'Lineup',
+  tabMore: 'More',
+  back: 'Back',
+  moreSquadDesc: 'Players, filters and player cards',
+  moreStatsDesc: 'Form, top scorers and team numbers',
+  moreNotificationsDesc: 'Alerts and reminders',
+  moreProfileDesc: 'Account, language, export and sign out',
+  upcomingLabel: 'Upcoming',
+  resultsLabel: 'Results',
+  noResults: 'No results yet.',
 };
 
 type Strings = typeof en;
@@ -336,6 +347,17 @@ const fr: Strings = {
   noAnnouncementsAdmin: 'Rien de publié. Touchez + pour écrire la première annonce.',
   confirmDeleteAnnouncement: 'Supprimer cette annonce pour tout le monde ?',
   announcementRequired: 'Ajoutez un titre et un message.',
+  tabMatches: 'Matchs',
+  tabLineup: 'Composition',
+  tabMore: 'Plus',
+  back: 'Retour',
+  moreSquadDesc: 'Joueuses, filtres et fiches',
+  moreStatsDesc: 'Forme, buteuses et chiffres de l’équipe',
+  moreNotificationsDesc: 'Alertes et rappels',
+  moreProfileDesc: 'Compte, langue, export et déconnexion',
+  upcomingLabel: 'À venir',
+  resultsLabel: 'Résultats',
+  noResults: 'Aucun résultat pour l’instant.',
 };
 
 const ar: Strings = {
@@ -504,6 +526,17 @@ const ar: Strings = {
   noAnnouncementsAdmin: 'لا شيء منشور بعد. اضغط + لكتابة أول إعلان.',
   confirmDeleteAnnouncement: 'حذف هذا الإعلان للجميع؟',
   announcementRequired: 'أضف عنواناً ورسالة.',
+  tabMatches: 'المباريات',
+  tabLineup: 'التشكيلة',
+  tabMore: 'المزيد',
+  back: 'رجوع',
+  moreSquadDesc: 'اللاعبات والمرشحات والبطاقات',
+  moreStatsDesc: 'المستوى والهدافات وأرقام الفريق',
+  moreNotificationsDesc: 'التنبيهات والتذكيرات',
+  moreProfileDesc: 'الحساب واللغة والتصدير وتسجيل الخروج',
+  upcomingLabel: 'القادمة',
+  resultsLabel: 'النتائج',
+  noResults: 'لا توجد نتائج بعد.',
 };
 
 export type StringKey = keyof Strings;
