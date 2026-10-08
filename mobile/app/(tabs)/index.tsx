@@ -47,13 +47,13 @@ export default function HomeScreen() {
 
           <View style={styles.teams}>
             <View style={styles.team}>
-              <View style={styles.flagWrap}><Flag name="Tunisia" width={64} /></View>
+              <View style={styles.flagWrap}><Flag name="Tunisia" width={40} /></View>
               <Text style={styles.teamName}>Tunisia</Text>
             </View>
             <Text style={styles.vs}>VS</Text>
             <View style={styles.team}>
               {nextMatch && flagCodeFor(nextMatch.opponent) ? (
-                <View style={styles.flagWrap}><Flag name={nextMatch.opponent} width={64} /></View>
+                <View style={styles.flagWrap}><Flag name={nextMatch.opponent} width={40} /></View>
               ) : (
                 <View style={[styles.crest, { backgroundColor: '#1E8E5A' }]}><Text style={styles.crestText}>{nextMatch ? code(nextMatch.opponent) : '?'}</Text></View>
               )}
@@ -78,13 +78,13 @@ export default function HomeScreen() {
 
           {!!nextMatch?.venue && (
             <View style={styles.infoRow}>
-              <MapPin color={colors.gold} size={15} />
+              <MapPin color={colors.gold} size={13} />
               <Text style={styles.infoText}>{nextMatch.venue}</Text>
             </View>
           )}
           {!!nextMatch && (
             <View style={styles.infoRow}>
-              <Clock color={colors.gold} size={15} />
+              <Clock color={colors.gold} size={13} />
               <Text style={styles.infoText}>{formatDate(nextMatch.date)}</Text>
             </View>
           )}
@@ -136,31 +136,31 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
-  hero: { borderRadius: 26, padding: space.lg, borderWidth: 1, borderColor: colors.goldBorder, gap: space.md },
+  hero: { borderRadius: 20, padding: space.md + 2, borderWidth: 1, borderColor: colors.goldBorder, gap: space.sm + 2 },
   heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  compBadge: { backgroundColor: colors.gold, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 5 },
-  compText: { color: colors.navy, fontWeight: '800', fontSize: 11, letterSpacing: 0.6, textTransform: 'uppercase' },
+  compBadge: { backgroundColor: colors.gold, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3 },
+  compText: { color: colors.navy, fontWeight: '800', fontSize: 10, letterSpacing: 0.6, textTransform: 'uppercase' },
   heroLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 12, fontWeight: '600' },
-  teams: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginVertical: 4 },
-  team: { alignItems: 'center', gap: 6, minWidth: 80 },
-  flagWrap: { height: 64, justifyContent: 'center', alignItems: 'center' },
+  teams: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' },
+  team: { alignItems: 'center', gap: 4, minWidth: 80 },
+  flagWrap: { height: 30, justifyContent: 'center', alignItems: 'center' },
   vsRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  crest: { width: 56, height: 56, borderRadius: 28, borderWidth: 2, borderColor: colors.white, alignItems: 'center', justifyContent: 'center' },
-  crestText: { color: colors.white, fontWeight: '800', fontSize: 14 },
-  teamName: { color: colors.white, fontWeight: '700', fontSize: 14 },
-  vs: { color: colors.gold, fontWeight: '800', fontSize: 16 },
-  kickoffIn: { color: 'rgba(255,255,255,0.75)', fontSize: 12, textAlign: 'center', marginTop: 4 },
-  countdown: { flexDirection: 'row', gap: 8, justifyContent: 'center' },
-  cdBox: { minWidth: 62, alignItems: 'center', backgroundColor: 'rgba(7,19,38,0.55)', borderRadius: radius.md, paddingVertical: 10, paddingHorizontal: 6 },
-  cdValue: { color: colors.white, fontSize: 28, fontWeight: '800', fontVariant: ['tabular-nums'] },
-  cdLabel: { color: colors.muted, fontSize: 10, fontWeight: '700', letterSpacing: 0.8, textTransform: 'uppercase' },
+  crest: { width: 36, height: 36, borderRadius: 18, borderWidth: 2, borderColor: colors.white, alignItems: 'center', justifyContent: 'center' },
+  crestText: { color: colors.white, fontWeight: '800', fontSize: 11 },
+  teamName: { color: colors.white, fontWeight: '700', fontSize: 13 },
+  vs: { color: colors.gold, fontWeight: '800', fontSize: 13 },
+  kickoffIn: { color: 'rgba(255,255,255,0.75)', fontSize: 11, textAlign: 'center' },
+  countdown: { flexDirection: 'row', gap: 6, justifyContent: 'center' },
+  cdBox: { minWidth: 48, alignItems: 'center', backgroundColor: 'rgba(7,19,38,0.55)', borderRadius: radius.sm + 2, paddingVertical: 5, paddingHorizontal: 4 },
+  cdValue: { color: colors.white, fontSize: 18, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  cdLabel: { color: colors.muted, fontSize: 9, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase' },
   infoRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  infoText: { color: colors.white, fontSize: 13, flexShrink: 1 },
+  infoText: { color: colors.white, fontSize: 12, flexShrink: 1 },
   heroBtn: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: 48,
-    borderRadius: radius.md, backgroundColor: colors.gold, marginTop: 4,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: 40,
+    borderRadius: radius.md, backgroundColor: colors.gold, marginTop: 2,
   },
-  heroBtnText: { color: colors.navy, fontWeight: '800', fontSize: 14 },
+  heroBtnText: { color: colors.navy, fontWeight: '800', fontSize: 13 },
   section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 },
   readyRow: { flexDirection: 'row', alignItems: 'baseline', gap: 10 },
   readyBig: { color: colors.white, fontSize: 38, fontWeight: '800' },
