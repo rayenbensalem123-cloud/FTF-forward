@@ -19,6 +19,8 @@ export interface Player {
   position: Position;
   category: Category;
   club: string;
+  /** Country name as typed on the platform, e.g. "Tunisia". */
+  nationality: string;
   /** 0 when the birthdate is missing or unreadable. */
   age: number;
   /** DD/MM/YYYY, as the platform stores it. */

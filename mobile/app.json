@@ -17,6 +17,16 @@
     "android": {
       "package": "tn.tunisiawnt.app",
       "versionCode": 1,
+      "backgroundColor": "#0C1F3D",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0C1F3D"
+      }
+    },
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
       "backgroundColor": "#0C1F3D"
     }
   }

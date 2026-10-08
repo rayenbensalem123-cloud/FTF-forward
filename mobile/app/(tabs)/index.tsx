@@ -7,6 +7,8 @@ import { ChevronRight, Clock, MapPin } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { SyncBanner } from '@/components/SyncBanner';
 import { Card } from '@/components/Card';
+import { Flag } from '@/components/Flag';
+import { flagCodeFor } from '@/lib/countryFlags';
 import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
@@ -45,12 +47,16 @@ export default function HomeScreen() {
 
           <View style={styles.teams}>
             <View style={styles.team}>
-              <View style={[styles.crest, { backgroundColor: colors.red }]}><Text style={styles.crestText}>TUN</Text></View>
+              <View style={styles.flagWrap}><Flag name="Tunisia" width={64} /></View>
               <Text style={styles.teamName}>Tunisia</Text>
             </View>
             <Text style={styles.vs}>VS</Text>
             <View style={styles.team}>
-              <View style={[styles.crest, { backgroundColor: '#1E8E5A' }]}><Text style={styles.crestText}>{nextMatch ? code(nextMatch.opponent) : '?'}</Text></View>
+              {nextMatch && flagCodeFor(nextMatch.opponent) ? (
+                <View style={styles.flagWrap}><Flag name={nextMatch.opponent} width={64} /></View>
+              ) : (
+                <View style={[styles.crest, { backgroundColor: '#1E8E5A' }]}><Text style={styles.crestText}>{nextMatch ? code(nextMatch.opponent) : '?'}</Text></View>
+              )}
               <Text style={styles.teamName}>{nextMatch?.opponent || t('noMatchScheduled')}</Text>
             </View>
           </View>
@@ -116,7 +122,7 @@ export default function HomeScreen() {
             <View key={m.id} style={[styles.agendaRow, i > 0 && styles.agendaDivider]}>
               <Text style={styles.agendaTime}>{formatDate(m.date).replace(/ \d{4}$/, '')}</Text>
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={styles.agendaTitle}>Tunisia vs {m.opponent}</Text>
+                <View style={styles.vsRow}><Flag name="Tunisia" width={18} /><Text style={styles.agendaTitle}>vs</Text><Flag name={m.opponent} width={18} /><Text style={[styles.agendaTitle, { flexShrink: 1 }]} numberOfLines={1}>{m.opponent}</Text></View>
                 <Text style={styles.agendaPlace}>{[m.competition, m.venue].filter(Boolean).join(' · ') || m.category}</Text>
               </View>
             </View>
@@ -137,6 +143,8 @@ const styles = StyleSheet.create({
   heroLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 12, fontWeight: '600' },
   teams: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginVertical: 4 },
   team: { alignItems: 'center', gap: 6, minWidth: 80 },
+  flagWrap: { height: 64, justifyContent: 'center', alignItems: 'center' },
+  vsRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   crest: { width: 56, height: 56, borderRadius: 28, borderWidth: 2, borderColor: colors.white, alignItems: 'center', justifyContent: 'center' },
   crestText: { color: colors.white, fontWeight: '800', fontSize: 14 },
   teamName: { color: colors.white, fontWeight: '700', fontSize: 14 },

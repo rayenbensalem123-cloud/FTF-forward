@@ -13,6 +13,7 @@ import { formatDate } from '@/lib/format';
 import type { Player } from '@/types';
 import { Avatar } from './Avatar';
 import { FitnessBadge, STATUS_STYLE } from './FitnessBadge';
+import { Flag } from './Flag';
 
 interface Props {
   /** Pass a player to open the sheet, null to close it. */
@@ -125,7 +126,7 @@ export function PlayerSheet({ player, onClose }: Props) {
                   {shown.age > 0 && <View style={styles.pill}><Text style={styles.pillText}>{t('age')} {shown.age}</Text></View>}
                   <View style={styles.pill}><Text style={styles.pillText}>{shown.category}</Text></View>
                 </View>
-                <Text style={styles.club}>{shown.club}</Text>
+                <View style={styles.clubRow}><Flag name={shown.nationality} width={22} /><Text style={styles.club}>{shown.club}</Text></View>
                 <FitnessBadge status={shown.status} large />
               </View>
 
@@ -225,6 +226,7 @@ const styles = StyleSheet.create({
   tags: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8 },
   pill: { backgroundColor: colors.goldSoft, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
   pillText: { color: colors.gold, fontSize: 12, fontWeight: '800' },
+  clubRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   club: { color: colors.muted, fontSize: 14 },
   section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 },
   statRow: { flexDirection: 'row', gap: 8 },

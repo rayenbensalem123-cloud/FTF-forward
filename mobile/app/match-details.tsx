@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { MapPin, Pencil, X } from 'lucide-react-native';
 import { Card } from '@/components/Card';
+import { Flag } from '@/components/Flag';
 import { Pitch } from '@/components/Pitch';
 import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -31,7 +32,15 @@ export default function MatchDetailsScreen() {
       </View>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Card>
-          <Text style={styles.match}>{nextMatch ? `Tunisia vs ${nextMatch.opponent}` : t('noMatchScheduled')}</Text>
+          {nextMatch ? (
+            <View style={styles.vsRow}>
+              <Flag name="Tunisia" width={30} />
+              <Text style={styles.match}>Tunisia vs {nextMatch.opponent}</Text>
+              <Flag name={nextMatch.opponent} width={30} />
+            </View>
+          ) : (
+            <Text style={styles.match}>{t('noMatchScheduled')}</Text>
+          )}
           {!!nextMatch?.competition && <Text style={styles.comp}>{nextMatch.competition}</Text>}
           {!!nextMatch && <Text style={styles.line}>{formatDate(nextMatch.date)} · {nextMatch.category}</Text>}
           {!!nextMatch?.venue && (
@@ -72,6 +81,7 @@ const styles = StyleSheet.create({
   title: { color: colors.white, fontSize: 22, fontWeight: '800' },
   close: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
   content: { padding: space.lg, gap: space.md + 2, paddingBottom: space.xl * 2 },
+  vsRow: { flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' },
   match: { color: colors.white, fontSize: 22, fontWeight: '800' },
   comp: { color: colors.gold, fontSize: 13, fontWeight: '800', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.8 },
   line: { color: colors.muted, fontSize: 14, marginTop: 8, flexShrink: 1 },

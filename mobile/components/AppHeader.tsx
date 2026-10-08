@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Bell } from 'lucide-react-native';
-import { colors, FTF_LOGO_URL, radius, space } from '@/constants/theme';
+import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNotifications } from '@/context/NotificationsContext';
 
@@ -10,23 +10,11 @@ export function AppHeader({ showBell = true }: { showBell?: boolean }) {
   const { t } = useLanguage();
   const router = useRouter();
   const { unread } = useNotifications();
-  const [logoFailed, setLogoFailed] = useState(false);
 
   return (
     <View style={styles.row}>
-      {logoFailed ? (
-        <View style={[styles.logo, styles.logoFallback]}>
-          <Text style={styles.logoText}>FTF</Text>
-        </View>
-      ) : (
-        <Image
-          source={{ uri: FTF_LOGO_URL }}
-          style={styles.logo}
-          resizeMode="contain"
-          onError={() => setLogoFailed(true)}
-          accessibilityLabel="FTF crest"
-        />
-      )}
+      {/* Bundled in the app, so it shows offline and on the first frame. Same crest as the website. */}
+      <Image source={require('../assets/ftf-logo.png')} style={styles.logo} resizeMode="contain" accessibilityLabel="FTF crest" />
       <View style={styles.titles}>
         <Text style={styles.title} numberOfLines={1}>{t('appName')}</Text>
         <Text style={styles.subtitle} numberOfLines={1}>{t('federation')}</Text>

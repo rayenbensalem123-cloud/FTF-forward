@@ -88,6 +88,7 @@ export function memberToPlayer(r: any, injuries: InjuryRow[], canViewMedical: bo
     position: POS_FROM_DB[r.position] ?? 'MID',
     category: CAT_FROM_DB[r.team_category] ?? 'Seniors',
     club: r.club || 'Unattached',
+    nationality: r.nationality || '',
     age: ageFromBirthdate(r.birthdate),
     birthdate: r.birthdate || '',
     imagePath: r.image_path || undefined,
