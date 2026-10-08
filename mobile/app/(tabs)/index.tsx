@@ -3,7 +3,7 @@ import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ChevronRight, Clock, MapPin } from 'lucide-react-native';
+import { ChevronRight, MapPin } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { SyncBanner } from '@/components/SyncBanner';
 import { Card } from '@/components/Card';
@@ -41,58 +41,52 @@ export default function HomeScreen() {
         {/* Hero: upcoming match */}
         <LinearGradient colors={['#B30011', '#5B0A24', colors.navy]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
           <View style={styles.heroTop}>
-            <View style={styles.compBadge}><Text style={styles.compText}>{nextMatch?.competition || nextMatch?.category || 'WNT'}</Text></View>
-            <Text style={styles.heroLabel}>{t('nextMatch')}</Text>
+            <View style={styles.compBadge}><Text style={styles.compText} numberOfLines={1}>{nextMatch?.competition || nextMatch?.category || 'WNT'}</Text></View>
+            <Text style={styles.heroLabel}>{t('nextMatch')}{nextMatch ? ` · ${formatDate(nextMatch.date)}` : ''}</Text>
           </View>
 
           <View style={styles.teams}>
             <View style={styles.team}>
-              <View style={styles.flagWrap}><Flag name="Tunisia" width={40} /></View>
-              <Text style={styles.teamName}>Tunisia</Text>
+              <Flag name="Tunisia" width={28} />
+              <Text style={styles.teamName} numberOfLines={1}>Tunisia</Text>
             </View>
             <Text style={styles.vs}>VS</Text>
             <View style={styles.team}>
+              <Text style={[styles.teamName, { textAlign: 'right' }]} numberOfLines={1}>{nextMatch?.opponent || t('noMatchScheduled')}</Text>
               {nextMatch && flagCodeFor(nextMatch.opponent) ? (
-                <View style={styles.flagWrap}><Flag name={nextMatch.opponent} width={40} /></View>
+                <Flag name={nextMatch.opponent} width={28} />
               ) : (
-                <View style={[styles.crest, { backgroundColor: '#1E8E5A' }]}><Text style={styles.crestText}>{nextMatch ? code(nextMatch.opponent) : '?'}</Text></View>
+                <View style={styles.crest}><Text style={styles.crestText}>{nextMatch ? code(nextMatch.opponent) : '?'}</Text></View>
               )}
-              <Text style={styles.teamName}>{nextMatch?.opponent || t('noMatchScheduled')}</Text>
             </View>
           </View>
 
-          <Text style={styles.kickoffIn}>{t('kickoffIn')}</Text>
-          <View style={styles.countdown} accessibilityRole="timer">
-            {([
-              [cd.days, t('days')],
-              [cd.hours, t('hrs')],
-              [cd.minutes, t('min')],
-              [cd.seconds, t('sec')],
-            ] as const).map(([v, label]) => (
-              <View key={label} style={styles.cdBox}>
-                <Text style={styles.cdValue}>{pad2(v)}</Text>
-                <Text style={styles.cdLabel}>{label}</Text>
-              </View>
-            ))}
+          <View style={styles.bottomRow}>
+            <View style={styles.countdown} accessibilityRole="timer" accessibilityLabel={t('kickoffIn')}>
+              {([
+                [cd.days, t('days')],
+                [cd.hours, t('hrs')],
+                [cd.minutes, t('min')],
+                [cd.seconds, t('sec')],
+              ] as const).map(([v, label]) => (
+                <View key={label} style={styles.cdBox}>
+                  <Text style={styles.cdValue}>{pad2(v)}</Text>
+                  <Text style={styles.cdLabel}>{label}</Text>
+                </View>
+              ))}
+            </View>
+            <TouchableOpacity style={styles.heroBtn} onPress={() => router.push('/match-details')} accessibilityRole="button" accessibilityLabel={t('viewDetails')}>
+              <Text style={styles.heroBtnText} numberOfLines={1}>{t('matchDetails')}</Text>
+              <ChevronRight color={colors.navy} size={14} />
+            </TouchableOpacity>
           </View>
 
           {!!nextMatch?.venue && (
             <View style={styles.infoRow}>
-              <MapPin color={colors.gold} size={13} />
-              <Text style={styles.infoText}>{nextMatch.venue}</Text>
+              <MapPin color={colors.gold} size={12} />
+              <Text style={styles.infoText} numberOfLines={1}>{nextMatch.venue}</Text>
             </View>
           )}
-          {!!nextMatch && (
-            <View style={styles.infoRow}>
-              <Clock color={colors.gold} size={13} />
-              <Text style={styles.infoText}>{formatDate(nextMatch.date)}</Text>
-            </View>
-          )}
-
-          <TouchableOpacity style={styles.heroBtn} onPress={() => router.push('/match-details')} accessibilityRole="button">
-            <Text style={styles.heroBtnText}>{t('viewDetails')}</Text>
-            <ChevronRight color={colors.navy} size={18} />
-          </TouchableOpacity>
         </LinearGradient>
 
         {/* Squad readiness: hidden when this account cannot see medical data */}
@@ -136,31 +130,30 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
-  hero: { borderRadius: 20, padding: space.md + 2, borderWidth: 1, borderColor: colors.goldBorder, gap: space.sm + 2 },
+  hero: { borderRadius: 16, padding: space.md, borderWidth: 1, borderColor: colors.goldBorder, gap: space.sm },
   heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  compBadge: { backgroundColor: colors.gold, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3 },
-  compText: { color: colors.navy, fontWeight: '800', fontSize: 10, letterSpacing: 0.6, textTransform: 'uppercase' },
-  heroLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 12, fontWeight: '600' },
-  teams: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' },
-  team: { alignItems: 'center', gap: 4, minWidth: 80 },
-  flagWrap: { height: 30, justifyContent: 'center', alignItems: 'center' },
+  compBadge: { backgroundColor: colors.gold, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 2, flexShrink: 1 },
+  compText: { color: colors.navy, fontWeight: '800', fontSize: 9, letterSpacing: 0.5, textTransform: 'uppercase' },
+  heroLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 11, fontWeight: '600' },
+  teams: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
+  team: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 },
   vsRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  crest: { width: 36, height: 36, borderRadius: 18, borderWidth: 2, borderColor: colors.white, alignItems: 'center', justifyContent: 'center' },
-  crestText: { color: colors.white, fontWeight: '800', fontSize: 11 },
-  teamName: { color: colors.white, fontWeight: '700', fontSize: 13 },
-  vs: { color: colors.gold, fontWeight: '800', fontSize: 13 },
-  kickoffIn: { color: 'rgba(255,255,255,0.75)', fontSize: 11, textAlign: 'center' },
-  countdown: { flexDirection: 'row', gap: 6, justifyContent: 'center' },
-  cdBox: { minWidth: 48, alignItems: 'center', backgroundColor: 'rgba(7,19,38,0.55)', borderRadius: radius.sm + 2, paddingVertical: 5, paddingHorizontal: 4 },
-  cdValue: { color: colors.white, fontSize: 18, fontWeight: '800', fontVariant: ['tabular-nums'] },
-  cdLabel: { color: colors.muted, fontSize: 9, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase' },
-  infoRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  infoText: { color: colors.white, fontSize: 12, flexShrink: 1 },
+  crest: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, borderColor: colors.white, backgroundColor: '#1E8E5A', alignItems: 'center', justifyContent: 'center' },
+  crestText: { color: colors.white, fontWeight: '800', fontSize: 9 },
+  teamName: { color: colors.white, fontWeight: '700', fontSize: 13, flexShrink: 1 },
+  vs: { color: colors.gold, fontWeight: '800', fontSize: 11 },
+  countdown: { flexDirection: 'row', gap: 4 },
+  cdBox: { minWidth: 36, alignItems: 'center', backgroundColor: 'rgba(7,19,38,0.55)', borderRadius: 8, paddingVertical: 3, paddingHorizontal: 3 },
+  cdValue: { color: colors.white, fontSize: 14, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  cdLabel: { color: colors.muted, fontSize: 8, fontWeight: '700', letterSpacing: 0.4, textTransform: 'uppercase' },
+  infoRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  infoText: { color: colors.white, fontSize: 11, flexShrink: 1 },
   heroBtn: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: 40,
-    borderRadius: radius.md, backgroundColor: colors.gold, marginTop: 2,
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, height: 32,
+    borderRadius: radius.sm + 2, backgroundColor: colors.gold, marginLeft: space.sm,
   },
-  heroBtnText: { color: colors.navy, fontWeight: '800', fontSize: 13 },
+  bottomRow: { flexDirection: 'row', alignItems: 'center' },
+  heroBtnText: { color: colors.navy, fontWeight: '800', fontSize: 12 },
   section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 },
   readyRow: { flexDirection: 'row', alignItems: 'baseline', gap: 10 },
   readyBig: { color: colors.white, fontSize: 38, fontWeight: '800' },
