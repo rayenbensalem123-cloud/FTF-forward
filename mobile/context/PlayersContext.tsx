@@ -2,12 +2,12 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 import { AppState } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import {
-  averagePossession, CAT_TO_DB, matchFromDb, memberToPlayer, nextMatch as pickNext, POS_TO_DB, recentForm,
-  templateFromDb, upcomingMatches, type InjuryRow,
+  announcementFromDb, averagePossession, CAT_TO_DB, matchFromDb, memberToPlayer, nextMatch as pickNext, POS_TO_DB, recentForm,
+  sortAnnouncements, templateFromDb, upcomingMatches, type InjuryRow,
 } from '@/lib/mappers';
 import { getJson, KEYS, setJson } from '@/lib/storage';
 import { insert, isConfigured, remove, select, signedPhotoUrls, update } from '@/lib/supabase';
-import type { Availability, Category, FormResult, FormationId, Match, Player, Position, SquadTemplate, SyncStatus } from '@/types';
+import type { Announcement, Availability, Category, FormResult, FormationId, Match, Player, Position, SquadTemplate, SyncStatus } from '@/types';
 
 /** Poll interval while the app is open. The website pushes over websockets; the app polls. */
 const POLL_MS = 30_000;
@@ -37,6 +37,8 @@ interface PlayersValue {
   players: Player[];
   matches: Match[];
   templates: SquadTemplate[];
+  /** Pinned first, then newest. Empty until the announcements table exists on the platform. */
+  announcements: Announcement[];
   nextMatch: Match | null;
   /** The fixtures after the next one. */
   upcoming: Match[];
@@ -54,6 +56,9 @@ interface PlayersValue {
   setMedical: (id: string, status: 'fit' | 'recovery' | 'injured', note: string) => Promise<void>;
   saveTemplate: (t: { name: string; formation: FormationId; category: Category; slots: Record<string, number | null> }) => Promise<void>;
   deleteTemplate: (id: number) => Promise<void>;
+  /** Admins only (enforced by the database). */
+  postAnnouncement: (a: { title: string; body: string; pinned: boolean }) => Promise<void>;
+  deleteAnnouncement: (id: number) => Promise<void>;
   /** Called when a sync finds something somebody else changed. Returns an unsubscribe function. */
   onChange: (cb: (e: ChangeEvent) => void) => () => void;
 }
@@ -62,6 +67,7 @@ interface Cache {
   players: Player[];
   matches: Match[];
   templates: SquadTemplate[];
+  announcements?: Announcement[];
   lastSynced: number | null;
   owner: string;
 }
@@ -80,12 +86,15 @@ export function PlayersProvider({ children }: { children: React.ReactNode }) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [templates, setTemplates] = useState<SquadTemplate[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [status, setStatus] = useState<SyncStatus>('loading');
   const [lastSynced, setLastSynced] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const playersRef = useRef(players);
   playersRef.current = players;
+  const announcementsRef = useRef(announcements);
+  announcementsRef.current = announcements;
   const listeners = useRef(new Set<(e: ChangeEvent) => void>());
   const busy = useRef(false);
   const canViewMedical = can('viewMedical');
@@ -107,13 +116,15 @@ export function PlayersProvider({ children }: { children: React.ReactNode }) {
     busy.current = true;
     setRefreshing(true);
     try {
-      const [members, injuries, matchRows, templateRows] = await Promise.all([
+      const [members, injuries, matchRows, templateRows, announcementRows] = await Promise.all([
         select('members', `select=${MEMBER_COLS}&role=eq.PLAYERS&order=jersey_number.asc.nullslast,name.asc`),
         canViewRef.current
           ? select<InjuryRow>('injuries', 'select=id,member_id,status,injury_type,body_part,severity,occurred_on,expected_return,notes,created_at&order=occurred_on.desc.nullslast').catch(() => [] as InjuryRow[])
           : Promise.resolve([] as InjuryRow[]),
         select('matches', 'select=*&order=match_date.asc'),
         select('squad_templates', 'select=*&order=updated_at.desc').catch(() => [] as any[]),
+        // The table comes from supabase-announcements.sql; until it is created the request fails and the card stays hidden.
+        select('announcements', 'select=*&order=created_at.desc&limit=30').catch(() => [] as any[]),
       ]);
 
       const next = members
@@ -138,15 +149,21 @@ export function PlayersProvider({ children }: { children: React.ReactNode }) {
 
       const nextMatches = matchRows.map(matchFromDb);
       const nextTemplates = templateRows.map(templateFromDb);
+      const nextAnnouncements = sortAnnouncements(announcementRows.map(announcementFromDb));
+      const knownAnnouncements = new Set(announcementsRef.current.map((a) => a.id));
+      if (announcementsRef.current.length > 0) {
+        for (const a of nextAnnouncements) if (!knownAnnouncements.has(a.id)) emit({ title: a.title, body: a.body.slice(0, 120) });
+      }
       const at = Date.now();
       setPlayers(next);
       setMatches(nextMatches);
       setTemplates(nextTemplates);
+      setAnnouncements(nextAnnouncements);
       setLastSynced(at);
       setStatus('live');
       if (userRef.current) {
         void setJson(KEYS.players, {
-          players: next, matches: nextMatches, templates: nextTemplates, lastSynced: at, owner: userRef.current.username,
+          players: next, matches: nextMatches, templates: nextTemplates, announcements: nextAnnouncements, lastSynced: at, owner: userRef.current.username,
         } satisfies Cache);
       }
     } catch {
@@ -164,6 +181,7 @@ export function PlayersProvider({ children }: { children: React.ReactNode }) {
       setPlayers([]);
       setMatches([]);
       setTemplates([]);
+      setAnnouncements([]);
       setStatus('loading');
       setLastSynced(null);
       return;
@@ -175,6 +193,7 @@ export function PlayersProvider({ children }: { children: React.ReactNode }) {
         setPlayers(cached.players);
         setMatches(cached.matches ?? []);
         setTemplates(cached.templates ?? []);
+        setAnnouncements(cached.announcements ?? []);
         setLastSynced(cached.lastSynced ?? null);
         setStatus('offline');
       }
@@ -303,6 +322,27 @@ export function PlayersProvider({ children }: { children: React.ReactNode }) {
     [afterWrite],
   );
 
+  const postAnnouncement = useCallback(
+    async (a: { title: string; body: string; pinned: boolean }) => {
+      await insert('announcements', {
+        title: a.title.trim(),
+        body: a.body.trim(),
+        pinned: a.pinned,
+        author_username: userRef.current?.username ?? null,
+      });
+      await afterWrite();
+    },
+    [afterWrite],
+  );
+
+  const deleteAnnouncement = useCallback(
+    async (id: number) => {
+      await remove('announcements', `id=eq.${id}`);
+      await afterWrite();
+    },
+    [afterWrite],
+  );
+
   const getPlayer = useCallback((id: string) => playersRef.current.find((p) => p.id === id), []);
 
   const today = todayIso();
@@ -313,11 +353,11 @@ export function PlayersProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo(
     () => ({
-      players, matches, templates, nextMatch, upcoming, form, avgPossession, status, lastSynced, refreshing, refresh,
-      getPlayer, addPlayer, updatePlayer, setMedical, saveTemplate, deleteTemplate, onChange,
+      players, matches, templates, announcements, nextMatch, upcoming, form, avgPossession, status, lastSynced, refreshing, refresh,
+      getPlayer, addPlayer, updatePlayer, setMedical, saveTemplate, deleteTemplate, postAnnouncement, deleteAnnouncement, onChange,
     }),
-    [players, matches, templates, nextMatch, upcoming, form, avgPossession, status, lastSynced, refreshing, refresh,
-      getPlayer, addPlayer, updatePlayer, setMedical, saveTemplate, deleteTemplate, onChange],
+    [players, matches, templates, announcements, nextMatch, upcoming, form, avgPossession, status, lastSynced, refreshing, refresh,
+      getPlayer, addPlayer, updatePlayer, setMedical, saveTemplate, deleteTemplate, postAnnouncement, deleteAnnouncement, onChange],
   );
   return <PlayersContext.Provider value={value}>{children}</PlayersContext.Provider>;
 }

@@ -111,3 +111,13 @@ export interface FormationSlot {
   /** 0 (top, attack) to 1 (bottom, own goal) */
   y: number;
 }
+
+export interface Announcement {
+  id: number;
+  title: string;
+  body: string;
+  pinned: boolean;
+  author: string;
+  /** Epoch ms */
+  createdAt: number;
+}

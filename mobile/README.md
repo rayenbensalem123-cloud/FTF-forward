@@ -15,7 +15,7 @@ npx expo start
 
 ```bash
 npm run typecheck        # tsc --noEmit
-npm run test:mappers     # database <-> app mapping tests (Node 22+)
+npm run test:mappers     # mapping and travel-helper tests (Node 22+)
 ```
 
 ## How the link to the platform works
@@ -30,7 +30,12 @@ npm run test:mappers     # database <-> app mapping tests (Node 22+)
 | Squad | `members` (role `PLAYERS`) | Name, number, position, category, club, birthdate, goals, assists, caps (`nat_matches`), cards, suspension, photo. Needs `editPlayer` / `addPlayer`. |
 | Availability | `injuries` | Fit / Recovery / Injured map to no open injury / `recovering` / `active`. Needs `viewMedical` to see, `editMedical` to change. Without `viewMedical`, availability shows "Not shared" instead of pretending everyone is fit. |
 | Next match, form, possession | `matches` | Same rule as the website: approved, dated today or later, no result yet. Date only: the platform has no kickoff time. |
+| Announcements | `announcements` | Home card. Everyone signed in reads; only admins post (+ button) or delete (long-press). The table comes from `supabase-announcements.sql` at the repo root: run it once in the Supabase SQL Editor. Until then the card stays hidden. |
 | Saved lineups | `squad_templates` | Same formations and slot keys as the Squad Lab, so a lineup saved on one side loads on the other. Needs the `addCamps` flag to save or delete. |
+
+## Weather and travel (Home)
+
+The match-city card uses [Open-Meteo](https://open-meteo.com) (free, no key). The platform stores a venue name, not coordinates, so the city is geocoded from the part after the last comma of the venue (e.g. "Stade Hammadi Agrebi, Radès"). It shows the match-day forecast (only available about 16 days ahead), an estimated flight time and distance from Tunis, and the time difference. Flight time is a rough estimate, not a schedule. If the lookup fails (offline, unknown place) the card says so and nothing else is affected.
 
 ## Not linked yet
 

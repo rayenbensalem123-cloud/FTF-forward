@@ -24,4 +24,6 @@ const f = m.recentForm(ms); assert.deepEqual(f.map(x=>x.result),['W','D']); asse
 assert.equal(m.averagePossession(ms),55);
 const mm = m.matchFromDb({id:9,opponent:'T',match_date:'2026-10-12',category:'U17',details:{status:'pending',result:'1-0',venue:'V'}}); assert.equal(mm.approved,false); assert.equal(mm.category,'U-17');
 const u = m.profileToUser({username:'u',first_name:'A',last_name:'B',role:'staff',permissions:{editPlayer:true,x:'no'},member_id:null}); assert.equal(u.name,'A B'); assert.equal(u.permissions.editPlayer,true); assert.equal(u.permissions.x,false);
+const an = [m.announcementFromDb({id:1,title:'a',pinned:false,created_at:'2026-10-01T10:00:00Z'}), m.announcementFromDb({id:2,title:'b',pinned:false,created_at:'2026-10-05T10:00:00Z'}), m.announcementFromDb({id:3,title:'c',pinned:true,created_at:'2026-09-01T10:00:00Z'})];
+assert.deepEqual(m.sortAnnouncements(an).map(x=>x.id),[3,2,1]);
 console.log('mappers ok');

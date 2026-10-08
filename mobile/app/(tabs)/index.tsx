@@ -6,7 +6,9 @@ import { useRouter } from 'expo-router';
 import { ChevronRight, MapPin } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { SyncBanner } from '@/components/SyncBanner';
+import { AnnouncementsCard } from '@/components/AnnouncementsCard';
 import { Card } from '@/components/Card';
+import { MatchTravelCard } from '@/components/MatchTravelCard';
 import { Flag } from '@/components/Flag';
 import { flagCodeFor } from '@/lib/countryFlags';
 import { colors, radius, space } from '@/constants/theme';
@@ -88,6 +90,9 @@ export default function HomeScreen() {
             </View>
           )}
         </LinearGradient>
+
+        <AnnouncementsCard />
+        <MatchTravelCard />
 
         {/* Squad readiness: hidden when this account cannot see medical data */}
         {total > 0 && (

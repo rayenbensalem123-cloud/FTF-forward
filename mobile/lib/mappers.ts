@@ -1,4 +1,4 @@
-import type { Availability, Category, FormResult, FormationId, Match, Player, Position, SquadTemplate, User } from '@/types';
+import type { Announcement, Availability, Category, FormResult, FormationId, Match, Player, Position, SquadTemplate, User } from '@/types';
 
 /**
  * Pure translation between the website's database rows and the app's types.
@@ -191,4 +191,21 @@ export function profileToUser(p: any): User {
     permissions: perms,
     memberId: p.member_id ?? null,
   };
+}
+
+export function announcementFromDb(r: any): Announcement {
+  const t = r.created_at ? new Date(r.created_at).getTime() : Date.now();
+  return {
+    id: r.id,
+    title: r.title || '',
+    body: r.body || '',
+    pinned: !!r.pinned,
+    author: r.author_username || '',
+    createdAt: Number.isFinite(t) ? t : Date.now(),
+  };
+}
+
+/** Pinned first, then newest first. */
+export function sortAnnouncements(list: Announcement[]): Announcement[] {
+  return [...list].sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.createdAt - a.createdAt);
 }
