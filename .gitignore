@@ -15,6 +15,7 @@ node_modules
 .DS_Store
 .vercel
 .env*
+!mobile/.env.example
 *.tsbuildinfo
 Nouveau Document texte.txt
 # Build / tooling artifacts

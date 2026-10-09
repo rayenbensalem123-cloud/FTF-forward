@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Tunisia WNT",
+    "slug": "tunisia-wnt",
+    "scheme": "tunisiawnt",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0C1F3D",
+    "plugins": [
+      "expo-router",
+      "expo-notifications"
+    ],
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "tn.tunisiawnt.app",
+      "versionCode": 1,
+      "backgroundColor": "#0C1F3D",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0C1F3D"
+      }
+    },
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0C1F3D"
+    }
+  }
+}
