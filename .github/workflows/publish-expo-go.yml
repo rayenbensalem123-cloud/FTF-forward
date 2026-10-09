@@ -7,6 +7,17 @@ name: Publish for Expo Go (iPhone and Android test)
 
 on:
   workflow_dispatch:
+  # Every merge that changes the app publishes a fresh test build automatically,
+  # so nobody has to remember to press Run workflow.
+  push:
+    branches: [main]
+    paths:
+      - "mobile/**"
+      - ".github/workflows/publish-expo-go.yml"
+
+concurrency:
+  group: publish-expo-go
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -44,8 +55,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Add expo-updates (CI only, not committed)
-        run: npx expo install expo-updates
+      - name: Add expo-updates and the web renderer expo-router imports (CI only, not committed)
+        run: npx expo install expo-updates react-native-web
 
       - name: Link the project to your Expo account
         run: npx eas-cli@latest init --non-interactive --force
