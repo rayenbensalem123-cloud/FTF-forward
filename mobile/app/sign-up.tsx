@@ -4,13 +4,13 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Key, User } from 'lucide-react-native';
+import { Key, Mail, User } from 'lucide-react-native';
 import { FedScreen, fed } from '@/components/FedScreen';
 import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { LG } from '@/i18n/loginStrings';
 import { SU } from '@/i18n/signUpStrings';
-import { confirmCard, createPlayerAccount, finishSignUp, type CardSuggestion, type SignUpError } from '@/lib/signup';
+import { confirmCard, createAccount, finishSignUp, type CardSuggestion, type SignUpError, type SignUpRole } from '@/lib/signup';
 type Phase = 'form' | 'asking' | 'done';
 
 /** Player sign-up. A name close to a player card pops up "Are you ...?" and links it on yes. */
@@ -23,6 +23,9 @@ export default function SignUpScreen() {
   const [last, setLast] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState<SignUpRole | ''>('');
+  const [card, setCard] = useState<CardSuggestion | null>(null);
   const [error, setError] = useState<SignUpError | 'linkFailed' | null>(null);
   const [busy, setBusy] = useState(false);
   const [phase, setPhase] = useState<Phase>('form');
@@ -30,12 +33,13 @@ export default function SignUpScreen() {
   const [linked, setLinked] = useState(false);
 
   const ERR: Record<SignUpError | 'linkFailed', string> = {
-    name: T.eName, username: T.eUsername, password: T.ePassword, taken: T.eTaken, confirm: T.eConfirm, network: T.eNetwork, weak: T.eWeak,
+    role: T.eRole, email: T.eEmail, emailTaken: T.eEmailTaken, name: T.eName, username: T.eUsername, password: T.ePassword, taken: T.eTaken, confirm: T.eConfirm, network: T.eNetwork, weak: T.eWeak,
     linkFailed: T.linkFailed,
   };
 
-  const finish = async (isLinked: boolean) => {
+  const finish = async (isLinked: boolean, linkedCard: CardSuggestion | null = null) => {
     setLinked(isLinked);
+    if (linkedCard) setCard(linkedCard);
     await finishSignUp();
     setPhase('done');
   };
@@ -43,14 +47,14 @@ export default function SignUpScreen() {
   const submit = async () => {
     setBusy(true);
     setError(null);
-    const r = await createPlayerAccount(first, last, username, password);
+    const r = await createAccount(first, last, username, password, role, email);
     setBusy(false);
     if (r.error) {
       setError(r.error);
       return;
     }
     if (r.linked || r.suggestions.length === 0) {
-      await finish(r.linked);
+      await finish(r.linked, r.card);
       return;
     }
     setQueue(r.suggestions);
@@ -58,12 +62,12 @@ export default function SignUpScreen() {
   };
 
   const answerYes = async () => {
-    const card = queue[0];
+    const chosen = queue[0];
     setBusy(true);
-    const ok = await confirmCard(card.memberId);
+    const ok = await confirmCard(chosen.memberId);
     setBusy(false);
     if (!ok) setError('linkFailed');
-    await finish(ok);
+    await finish(ok, ok ? chosen : null);
   };
 
   // "No" moves to the next closest card; running out of cards ends the flow unlinked.
@@ -85,7 +89,7 @@ export default function SignUpScreen() {
       <FedScreen title={T.doneTitle} kicker={L.federation} footer={L.footer}>
         <Text style={fed.note}>{T.donePending}</Text>
         <Text style={[fed.note, { color: linked ? colors.green : 'rgba(255,255,255,0.55)', fontWeight: '700' }]}>
-          {linked ? T.doneLinked : T.doneNotLinked}
+          {linked ? (card ? T.linkedTo.replace('{name}', card.name) : T.doneLinked) : role === 'staff' ? '' : T.doneNotLinked}
         </Text>
         {error === 'linkFailed' && <Text style={fed.error}>{T.linkFailed}</Text>}
         {button(T.back, () => router.replace('/sign-in'))}
@@ -93,7 +97,7 @@ export default function SignUpScreen() {
     );
   }
 
-  const card = queue[0];
+  const ask = queue[0];
   const field = (icon: React.ReactNode, placeholder: string, value: string, on: (v: string) => void, extra: object = {}) => (
     <View style={fed.field}>
       <View style={fed.icon}>{icon}</View>
@@ -116,24 +120,37 @@ export default function SignUpScreen() {
         {field(<User size={15} color={dim} />, T.last, last, setLast, { autoCapitalize: 'words', autoComplete: 'family-name' })}
         {field(<User size={15} color={dim} />, T.username, username, setUsername, { autoCapitalize: 'none', autoCorrect: false, autoComplete: 'username' })}
         {field(<Key size={15} color={dim} />, T.password, password, setPassword, { secureTextEntry: true, autoCapitalize: 'none', autoComplete: 'new-password', onSubmitEditing: submit })}
+        {field(<Mail size={15} color={dim} />, T.emailPh, email, setEmail, { autoCapitalize: 'none', autoCorrect: false, keyboardType: 'email-address', autoComplete: 'email' })}
+        <View>
+          <Text style={styles.joining}>{T.joiningAs}</Text>
+          <View style={styles.roles}>
+            <TouchableOpacity style={[styles.role, role === 'staff' && styles.roleStaff]} onPress={() => setRole('staff')} accessibilityRole="button" accessibilityState={{ selected: role === 'staff' }}>
+              <Text style={[styles.roleText, role === 'staff' && { color: '#0C1F3D' }]}>{T.staff}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.role, role === 'player' && styles.rolePlayer]} onPress={() => setRole('player')} accessibilityRole="button" accessibilityState={{ selected: role === 'player' }}>
+              <Text style={[styles.roleText, role === 'player' && { color: '#fff' }]}>⚽ {T.player}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         {error && <Text style={fed.error} accessibilityRole="alert">{ERR[error]}</Text>}
         {button(T.create, submit)}
+        <Text style={[fed.note, { fontSize: 10, color: 'rgba(255,255,255,0.45)' }]}>{T.emailNote}</Text>
         <TouchableOpacity onPress={() => router.replace('/sign-in')} accessibilityRole="link">
           <Text style={fed.link}>{T.haveAccount}</Text>
         </TouchableOpacity>
       </FedScreen>
 
-      <Modal visible={phase === 'asking' && !!card} transparent animationType="fade" onRequestClose={answerNo}>
+      <Modal visible={phase === 'asking' && !!ask} transparent animationType="fade" onRequestClose={answerNo}>
         <View style={styles.scrim}>
-          {card && (
+          {ask && (
             <View style={styles.popup}>
-              <Text style={styles.popTitle}>{T.areYou.replace('{name}', card.name)}</Text>
+              <Text style={styles.popTitle}>{T.areYou.replace('{name}', ask.name)}</Text>
               <Text style={styles.sub}>{T.areYouSub}</Text>
               <View style={styles.card}>
-                <Text style={styles.cardNum}>{card.number || '–'}</Text>
+                <Text style={styles.cardNum}>{ask.number || '–'}</Text>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.cardName}>{card.name}</Text>
-                  <Text style={styles.cardMeta}>{[card.position, card.category, card.club].filter(Boolean).join('  ·  ')}</Text>
+                  <Text style={styles.cardName}>{ask.name}</Text>
+                  <Text style={styles.cardMeta}>{[ask.position, ask.category, ask.club].filter(Boolean).join('  ·  ')}</Text>
                 </View>
               </View>
               <TouchableOpacity style={[styles.btn, busy && { opacity: 0.7 }]} onPress={answerYes} disabled={busy} accessibilityRole="button">
@@ -151,6 +168,12 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
+  joining: { color: 'rgba(255,255,255,0.45)', fontSize: 8, fontWeight: '900', letterSpacing: 1.6, textTransform: 'uppercase' },
+  roles: { flexDirection: 'row', gap: 8, marginTop: 6 },
+  role: { flex: 1, paddingVertical: 11, borderRadius: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', alignItems: 'center' },
+  roleStaff: { backgroundColor: '#F6C744', borderColor: '#F6C744' },
+  rolePlayer: { backgroundColor: '#E30613', borderColor: '#E30613' },
+  roleText: { color: 'rgba(255,255,255,0.7)', fontSize: 10, fontWeight: '900', letterSpacing: 1.6, textTransform: 'uppercase' },
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.lg + 4, paddingBottom: space.xl * 2 },
   title: { color: colors.white, fontSize: 28, fontWeight: '800' },
