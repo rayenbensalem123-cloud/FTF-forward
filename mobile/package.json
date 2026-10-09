@@ -8,7 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "typecheck": "tsc --noEmit",
-    "test:mappers": "node --experimental-strip-types lib/mappers.test.mjs && node --experimental-strip-types lib/travel.test.mjs"
+    "test:mappers": "node --experimental-strip-types lib/mappers.test.mjs && node --experimental-strip-types lib/travel.test.mjs && node --experimental-strip-types lib/clubReports.test.mjs"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
