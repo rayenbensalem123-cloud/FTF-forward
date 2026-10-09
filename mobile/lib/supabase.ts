@@ -9,8 +9,12 @@ import { getJson, KEYS, removeKey, setJson } from '@/lib/storage';
  * database's row-level security decides what that person can read and write,
  * exactly as it does on the website. There is no service-role key in the app.
  */
-export const SUPABASE_URL: string | undefined = process.env.EXPO_PUBLIC_SUPABASE_URL?.replace(/\/$/, '');
-const ANON_KEY: string | undefined = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+// Both values are public by design (the website ships them to every browser). They are the
+// fallback so a build still works if the CI secrets are missing; the env vars override them.
+const DEFAULT_URL = 'https://vtjdmuzeohtqxwknfmhw.supabase.co';
+const DEFAULT_KEY = 'sb_publishable_uWKPc6v72wsGENQ6G6D02Q_nrUqRhR3';
+export const SUPABASE_URL: string | undefined = (process.env.EXPO_PUBLIC_SUPABASE_URL || DEFAULT_URL).replace(/\/$/, '');
+const ANON_KEY: string | undefined = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_KEY;
 export const isConfigured = !!SUPABASE_URL && !!ANON_KEY;
 
 const TIMEOUT_MS = 12000;
