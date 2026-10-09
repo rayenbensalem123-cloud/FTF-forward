@@ -1,0 +1,67 @@
+name: Publish for Expo Go (iPhone and Android test)
+
+# Publishes the current mobile app to Expo's servers so it can be opened inside the
+# free Expo Go app, with no computer needed. Run it by hand from the Actions tab
+# (Run workflow). It needs one repository secret, EXPO_TOKEN, an access token from a
+# free expo.dev account (expo.dev -> Account settings -> Access tokens).
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish update
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      EXPO_NO_INTERACTIVE: "1"
+      CI: "1"
+      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Check the Expo token is set
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::Add a repository secret named EXPO_TOKEN (expo.dev -> Account settings -> Access tokens)."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Add expo-updates (CI only, not committed)
+        run: npx expo install expo-updates
+
+      - name: Link the project to your Expo account
+        run: npx eas-cli@latest init --non-interactive --force
+
+      - name: Point the app at its update channel
+        run: |
+          node -e '
+            const fs = require("fs");
+            const app = JSON.parse(fs.readFileSync("app.json", "utf8"));
+            const id = app.expo.extra && app.expo.extra.eas && app.expo.extra.eas.projectId;
+            if (!id) { console.error("No EAS project id after init"); process.exit(1); }
+            app.expo.runtimeVersion = { policy: "appVersion" };
+            app.expo.updates = { url: "https://u.expo.dev/" + id };
+            fs.writeFileSync("app.json", JSON.stringify(app, null, 2));
+            console.log("project id", id);
+          '
+
+      - name: Publish
+        run: npx eas-cli@latest update --branch preview --message "Test build ${{ github.sha }}" --non-interactive
