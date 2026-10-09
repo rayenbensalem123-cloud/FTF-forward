@@ -66,7 +66,7 @@ jobs:
       - name: Publish
         run: |
           set +e
-          npx eas-cli@latest update --branch preview --message "Test build ${{ github.sha }}" --non-interactive 2>&1 | tee /tmp/eas-update.log
+          npx eas-cli@latest update --branch preview --platform ios --platform android --message "Test build ${{ github.sha }}" --non-interactive 2>&1 | tee /tmp/eas-update.log
           code=${PIPESTATUS[0]}
           if [ "$code" -ne 0 ]; then
             # Surface the end of the log as an annotation so the cause is readable without opening the log
