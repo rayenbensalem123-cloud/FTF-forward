@@ -64,4 +64,13 @@ jobs:
           '
 
       - name: Publish
-        run: npx eas-cli@latest update --branch preview --message "Test build ${{ github.sha }}" --non-interactive
+        run: |
+          set +e
+          npx eas-cli@latest update --branch preview --message "Test build ${{ github.sha }}" --non-interactive 2>&1 | tee /tmp/eas-update.log
+          code=${PIPESTATUS[0]}
+          if [ "$code" -ne 0 ]; then
+            # Surface the end of the log as an annotation so the cause is readable without opening the log
+            msg=$(tail -n 25 /tmp/eas-update.log | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=eas update failed::$msg"
+          fi
+          exit $code
