@@ -220,6 +220,18 @@ export async function insert<T = any>(table: string, row: Record<string, unknown
   return rows[0];
 }
 
+/** Insert, or update the row that already has the same values in `onConflict` (comma-separated columns). */
+export async function upsert(table: string, row: Record<string, unknown>, onConflict: string): Promise<void> {
+  const res = await authed(`/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`, {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates,return=representation' },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) return fail(res);
+  const rows = (await res.json()) as unknown[];
+  if (rows.length === 0) throw new ApiError('Not allowed', 403);
+}
+
 export async function remove(table: string, filter: string): Promise<void> {
   const res = await authed(`/rest/v1/${table}?${filter}`, {
     method: 'DELETE',

@@ -1,3 +1,4 @@
+import type { BingoMatch } from './bingo-logic';
 import type { Announcement, Availability, Category, FormResult, FormationId, Match, Player, Position, SquadTemplate, User } from '@/types';
 
 /**
@@ -94,6 +95,8 @@ export function memberToPlayer(r: any, injuries: InjuryRow[], canViewMedical: bo
     imagePath: r.image_path || undefined,
     photoUrl: typeof r.image_url === 'string' && /^https?:/.test(r.image_url) ? r.image_url : undefined,
     caps: toNum(r.nat_matches),
+    height: toNum(r.height),
+    leagueRegion: r.league_region || '',
     goals: toNum(r.goals),
     assists: toNum(r.assists),
     yellowCards: toNum(r.yellow_cards),
@@ -120,6 +123,35 @@ export function matchFromDb(r: any): Match {
     // Matches saved by staff without approval rights wait as "pending" on the website.
     approved: d.status === undefined || d.status === 'approved',
     tunisiaPossession: Number.isFinite(poss) && poss > 0 ? poss : null,
+    bingo: bingoMatchFromDb(r),
+  };
+}
+
+/** The recorded details Match-day Bingo judges squares against. Same fields the website keeps in details. */
+export function bingoMatchFromDb(r: any): BingoMatch {
+  const d = r.details && typeof r.details === 'object' ? r.details : {};
+  const list = (v: unknown) => (Array.isArray(v) ? v : []);
+  return {
+    opponent: r.opponent || '',
+    date: String(r.match_date || '').slice(0, 10),
+    result: typeof d.result === 'string' ? d.result.trim() : '',
+    status: d.status,
+    teamCategory: r.category,
+    scorers: list(d.scorers),
+    yellowCards: list(d.yellowCards),
+    redCards: list(d.redCards),
+    subs: list(d.subs),
+    eventMinutes: d.eventMinutes && typeof d.eventMinutes === 'object' ? d.eventMinutes : {},
+    tunisiaPossession: d.tunisiaPossession,
+    opponentPossession: d.opponentPossession,
+    tunisiaShots: d.tunisiaShots,
+    opponentShots: d.opponentShots,
+    tunisiaShotsOnTarget: d.tunisiaShotsOnTarget,
+    opponentShotsOnTarget: d.opponentShotsOnTarget,
+    tunisiaCorners: d.tunisiaCorners,
+    opponentCorners: d.opponentCorners,
+    tunisiaFouls: d.tunisiaFouls,
+    opponentFouls: d.opponentFouls,
   };
 }
 

@@ -1,3 +1,5 @@
+import type { BingoMatch } from '@/lib/bingo-logic';
+
 export type Position = 'GK' | 'DEF' | 'MID' | 'FWD';
 export type Category = 'Seniors' | 'U-20' | 'U-17';
 export type Availability = 'fit' | 'recovery' | 'injured' | 'suspended' | 'unknown';
@@ -35,6 +37,10 @@ export interface Player {
   caps: number;
   goals: number;
   assists: number;
+  /** Height in cm, 0 when not entered. Only used as a clue in Who am I? */
+  height?: number;
+  /** League region as typed on the platform; stands in for nationality in Who am I? */
+  leagueRegion?: string;
   status: Availability;
   /** Id of the open injury (active or recovering), if any. */
   openInjuryId?: number;
@@ -79,6 +85,8 @@ export interface Match {
   result: string;
   approved: boolean;
   tunisiaPossession: number | null;
+  /** Full recorded details (scorers, cards, subs, minutes, stats) for Match-day Bingo. */
+  bingo?: BingoMatch;
 }
 
 export interface SquadTemplate {

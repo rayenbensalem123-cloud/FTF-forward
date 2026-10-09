@@ -33,4 +33,6 @@ export const KEYS = {
   session: 'wnt.session.v1',
   notifications: 'wnt.notifications.v1',
   settings: 'wnt.settings.v1',
+  bingoPicks: 'wnt.bingo-picks.v1',
+  gameScores: 'wnt.game-scores.v1',
 } as const;

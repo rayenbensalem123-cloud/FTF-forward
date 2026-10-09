@@ -14,7 +14,7 @@ const POLL_MS = 30_000;
 
 const MEMBER_COLS = [
   'id', 'role', 'name', 'position', 'team_category', 'club', 'nationality', 'birthdate', 'goals', 'assists', 'yellow_cards',
-  'red_cards', 'suspended', 'nat_matches', 'image_url', 'image_path', 'jersey_number', 'updated_at',
+  'red_cards', 'suspended', 'nat_matches', 'height', 'league_region', 'image_url', 'image_path', 'jersey_number', 'updated_at',
 ].join(',');
 // passport_image is deliberately never requested: an identity document has no place on a phone.
 

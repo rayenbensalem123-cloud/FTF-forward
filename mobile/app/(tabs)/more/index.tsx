@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
-import { Bell, BarChart3, ChevronRight, User, Users } from 'lucide-react-native';
+import { Bell, BarChart3, ChevronRight, Gamepad2, User, Users } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
@@ -12,6 +12,7 @@ import type { StringKey } from '@/i18n/strings';
 const ITEMS: { href: Href; icon: typeof Users; title: StringKey; desc: StringKey }[] = [
   { href: '/more/squad', icon: Users, title: 'tabSquad', desc: 'moreSquadDesc' },
   { href: '/more/stats', icon: BarChart3, title: 'tabStats', desc: 'moreStatsDesc' },
+  { href: '/more/games', icon: Gamepad2, title: 'tabGames', desc: 'moreGamesDesc' },
   { href: '/notifications', icon: Bell, title: 'notifications', desc: 'moreNotificationsDesc' },
   { href: '/more/profile', icon: User, title: 'tabProfile', desc: 'moreProfileDesc' },
 ];
