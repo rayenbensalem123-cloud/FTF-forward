@@ -13,7 +13,11 @@ const en = {
   doneTitle: 'Account created', donePending: 'An admin has to approve your account before you can sign in.',
   doneLinked: 'Your account is linked to your player card.', doneNotLinked: 'We could not match you to a card. An admin will link it when they approve you.',
   back: 'Back to sign in', linkFailed: 'That card could not be linked. An admin will link it when they approve you.',
+  joiningAs: "I'm joining as", staff: 'Staff', player: 'Player', emailPh: 'Recovery email (optional)',
+  eRole: 'Choose Staff or Player.', eEmail: 'That email address does not look right.', eEmailTaken: 'That email is already used by another account.',
+  linkedTo: 'Linked to your card: {name}', emailNote: 'The recovery email is only used if you forget your password.',
 };
+
 const fr: typeof en = {
   link: 'Nouvelle joueuse ? Créer un compte', title: 'Créer votre compte', sub: 'Pour les joueuses. Les comptes du staff sont créés par un admin.',
   first: 'Prénom', last: 'Nom', username: 'Identifiant', password: 'Mot de passe (6 caractères min.)',
@@ -27,7 +31,11 @@ const fr: typeof en = {
   doneTitle: 'Compte créé', donePending: 'Un admin doit valider votre compte avant que vous puissiez vous connecter.',
   doneLinked: 'Votre compte est lié à votre carte de joueuse.', doneNotLinked: 'Nous n’avons pas trouvé votre carte. Un admin la liera à la validation.',
   back: 'Retour à la connexion', linkFailed: 'Cette carte n’a pas pu être liée. Un admin la liera à la validation.',
+  joiningAs: 'Je rejoins en tant que', staff: 'Staff', player: 'Joueuse', emailPh: 'E-mail de récupération (optionnel)',
+  eRole: 'Choisissez Staff ou Joueuse.', eEmail: 'Cette adresse e-mail semble incorrecte.', eEmailTaken: 'Cet e-mail est déjà utilisé par un autre compte.',
+  linkedTo: 'Liée à votre carte : {name}', emailNote: 'L’e-mail de récupération ne sert que si vous oubliez votre mot de passe.',
 };
+
 const ar: typeof en = {
   link: 'لاعبة جديدة؟ أنشئي حسابًا', title: 'إنشاء حسابك', sub: 'للاعبات. حسابات الطاقم ينشئها المسؤول.',
   first: 'الاسم', last: 'اللقب', username: 'اسم المستخدم', password: 'كلمة المرور (6 أحرف على الأقل)',
@@ -41,5 +49,8 @@ const ar: typeof en = {
   doneTitle: 'تم إنشاء الحساب', donePending: 'يجب أن يوافق المسؤول على حسابك قبل أن تتمكني من الدخول.',
   doneLinked: 'تم ربط حسابك ببطاقة لاعبتك.', doneNotLinked: 'لم نجد بطاقتك. سيربطها المسؤول عند الموافقة.',
   back: 'العودة لتسجيل الدخول', linkFailed: 'تعذّر ربط هذه البطاقة. سيربطها المسؤول عند الموافقة.',
+  joiningAs: 'أنضم بصفة', staff: 'طاقم', player: 'لاعبة', emailPh: 'بريد الاستعادة (اختياري)',
+  eRole: 'اختاري طاقم أو لاعبة.', eEmail: 'عنوان البريد الإلكتروني غير صحيح.', eEmailTaken: 'هذا البريد مستخدم في حساب آخر.',
+  linkedTo: 'مرتبط ببطاقتك: {name}', emailNote: 'بريد الاستعادة يُستخدم فقط عند نسيان كلمة المرور.',
 };
 export const SU: Record<Language, typeof en> = { en, fr, ar };
