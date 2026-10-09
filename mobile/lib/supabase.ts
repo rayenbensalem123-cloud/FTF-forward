@@ -140,6 +140,37 @@ export async function signInWithUsername(username: string, password: string): Pr
   }
 }
 
+/** Create the auth account the way the website's sign-up does (placeholder email from the username). */
+export async function signUpWithUsername(username: string, password: string): Promise<{ error: 'taken' | 'confirm' | 'weak' | 'network' | null }> {
+  const { url, key } = need();
+  try {
+    const res = await timedFetch(`${url}/auth/v1/signup`, {
+      method: 'POST',
+      headers: { apikey: key, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: `${username}@placeholder.tunisia-wnt.local`, password, data: { username } }),
+    });
+    const body: any = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const msg = String(body?.msg || body?.message || body?.error_description || '');
+      if (/already (been )?registered/i.test(msg)) return { error: 'taken' };
+      if (/password/i.test(msg)) return { error: 'weak' };
+      return { error: 'network' };
+    }
+    if (!body.access_token) return { error: 'confirm' }; // email confirmation is switched on
+    await saveSession(toSession(body));
+    return { error: null };
+  } catch {
+    return { error: 'network' };
+  }
+}
+
+/** Call a database function as the signed-in user. */
+export async function rpc<T = any>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
+  const res = await authed(`/rest/v1/rpc/${fn}`, { method: 'POST', body: JSON.stringify(args) });
+  if (!res.ok) return fail(res);
+  return (await res.json()) as T;
+}
+
 export async function signOutRemote(): Promise<void> {
   const s = session;
   await saveSession(null);

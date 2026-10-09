@@ -8,6 +8,7 @@ import { colors, radius, space } from '@/constants/theme';
 import { useAuth, type SignInResult } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import type { StringKey } from '@/i18n/strings';
+import { SU } from '@/i18n/signUpStrings';
 import type { Language } from '@/types';
 
 const LANGUAGES: Option<Language>[] = [
@@ -92,6 +93,9 @@ export default function SignInScreen() {
           <TouchableOpacity style={[styles.btn, busy && { opacity: 0.7 }]} onPress={submit} disabled={busy} accessibilityRole="button">
             {busy ? <ActivityIndicator color={colors.white} /> : <Text style={styles.btnText}>{t('continue')}</Text>}
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/sign-up')} accessibilityRole="link">
+            <Text style={styles.signUpLink}>{SU[language].link}</Text>
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder,
     color: colors.white, paddingHorizontal: 14, height: 50, fontSize: 15,
   },
+  signUpLink: { color: colors.gold, fontWeight: '700', fontSize: 14, textAlign: 'center' },
   error: { color: '#FF6B75', backgroundColor: colors.redSoft, borderRadius: radius.sm + 2, padding: 10, fontSize: 13 },
   btn: { height: 52, borderRadius: radius.md, backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center' },
   btnText: { color: colors.white, fontWeight: '800', fontSize: 16 },

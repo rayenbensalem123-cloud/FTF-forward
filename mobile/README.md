@@ -63,3 +63,7 @@ The APK is signed with the debug keystore from `expo prebuild`: fine for direct 
 - Notifications are local to the phone. Reminders are pinned to 18:00 the day before and 08:00 on match day because the platform has no kickoff time. Alerts that reach phones while the app is closed need push notifications from a server.
 - Switching language changes the text only. Arabic does not flip the layout to right-to-left yet.
 - In Expo Go on Android, notifications may need a development build.
+
+## Player sign-up and card matching
+
+Players can create an account from the sign-in screen. If the typed name is not an exact match for a player card, the app asks "Are you …?" with the closest cards and links the account on "Yes". This needs `supabase-card-suggest.sql` run once in the Supabase SQL Editor. Accounts stay pending until an admin approves them.
