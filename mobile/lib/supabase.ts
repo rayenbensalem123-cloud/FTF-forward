@@ -112,7 +112,8 @@ async function emailForUsername(username: string): Promise<string | null> {
   const { url, key } = need();
   const res = await timedFetch(`${url}/rest/v1/rpc/get_login_email`, {
     method: 'POST',
-    headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    // New-style publishable keys (sb_publishable_...) are not JWTs and go in apikey only.
+    headers: { apikey: key, ...(key.startsWith('eyJ') ? { Authorization: `Bearer ${key}` } : {}), 'Content-Type': 'application/json' },
     body: JSON.stringify({ p_username: username.trim().toLowerCase() }),
   });
   if (!res.ok) return null;
