@@ -3,7 +3,7 @@ import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ChevronRight, MapPin } from 'lucide-react-native';
+import { ChevronRight, Gamepad2, MapPin } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { SyncBanner } from '@/components/SyncBanner';
 import { AnnouncementsCard } from '@/components/AnnouncementsCard';
@@ -93,6 +93,16 @@ export default function HomeScreen() {
 
         <AnnouncementsCard />
         <MatchTravelCard />
+        <TouchableOpacity activeOpacity={0.85} onPress={() => router.push('/more/games')} style={styles.gamesCard}>
+          <View style={styles.gamesIcon}>
+            <Gamepad2 size={22} color={colors.navy} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.gamesTitle}>{t('tabGames')}</Text>
+            <Text style={styles.gamesDesc}>{t('moreGamesDesc')}</Text>
+          </View>
+          <ChevronRight size={18} color={colors.muted} />
+        </TouchableOpacity>
 
         {/* Squad readiness: hidden when this account cannot see medical data */}
         {total > 0 && (
@@ -159,6 +169,10 @@ const styles = StyleSheet.create({
   },
   bottomRow: { flexDirection: 'row', alignItems: 'center' },
   heroBtnText: { color: colors.navy, fontWeight: '800', fontSize: 12 },
+  gamesCard: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.goldBorder, padding: space.md },
+  gamesIcon: { width: 40, height: 40, borderRadius: 12, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' },
+  gamesTitle: { color: colors.white, fontSize: 15, fontWeight: '800' },
+  gamesDesc: { color: colors.muted, fontSize: 12, marginTop: 2 },
   section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 },
   readyRow: { flexDirection: 'row', alignItems: 'baseline', gap: 10 },
   readyBig: { color: colors.white, fontSize: 38, fontWeight: '800' },
