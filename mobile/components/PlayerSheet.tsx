@@ -210,7 +210,7 @@ export function PlayerSheet({ player, onClose }: Props) {
 
 const styles = StyleSheet.create({
   fill: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { ...StyleSheet.absoluteFill, backgroundColor: colors.scrim },
+  backdrop: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.scrim },
   sheet: {
     backgroundColor: colors.navy, borderTopLeftRadius: 28, borderTopRightRadius: 28,
     borderWidth: 1, borderBottomWidth: 0, borderColor: colors.goldBorder, overflow: 'hidden',
