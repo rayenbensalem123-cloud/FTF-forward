@@ -106,5 +106,52 @@ const styles = StyleSheet.create({
   stat: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 8, paddingHorizontal: 2 },
   statLabel: { color: P.warm, fontSize: 7, fontWeight: '900', letterSpacing: 1, textTransform: 'uppercase' },
   statValue: { color: P.cream, fontSize: 18, fontWeight: '800' },
+  role: { color: P.gold, fontSize: 16, lineHeight: 18, fontWeight: '900', fontStyle: 'italic', textTransform: 'uppercase' },
+  license: { color: P.gold, fontSize: 9, fontWeight: '900', letterSpacing: 1, borderWidth: 1, borderColor: 'rgba(246,199,68,0.3)', backgroundColor: 'rgba(246,199,68,0.1)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 2, overflow: 'hidden' },
+  staffMark: { position: 'absolute', right: 8, bottom: 56, color: 'rgba(246,199,68,0.07)', fontSize: 130, fontWeight: '900', fontStyle: 'italic' },
   bar: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 3, backgroundColor: P.red },
 });
+
+/** The platform's staff card: the role takes the place of the jersey number. */
+export function StaffCard({ staff: s, ageLabel, badge }: { staff: import('@/lib/staff').StaffMember; ageLabel: string; badge: string }) {
+  const [failed, setFailed] = useState(false);
+  const photo = !!s.photoUrl && !failed;
+  return (
+    <View style={[styles.card, { height: 260 }]}>
+      <View style={styles.photo}>
+        {photo ? (
+          <Image source={{ uri: s.photoUrl }} style={[ABS, { width: '100%', height: '100%' }]} resizeMode="cover" onError={() => setFailed(true)} />
+        ) : (
+          <>
+            <LinearGradient colors={[P.blueDk, P.panel, P.body]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={ABS} />
+            <View style={styles.center}><Text style={styles.ghost}>T</Text></View>
+            <Text style={styles.brand}>TUNISIA WNT</Text>
+          </>
+        )}
+        <LinearGradient colors={['rgba(12,31,61,0.2)', 'rgba(12,31,61,0)', 'rgba(12,31,61,0.75)']} style={ABS} pointerEvents="none" />
+        <Text style={styles.posOnPhoto}>T</Text>
+      </View>
+      <View style={styles.body}>
+        <Text style={styles.club} numberOfLines={1}>{s.nationality || 'TUNISIA'}</Text>
+        <Text style={styles.name}>{titleCase(s.name)}</Text>
+        <Text style={[styles.tag, { marginTop: 6 }]}>{badge.toUpperCase()}</Text>
+        <View style={{ marginTop: 14, gap: 8 }}>
+          <View style={{ height: 1, width: 32, backgroundColor: 'rgba(246,199,68,0.6)' }} />
+          <Text style={styles.role}>{s.role || '—'}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text style={styles.meta}>{(s.nationality || 'TUN').slice(0, 3).toUpperCase()}</Text>
+            {!!s.license && <Text style={styles.license}>{s.license}</Text>}
+          </View>
+        </View>
+        <Text style={styles.staffMark} pointerEvents="none">T</Text>
+        <View style={styles.strip}>
+          <View style={styles.stat}>
+            <Text style={styles.statLabel}>{ageLabel}</Text>
+            <Text style={styles.statValue}>{s.age > 0 ? s.age : '—'}</Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.bar} />
+    </View>
+  );
+}

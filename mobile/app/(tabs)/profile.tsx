@@ -7,6 +7,7 @@ import { AppHeader } from '@/components/AppHeader';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
+import { ToolsCard } from '@/components/ToolsCard';
 import { Segmented, type Option } from '@/components/Chips';
 import { colors, radius, sectionTitle, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -58,6 +59,8 @@ export default function ProfileScreen() {
       { text: t('signOut'), style: 'destructive', onPress: () => void signOut() },
     ]);
 
+  const isStaffRole = user?.role === 'staff' || user?.role === 'admin';
+
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -71,6 +74,8 @@ export default function ProfileScreen() {
             <Text style={styles.role}>{user ? t(ROLE_LABEL[user.role]) : ''}</Text>
           </View>
         </Card>
+
+        {!isStaffRole && <ToolsCard />}
 
         <View>
           <Text style={styles.heading}>{t('teamManagement')}</Text>
