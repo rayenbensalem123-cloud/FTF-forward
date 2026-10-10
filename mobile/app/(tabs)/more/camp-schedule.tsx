@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
+// Legacy API path: the new expo-file-system export is object-based (File/Directory)
+// and has no readAsStringAsync.
+import { EncodingType, readAsStringAsync } from 'expo-file-system/legacy';
 import { Clock, FileText, Send, Upload, X } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { colors, radius, space } from '@/constants/theme';
@@ -63,14 +66,23 @@ export default function CampScheduleScreen() {
     try {
       let res: Response;
       if (hasFile && file) {
-        // Multipart upload: the server extracts the text (pdf/docx/OCR).
-        const form = new FormData();
-        form.append('file', {
-          uri: file.uri,
-          name: file.name,
-          type: file.mimeType || 'application/octet-stream',
-        } as unknown as Blob);
-        res = await fetch(`${API_URL}/api/camp-schedule/parse`, { method: 'POST', body: form });
+        // Send the picked file as base64 JSON rather than as multipart.
+        //
+        // React Native's *native* networking (inside Expo Go) rejects the
+        // {uri,name,type} object FormData expects, so a multipart upload fails
+        // on device before the request is ever sent - it never reaches the
+        // server. Reading the bytes in JS and posting them as JSON removes
+        // that native handoff entirely.
+        const base64 = await readAsStringAsync(file.uri, { encoding: EncodingType.Base64 });
+        res = await fetch(`${API_URL}/api/camp-schedule/parse`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: file.name,
+            mimeType: file.mimeType || 'application/octet-stream',
+            base64,
+          }),
+        });
       } else {
         res = await fetch(`${API_URL}/api/camp-schedule/parse`, {
           method: 'POST',

@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pdfjsLib from 'pdfjs-dist';
+// pdfjs-dist 6.x ships pure ESM with named exports only - there is no default
+// export, so a default import resolves to undefined and getDocument is missing.
+// The *legacy* build is the one that runs under Node: the modern build waits on
+// a DOM worker that a route handler never provides, and the request hangs.
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
 import Tesseract from 'tesseract.js';
 
@@ -74,15 +78,18 @@ async function extractTextFromDocx(buffer: ArrayBuffer): Promise<string> {
 }
 
 async function extractTextFromImage(buffer: ArrayBuffer): Promise<string> {
-  const result = await Tesseract.recognize(new Uint8Array(buffer), 'eng+fra', {
+  const result = await Tesseract.recognize(Buffer.from(buffer), 'eng+fra', {
     logger: () => {}, // suppress logs
   });
   return result.data.text;
 }
 
-async function extractText(file: File): Promise<{ text: string; type: string }> {
-  const buffer = await file.arrayBuffer();
-  const ext = file.name.split('.').pop()?.toLowerCase();
+/** Dispatch on the file extension. `name` drives the branch, not the bytes. */
+async function extractTextFromBuffer(
+  buffer: ArrayBuffer,
+  name: string,
+): Promise<{ text: string; type: string }> {
+  const ext = name.split('.').pop()?.toLowerCase();
 
   if (ext === 'pdf') {
     return { text: await extractTextFromPdf(buffer), type: 'pdf' };
@@ -95,6 +102,16 @@ async function extractText(file: File): Promise<{ text: string; type: string }> 
     const text = new TextDecoder().decode(buffer);
     return { text, type: 'text' };
   }
+}
+
+async function extractText(file: File): Promise<{ text: string; type: string }> {
+  return extractTextFromBuffer(await file.arrayBuffer(), file.name);
+}
+
+/** base64 -> ArrayBuffer, keeping the view's own byte range (not the pooled buffer). */
+function base64ToBuffer(base64: string): ArrayBuffer {
+  const bytes = Buffer.from(base64, 'base64');
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -198,12 +215,30 @@ export async function POST(request: NextRequest) {
     let type = 'text';
     
     if (contentType.includes('application/json')) {
-      // JSON request with raw text (from mobile app textarea)
+      // Two JSON shapes:
+      //   { text }                      - pasted straight from the textarea
+      //   { filename, mimeType, base64 }- a picked file, sent as base64
+      // The mobile app uses the base64 shape because React Native's native
+      // networking rejects the {uri,name,type} FormData part on device, so a
+      // multipart upload never reaches the server.
       const body = await request.json();
-      text = body.text || '';
-      type = 'text';
-    } else {
-      // Form data with file upload
+
+      if (typeof body.base64 === 'string' && body.base64.length > 0) {
+        const buffer = base64ToBuffer(body.base64);
+        const filename = String(body.filename || 'upload.txt');
+        const result = await extractTextFromBuffer(buffer, filename);
+        text = result.text;
+        type = result.type;
+      } else {
+        text = body.text || '';
+        type = 'text';
+      }
+    } else if (
+      contentType.includes('multipart/form-data') ||
+      contentType.includes('application/x-www-form-urlencoded')
+    ) {
+      // Legacy multipart upload, kept so older clients keep working. The app
+      // itself now uses the base64 JSON shape above.
       const formData = await request.formData();
       const file = formData.get('file') as File | null;
 
@@ -217,6 +252,16 @@ export async function POST(request: NextRequest) {
       const result = await extractText(file);
       text = result.text;
       type = result.type;
+    } else {
+      // Anything else (including no Content-Type at all) used to escape as an
+      // unhandled 500 from request.formData(). Be explicit instead.
+      return NextResponse.json(
+        {
+          error:
+            'Unsupported request. Send JSON as {text} or {filename, base64}, or multipart/form-data with a "file" part.',
+        },
+        { status: 400 },
+      );
     }
 
     if (!text.trim()) {
