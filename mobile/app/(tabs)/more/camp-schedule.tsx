@@ -5,7 +5,7 @@ import * as DocumentPicker from 'expo-document-picker';
 // Legacy API path: the new expo-file-system export is object-based (File/Directory)
 // and has no readAsStringAsync.
 import { EncodingType, readAsStringAsync } from 'expo-file-system/legacy';
-import { Clock, FileText, Send, Upload, X } from 'lucide-react-native';
+import { CheckCircle, Clock, FileText, Send, Upload, X } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -46,6 +46,11 @@ export default function CampScheduleScreen() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
+  // The parse is a reading, not a decision. Nothing reaches the players until
+  // the coach has looked at the rewritten programme and accepted it, so a
+  // mis-read day or a mis-guessed name can be caught here instead of landing
+  // on 24 phones.
+  const [approved, setApproved] = useState(false);
 
   const isStaff = !!user && (user.role === 'staff' || user.role === 'admin');
 
@@ -65,6 +70,7 @@ export default function CampScheduleScreen() {
   const parse = async () => {
     setError(null);
     setSent(false);
+    setApproved(false); // a new reading has to be accepted again
 
     const hasFile = !!file;
     const hasText = !!programText.trim();
@@ -146,6 +152,7 @@ export default function CampScheduleScreen() {
     const a = res.assets[0];
     setFile({ name: a.name, uri: a.uri, mimeType: a.mimeType ?? '' });
     setActivities(null);
+    setApproved(false);
   };
 
   // ───────── Send to the players ─────────
@@ -188,7 +195,7 @@ export default function CampScheduleScreen() {
           <View style={styles.fileRow}>
             <FileText color={colors.gold} size={20} />
             <Text style={styles.fileName} numberOfLines={1}>{file.name}</Text>
-            <TouchableOpacity onPress={() => { setFile(null); setActivities(null); }} hitSlop={10}>
+            <TouchableOpacity onPress={() => { setFile(null); setActivities(null); setApproved(false); }} hitSlop={10}>
               <X color={colors.muted} size={18} />
             </TouchableOpacity>
           </View>
@@ -270,6 +277,12 @@ export default function CampScheduleScreen() {
               </View>
             )}
 
+            {!approved && (
+              <View style={styles.reviewBox}>
+                <Text style={styles.reviewBoxText}>{t('reviewPrompt')}</Text>
+              </View>
+            )}
+
             {days.map((day) => (
               <View key={day.dayIndex} style={styles.section}>
                 <Text style={styles.sectionTitle}>{day.dayLabel}</Text>
@@ -295,21 +308,40 @@ export default function CampScheduleScreen() {
               </View>
             ))}
 
-            <TouchableOpacity
-              style={[styles.sendBtn, saving && styles.parseBtnDisabled]}
-              onPress={send}
-              disabled={saving}
-              activeOpacity={0.8}
-            >
-              {saving ? (
-                <ActivityIndicator color={colors.navy} />
-              ) : (
-                <>
-                  <Send color={colors.navy} size={18} />
-                  <Text style={styles.sendBtnText}>{t('sendToPlayers')}</Text>
-                </>
-              )}
-            </TouchableOpacity>
+            {/* Approval gate. The parse is a reading, not a decision: nothing
+                is published until the coach has looked at the rewritten
+                programme and accepted it. */}
+            {!approved ? (
+              <TouchableOpacity
+                style={styles.approveBtn}
+                onPress={() => setApproved(true)}
+                activeOpacity={0.8}
+              >
+                <CheckCircle color={colors.navy} size={18} />
+                <Text style={styles.sendBtnText}>{t('approveProgram')}</Text>
+              </TouchableOpacity>
+            ) : (
+              <>
+                <View style={styles.approvedBox}>
+                  <Text style={styles.approvedBoxText}>{t('programApproved')}</Text>
+                </View>
+                <TouchableOpacity
+                  style={[styles.sendBtn, saving && styles.parseBtnDisabled]}
+                  onPress={send}
+                  disabled={saving}
+                  activeOpacity={0.8}
+                >
+                  {saving ? (
+                    <ActivityIndicator color={colors.navy} />
+                  ) : (
+                    <>
+                      <Send color={colors.navy} size={18} />
+                      <Text style={styles.sendBtnText}>{t('sendToPlayers')}</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         )}
       </ScrollView>
@@ -455,4 +487,31 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sendBtnText: { color: colors.navy, fontSize: 14, fontWeight: '800', letterSpacing: 0.05, textTransform: 'uppercase' },
+
+  approveBtn: {
+    backgroundColor: colors.gold,
+    borderRadius: radius.lg,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  approvedBox: {
+    backgroundColor: colors.goldSoft,
+    borderRadius: radius.md,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: colors.goldBorder,
+    alignItems: 'center',
+  },
+  approvedBoxText: { color: colors.white, fontSize: 13, fontWeight: '700' },
+  reviewBox: {
+    backgroundColor: colors.cardRaised,
+    borderRadius: radius.md,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: colors.goldBorder,
+  },
+  reviewBoxText: { color: colors.white, fontSize: 12, fontWeight: '600' },
 });

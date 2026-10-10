@@ -162,13 +162,79 @@ const DAY_NUMERALS =
   'one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|' +
   'deux|trois|quatre|cinq|sept|huit|neuf|dix';
 
+// Arabic-Indic (٠١٢) and Eastern Arabic-Indic (۰۱۲) digits. Folding these to
+// ASCII once, up front, means every time and date rule below only has to deal
+// with a single numeral system - so "٠٩:٠٠" is read by the same code that
+// reads "09:00".
+const ARABIC_DIGITS = '٠١٢٣٤٥٦٧٨٩';
+const PERSIAN_DIGITS = '۰۱۲۳۴۵۶۷۸۹';
+export function toAsciiDigits(s: string): string {
+  return s.replace(/[٠-٩۰-۹]/g, (c) => {
+    const a = ARABIC_DIGITS.indexOf(c);
+    if (a !== -1) return String(a);
+    const p = PERSIAN_DIGITS.indexOf(c);
+    return p !== -1 ? String(p) : c;
+  });
+}
+
+// Vowel marks (fatha, damma, kasra, tanwin, shadda, sukun, dagger alef).
+// A typed programme may carry them while the keyword list cannot, so "تَدْرِيب"
+// would never match "تدريب". Removed before any keyword comparison.
+const AR_DIACRITICS = /[\u064B-\u0652\u0670]/g;
+export function stripArabicDiacritics(s: string): string {
+  return s.replace(AR_DIACRITICS, '');
+}
+
+// Arabic weekday and month names. Tunisia uses the French-derived month names
+// (جانفي، فيفري، أفريل، جوان، جويلية، أوت) alongside the classical ones, so
+// both are listed - a document from the federation uses the first set.
+const AR_WEEKDAYS =
+  'اﻷحد|الأحد|الاثنين|الإثنين|الإثنين|الثلاثاء|الأربعاء|الاربعاء|الخميس|الجمعة|السبت';
+const AR_MONTHS =
+  'جانفي|يناير|فيفري|فبراير|مارس|أفريل|أبريل|أبريل|ماي|مايو|جوان|يونيو|' +
+  'جويلية|يوليو|أوت|أغسطس|اغسطس|سبتمبر|أكتوبر|اكتوبر|نوفمبر|ديسمبر';
+const AR_DAY_NUMERALS = 'الأول|الثاني|الثالث|الرابع|الخامس|السادس|السابع|الثامن|التاسع|العاشر';
+
+// Arabic activity and private-session words. Every one of these was invisible
+// before, so an Arabic programme parsed to nothing at all.
+const AR_ACTIVITIES = [
+  'تدريب', 'تمرين', 'تمارين', 'غداء', 'عشاء', 'فطور', 'إفطار', 'افطار',
+  'اجتماع', 'مباراة', 'استشفاء', 'علاج', 'سباحة', 'جيم', 'صالة', 'سفر',
+  'وصول', 'مغادرة', 'راحة', 'نوم', 'استراحة', 'تكتيك', 'فيديو', 'تحليل',
+  'طبي', 'طبيب', 'معالجة', 'تدليك', 'تغذية', 'مؤتمر', 'صحافة', 'مقابلة',
+  'إحماء', 'احماء', 'إطالة', 'اطالة', 'استرجاع', 'لعب', 'مبارزة',
+];
+const AR_PRIVATE = [
+  'اجتماع مع', 'اجتماع خاص', 'خاص', 'فردي', 'فردية', 'مقابلة مع',
+  'جلسة علاج', 'جلسة فردية', 'تقييم', 'مراجعة', 'جلسة معالجة',
+];
+
+// Roles, not people. "اجتماع مع المدرب" is a meeting with THE COACH, and
+// treating "المدرب" as a player name marks a collective line personal and
+// points it at nobody. Only an exact match is dropped, so "المدرب خالد"
+// (coach Khaled) is still taken as a person.
+const AR_ROLE_WORDS = new Set([
+  'المدرب', 'المدربة', 'الطبيب', 'الطبيبة', 'المعالج', 'المعالجة',
+  'الأخصائي', 'الاخصائي', 'الطاقم', 'الجهاز', 'الفريق', 'اللاعبون',
+  'اللاعبات', 'الجامعة', 'الاتحاد', 'الوكلاء', 'الإدارة', 'الادارة',
+]);
+
+// Combined once at module load rather than rebuilt per line.
+const ALL_KEYWORDS = [...ACTIVITY_KEYWORDS, ...AR_ACTIVITIES];
+const ALL_PRIVATE = [...PRIVATE_INDICATORS, ...AR_PRIVATE];
+
 /**
  * Returns the day label a line opens, or null if it is not a header.
  *
  * Covers what a real proposal actually contains: "Day 3", "Day ONE",
- * "21 October", "October 21, 2026", "Monday", "Lundi", "21/10/2026".
+ * "21 October", "October 21, 2026", "Monday", "Lundi", "21/10/2026",
+ * "اليوم 1", "الثلاثاء", "21 أكتوبر".
  * The English weekday and the numeric date were both absent, which is what
  * collapsed a multi-day programme into a single day.
+ *
+ * \b is deliberately absent from the Arabic branches: JavaScript counts only
+ * [A-Za-z0-9_] as word characters, so a \b next to Arabic letters never
+ * matches and the pattern would silently find nothing.
  */
 function detectDayHeader(line: string): string | null {
   if (line.length > 80) return null; // a paragraph that merely mentions a date
@@ -186,6 +252,10 @@ function detectDayHeader(line: string): string | null {
         `\\b\\d{1,2}(?:st|nd|rd|th)?\\s+(?:${MONTHS})[a-z]*\\b`, // 21 October
         `\\b(?:${MONTHS})[a-z]*\\s+\\d{1,2}(?:st|nd|rd|th)?\\b`, // October 21
         `\\b\\d{1,2}[/.-]\\d{1,2}(?:[/.-]\\d{2,4})?\\b`, // 21/10/2026
+        `اليوم\\s*(?:\\d{1,2}|${AR_DAY_NUMERALS})`, // اليوم 1 / اليوم الأول
+        `(?:${AR_WEEKDAYS})`, // الثلاثاء
+        `\\d{1,2}\\s*(?:${AR_MONTHS})`, // 21 أكتوبر
+        `(?:${AR_MONTHS})\\s*\\d{1,2}`, // أكتوبر 21
       ].join('|'),
       'i',
     ),
@@ -194,7 +264,10 @@ function detectDayHeader(line: string): string | null {
 }
 
 function parseSchedule(text: string): ParsedSchedule {
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  // One numeral system for everything below: after this, "٠٩:٠٠" is read by
+  // exactly the same rule as "09:00", and "٢١ أكتوبر" as "21 أكتوبر".
+  const normalized = toAsciiDigits(text);
+  const lines = normalized.split('\n').map(l => l.trim()).filter(Boolean);
   const activities: CampActivity[] = [];
   const playersMentioned = new Set<string>();
   let currentDay = '';
@@ -218,8 +291,10 @@ function parseSchedule(text: string): ParsedSchedule {
     const beforeTime = line.substring(0, timeIndex).trim();
     const afterTime = line.substring(timeIndex + time.length).trim();
 
-    // Check for private indicators
-    const isPrivate = PRIVATE_INDICATORS.some(ind => line.toLowerCase().includes(ind));
+    // Check for private indicators. Diacritics removed first so a vocalised
+    // Arabic line still matches its keyword.
+    const haystack = stripArabicDiacritics(line.toLowerCase());
+    const isPrivate = ALL_PRIVATE.some(ind => haystack.includes(ind));
     
     // Extract player name for private activities
     let playerName: string | undefined;
@@ -243,6 +318,30 @@ function parseSchedule(text: string): ParsedSchedule {
       }
       if (playerName) {
         playersMentioned.add(playerName);
+      } else {
+        // Format 4: Arabic. Arabic has no capitalisation to key off, so every
+        // pattern above finds nothing. Take the run before the colon
+        // ("ياسمين: اجتماع مع المدرب") or what follows a "meeting with"
+        // indicator ("اجتماع مع ياسمين"). It will only resolve to a card if
+        // that card carries the same spelling - otherwise it surfaces as
+        // unlinked for the coach to settle, which is the safe failure.
+        const arColon = line.match(/([\u0621-\u064A][\u0621-\u064A\s]{2,30}?)\s*:/);
+        if (arColon) {
+          playerName = arColon[1].trim();
+        } else {
+          for (const ind of AR_PRIVATE) {
+            const i = haystack.indexOf(ind);
+            if (i === -1) continue;
+            const after = line.substring(i + ind.length).trim();
+            const nm = after.match(/[\u0621-\u064A]{2,}(?:\s+[\u0621-\u064A]{2,}){0,3}/);
+            if (nm) playerName = nm[0];
+            break;
+          }
+        }
+        if (playerName && AR_ROLE_WORDS.has(stripArabicDiacritics(playerName))) {
+          playerName = undefined; // a role, not a person - leave the line collective
+        }
+        if (playerName) playersMentioned.add(playerName);
       }
     }
 
@@ -256,7 +355,8 @@ function parseSchedule(text: string): ParsedSchedule {
     activity = activity.replace(/^[-–—]\s*/, '').trim();
 
     // Check if activity contains keywords
-    const hasKeyword = ACTIVITY_KEYWORDS.some(kw => activity.toLowerCase().includes(kw));
+    const activityHay = stripArabicDiacritics(activity.toLowerCase());
+    const hasKeyword = ALL_KEYWORDS.some(kw => activityHay.includes(kw));
     if (!hasKeyword && !isPrivate) {
       // Skip lines that don't look like activities
       continue;
