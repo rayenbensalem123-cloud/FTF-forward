@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FTF Mobile — Players View</title>
+<style>
+  :root {
+    --navy: #0C1F3D;
+    --navy-deep: #0B111E;
+    --card: #101B33;
+    --card-raised: #112950;
+    --red: #E30613;
+    --gold: #F6C744;
+    --white: #EDEFF4;
+    --muted: #8FA0BD;
+    --green: #22C55E;
+    --amber: #F59E0B;
+    --line: rgba(148, 170, 210, 0.18);
+    --radius-card: 20px;
+    --radius-chip: 999px;
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(148,170,210,0.08);
+    --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-display);
+    background: var(--navy-deep);
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: var(--navy);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 16px 12px;
+    background: var(--navy);
+  }
+  .app-header__logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--card-raised);
+    border: 1px solid var(--line);
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--red);
+    flex-shrink: 0;
+  }
+  .app-header__titles { flex: 1; min-width: 0; }
+  .app-header__title { font-size: 17px; font-weight: 800; letter-spacing: 0.02em; color: var(--white); }
+  .app-header__subtitle { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+  .app-header__bell { width: 40px; height: 40px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
+
+  /* Hero */
+  .hero { margin: 0 16px; border-radius: var(--radius-card); overflow: hidden; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,0.5); }
+  .hero__bg { position: absolute; inset: 0; background: linear-gradient(135deg, #B30011 0%, #5B0A24 50%, var(--navy) 100%); }
+  .hero__overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(11,17,30,0.9) 100%); }
+  .hero__content { position: relative; padding: 20px; }
+  .hero__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .hero__comp { background: var(--gold); color: var(--navy); font-size: 10px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: var(--radius-chip); }
+  .hero__label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); }
+  .hero__teams { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .hero__team { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .hero__flag { width: 48px; height: 48px; border-radius: 50%; background: var(--card-raised); border: 2px solid rgba(255,255,255,0.3); display: grid; place-items: center; font-size: 20px; }
+  .hero__team-name { font-size: 13px; font-weight: 700; text-align: center; color: var(--white); }
+  .hero__vs { font-size: 14px; font-weight: 900; color: var(--gold); letter-spacing: 0.05em; }
+  .hero__bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .hero__countdown { display: flex; gap: 8px; }
+  .hero__cd-cell { text-align: center; }
+  .hero__cd-num { font-size: 20px; font-weight: 900; color: var(--white); font-variant-numeric: tabular-nums; }
+  .hero__cd-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+  .hero__btn { background: var(--gold); color: var(--navy); font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 10px 16px; border-radius: var(--radius-chip); display: flex; align-items: center; gap: 6px; }
+  .hero__venue { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.7); }
+
+  /* Content */
+  .content { padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
+  .section-title { font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+
+  /* My Form Card */
+  .form-card { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 20px; box-shadow: var(--shadow-card); }
+  .form-card__header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .form-card__icon { width: 48px; height: 48px; border-radius: 50%; background: var(--card-raised); border: 2px solid var(--line); display: grid; place-items: center; font-size: 20px; }
+  .form-card__info { flex: 1; }
+  .form-card__title { font-size: 15px; font-weight: 800; color: var(--white); }
+  .form-card__subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .form-card__status { padding: 6px 12px; border-radius: var(--radius-chip); font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+  .form-card__status--fit { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+  .form-card__status--recovery { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
+
+  /* My Stats */
+  .my-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .my-stat { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 16px 12px; text-align: center; box-shadow: var(--shadow-card); }
+  .my-stat__value { font-size: 28px; font-weight: 900; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .my-stat__label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+  /* Staff Messages */
+  .messages { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 20px; box-shadow: var(--shadow-card); }
+  .message { display: flex; gap: 12px; padding: 12px 0; }
+  .message + .message { border-top: 1px solid var(--line); }
+  .message__avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--card-raised); border: 1px solid var(--line); display: grid; place-items: center; font-size: 16px; flex-shrink: 0; }
+  .message__content { flex: 1; min-width: 0; }
+  .message__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .message__sender { font-size: 13px; font-weight: 800; color: var(--white); }
+  .message__time { font-size: 11px; color: var(--muted); }
+  .message__text { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+  /* Schedule */
+  .schedule { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 20px; box-shadow: var(--shadow-card); }
+  .schedule__row { display: flex; align-items: center; gap: 16px; padding: 14px 0; }
+  .schedule__row + .schedule__row { border-top: 1px solid var(--line); }
+  .schedule__date { text-align: center; width: 50px; flex-shrink: 0; }
+  .schedule__day { font-size: 18px; font-weight: 900; color: var(--gold); }
+  .schedule__month { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .schedule__info { flex: 1; min-width: 0; }
+  .schedule__title { font-size: 14px; font-weight: 700; color: var(--white); }
+  .schedule__meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .schedule__type { padding: 4px 10px; border-radius: var(--radius-chip); font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+  .schedule__type--match { background: rgba(227, 6, 19, 0.15); color: var(--red); }
+  .schedule__type--training { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+  .schedule__type--event { background: rgba(246, 199, 68, 0.15); color: var(--gold); }
+
+  /* Tab Bar */
+  .tab-bar { position: absolute; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--line); display: flex; padding: 8px 0 24px; }
+  .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .tab-item__icon { font-size: 20px; opacity: 0.5; }
+  .tab-item__label { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  .tab-item--active .tab-item__icon { opacity: 1; }
+  .tab-item--active .tab-item__label { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- PLAYERS VIEW LABEL -->
+  <div style="padding: 8px 16px 4px; background: var(--navy-deep); font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); text-align: center;">PLAYERS VIEW</div>
+
+  <!-- APP HEADER -->
+  <div class="app-header">
+    <div class="app-header__logo">🔥</div>
+    <div class="app-header__titles">
+      <div class="app-header__title">Elite Squad</div>
+      <div class="app-header__subtitle">Tunisia WNT · Player</div>
+    </div>
+    <div class="app-header__bell">🔔</div>
+  </div>
+
+  <!-- HERO MATCH -->
+  <div class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <div class="hero__top">
+        <div class="hero__comp">WAFCON 2026</div>
+        <div class="hero__label">Next Match · 15 Oct 2026</div>
+      </div>
+      <div class="hero__teams">
+        <div class="hero__team">
+          <div class="hero__flag">🇹🇳</div>
+          <div class="hero__team-name">Tunisia</div>
+        </div>
+        <div class="hero__vs">VS</div>
+        <div class="hero__team">
+          <div class="hero__team-name">Nigeria</div>
+          <div class="hero__flag">🇳🇬</div>
+        </div>
+      </div>
+      <div class="hero__bottom">
+        <div class="hero__countdown">
+          <div class="hero__cd-cell">
+            <div class="hero__cd-num">12</div>
+            <div class="hero__cd-lbl">Days</div>
+          </div>
+          <div class="hero__cd-cell">
+            <div class="hero__cd-num">08</div>
+            <div class="hero__cd-lbl">Hrs</div>
+          </div>
+          <div class="hero__cd-cell">
+            <div class="hero__cd-num">42</div>
+            <div class="hero__cd-lbl">Min</div>
+          </div>
+        </div>
+        <div class="hero__btn">Details →</div>
+      </div>
+      <div class="hero__venue">📍 Stade Hammadi Agrebi, Tunis</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- MY FORM -->
+    <div class="form-card">
+      <div class="form-card__header">
+        <div class="form-card__icon">👩</div>
+        <div class="form-card__info">
+          <div class="form-card__title">S. Gharbi</div>
+          <div class="form-card__subtitle">Forward · #9</div>
+        </div>
+        <div class="form-card__status form-card__status--fit">Fit</div>
+      </div>
+      <div class="my-stats">
+        <div class="my-stat">
+          <div class="my-stat__value">5</div>
+          <div class="my-stat__label">Goals</div>
+        </div>
+        <div class="my-stat">
+          <div class="my-stat__value">3</div>
+          <div class="my-stat__label">Assists</div>
+        </div>
+        <div class="my-stat">
+          <div class="my-stat__value">6</div>
+          <div class="my-stat__label">Matches</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF MESSAGES -->
+    <div class="messages">
+      <div class="section-title">Staff Messages</div>
+      <div class="message">
+        <div class="message__avatar">👨‍💼</div>
+        <div class="message__content">
+          <div class="message__header">
+            <div class="message__sender">Coach Benali</div>
+            <div class="message__time">2h ago</div>
+          </div>
+          <div class="message__text">Great work in today's session. Keep pushing — WAFCON is approaching fast. See you tomorrow at 6 PM.</div>
+        </div>
+      </div>
+      <div class="message">
+        <div class="message__avatar">👩‍⚕️</div>
+        <div class="message__content">
+          <div class="message__header">
+            <div class="message__sender">Dr. Mcharek</div>
+            <div class="message__time">1d ago</div>
+          </div>
+          <div class="message__text">Medical checkup scheduled for Friday 10 AM at the training center. Don't be late.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="schedule">
+      <div class="section-title">My Schedule</div>
+      <div class="schedule__row">
+        <div class="schedule__date">
+          <div class="schedule__day">15</div>
+          <div class="schedule__month">Oct</div>
+        </div>
+        <div class="schedule__info">
+          <div class="schedule__title">vs Nigeria</div>
+          <div class="schedule__meta">WAFCON 2026 · Stade Hammadi Agrebi · 18:00</div>
+        </div>
+        <div class="schedule__type schedule__type--match">Match</div>
+      </div>
+      <div class="schedule__row">
+        <div class="schedule__date">
+          <div class="schedule__day">18</div>
+          <div class="schedule__month">Oct</div>
+        </div>
+        <div class="schedule__info">
+          <div class="schedule__title">Training Session</div>
+          <div class="schedule__meta">National Training Center · 18:00</div>
+        </div>
+        <div class="schedule__type schedule__type--training">Training</div>
+      </div>
+      <div class="schedule__row">
+        <div class="schedule__date">
+          <div class="schedule__day">22</div>
+          <div class="schedule__month">Oct</div>
+        </div>
+        <div class="schedule__info">
+          <div class="schedule__title">vs South Africa</div>
+          <div class="schedule__meta">Friendly · Stade Olympique de Radès · 18:00</div>
+        </div>
+        <div class="schedule__type schedule__type--match">Match</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB BAR (PLAYERS) -->
+  <div class="tab-bar">
+    <div class="tab-item tab-item--active">
+      <div class="tab-item__icon">🏠</div>
+      <div class="tab-item__label">Home</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-item__icon">📅</div>
+      <div class="tab-item__label">Schedule</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-item__icon">📊</div>
+      <div class="tab-item__label">Stats</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-item__icon">👤</div>
+      <div class="tab-item__label">Profile</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

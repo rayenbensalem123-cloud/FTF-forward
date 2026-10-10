@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FTF Mobile — Redesign Preview</title>
+<style>
+  /* ═══ FTF THEME (conservé) ═══ */
+  :root {
+    --navy: #0C1F3D;
+    --navy-deep: #0B111E;
+    --card: #101B33;
+    --card-raised: #112950;
+    --red: #E30613;
+    --gold: #F6C744;
+    --white: #EDEFF4;
+    --muted: #8FA0BD;
+    --green: #22C55E;
+    --amber: #F59E0B;
+    --line: rgba(148, 170, 210, 0.18);
+    --scrim: rgba(3, 8, 20, 0.7);
+  }
+
+  /* ═══ PL-STYLE DESIGN TOKENS ═══ */
+  :root {
+    --radius-card: 20px;
+    --radius-chip: 999px;
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(148,170,210,0.08);
+    --shadow-hero: 0 8px 40px rgba(0,0,0,0.5);
+    --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-display);
+    background: var(--navy-deep);
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: var(--navy);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ═══ APP HEADER (PL style) ═══ */
+  .app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 16px 12px;
+    background: var(--navy);
+  }
+  .app-header__logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--card-raised);
+    border: 1px solid var(--line);
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--red);
+    flex-shrink: 0;
+  }
+  .app-header__titles { flex: 1; min-width: 0; }
+  .app-header__title {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--white);
+  }
+  .app-header__subtitle {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .app-header__bell {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ═══ HERO MATCH (PL style — immersif) ═══ */
+  .hero {
+    margin: 0 16px;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-hero);
+  }
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #B30011 0%, #5B0A24 50%, var(--navy) 100%);
+  }
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(11,17,30,0.9) 100%);
+  }
+  .hero__content {
+    position: relative;
+    padding: 20px;
+  }
+  .hero__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .hero__comp {
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--radius-chip);
+  }
+  .hero__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+  }
+  .hero__teams {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .hero__team {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero__flag {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--card-raised);
+    border: 2px solid rgba(255,255,255,0.3);
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+  }
+  .hero__team-name {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--white);
+  }
+  .hero__vs {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .hero__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .hero__countdown {
+    display: flex;
+    gap: 8px;
+  }
+  .hero__cd-cell {
+    text-align: center;
+  }
+  .hero__cd-num {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+  .hero__cd-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+  .hero__btn {
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: var(--radius-chip);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hero__venue {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* ═══ CONTENT ═══ */
+  .content {
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ═══ SECTION TITLE (PL style) ═══ */
+  .section-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  /* ═══ STATS GRID (PL style) ═══ */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .stat-card {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--line);
+    padding: 16px 12px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+  }
+  .stat-card__value {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-card__label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .stat-card--accent .stat-card__value { color: var(--gold); }
+  .stat-card--red .stat-card__value { color: var(--red); }
+  .stat-card--green .stat-card__value { color: var(--green); }
+
+  /* ═══ READINESS (PL style) ═══ */
+  .readiness {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--line);
+    padding: 20px;
+    box-shadow: var(--shadow-card);
+  }
+  .readiness__row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .readiness__big {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+  .readiness__slash {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .readiness__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .readiness__track {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .readiness__fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--green);
+  }
+  .readiness__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245, 158, 11, 0.15);
+    border-radius: var(--radius-chip);
+    padding: 8px 14px;
+  }
+  .readiness__chip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+  .readiness__chip-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--amber);
+  }
+
+  /* ═══ AGENDA (PL style) ═══ */
+  .agenda {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--line);
+    padding: 20px;
+    box-shadow: var(--shadow-card);
+  }
+  .agenda__row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+  }
+  .agenda__row + .agenda__row {
+    border-top: 1px solid var(--line);
+  }
+  .agenda__time {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--gold);
+    width: 70px;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .agenda__info { flex: 1; min-width: 0; }
+  .agenda__teams {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .agenda__flag {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--card-raised);
+    border: 1px solid var(--line);
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+  }
+  .agenda__meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ═══ TAB BAR (PL style) ═══ */
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    border-top: 1px solid var(--line);
+    display: flex;
+    padding: 8px 0 24px;
+  }
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .tab-item__icon {
+    font-size: 20px;
+    opacity: 0.5;
+  }
+  .tab-item__label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tab-item--active .tab-item__icon { opacity: 1; }
+  .tab-item--active .tab-item__label { color: var(--gold); }
+
+  /* ═══ SECTION: MATCHES PREVIEW ═══ */
+  .match-card {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--line);
+    padding: 16px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .match-card__info { flex: 1; min-width: 0; }
+  .match-card__date {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .match-card__teams {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .match-card__score {
+    font-size: 14px;
+    font-weight: 900;
+    padding: 6px 12px;
+    border-radius: var(--radius-chip);
+    font-variant-numeric: tabular-nums;
+  }
+  .match-card__score--w { background: var(--green); color: var(--navy-deep); }
+  .match-card__score--l { background: var(--red); color: var(--white); }
+  .match-card__score--d { background: var(--amber); color: var(--navy-deep); }
+
+  /* ═══ SECTION: PLAYER GRID ═══ */
+  .player-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .player-card {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--line);
+    padding: 16px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+  }
+  .player-card__photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--card-raised);
+    border: 2px solid var(--line);
+    margin: 0 auto 12px;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+  }
+  .player-card__name {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--white);
+  }
+  .player-card__pos {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .player-card__stats {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .player-card__stat-num {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--gold);
+  }
+  .player-card__stat-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- APP HEADER -->
+  <div class="app-header">
+    <div class="app-header__logo">🔥</div>
+    <div class="app-header__titles">
+      <div class="app-header__title">Elite Squad</div>
+      <div class="app-header__subtitle">Tunisia WNT</div>
+    </div>
+    <div class="app-header__bell">🔔</div>
+  </div>
+
+  <!-- HERO MATCH -->
+  <div class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <div class="hero__top">
+        <div class="hero__comp">WAFCON 2026</div>
+        <div class="hero__label">Next Match · 15 Oct 2026</div>
+      </div>
+      <div class="hero__teams">
+        <div class="hero__team">
+          <div class="hero__flag">🇹🇳</div>
+          <div class="hero__team-name">Tunisia</div>
+        </div>
+        <div class="hero__vs">VS</div>
+        <div class="hero__team">
+          <div class="hero__team-name">Nigeria</div>
+          <div class="hero__flag">🇳🇬</div>
+        </div>
+      </div>
+      <div class="hero__bottom">
+        <div class="hero__countdown">
+          <div class="hero__cd-cell">
+            <div class="hero__cd-num">12</div>
+            <div class="hero__cd-lbl">Days</div>
+          </div>
+          <div class="hero__cd-cell">
+            <div class="hero__cd-num">08</div>
+            <div class="hero__cd-lbl">Hrs</div>
+          </div>
+          <div class="hero__cd-cell">
+            <div class="hero__cd-num">42</div>
+            <div class="hero__cd-lbl">Min</div>
+          </div>
+        </div>
+        <div class="hero__btn">Details →</div>
+      </div>
+      <div class="hero__venue">📍 Stade Hammadi Agrebi, Tunis</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- STATS GRID -->
+    <div>
+      <div class="section-title">Squad Overview</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card__value">23</div>
+          <div class="stat-card__label">Players</div>
+        </div>
+        <div class="stat-card stat-card--accent">
+          <div class="stat-card__value">8</div>
+          <div class="stat-card__label">Goals</div>
+        </div>
+        <div class="stat-card stat-card--green">
+          <div class="stat-card__value">5</div>
+          <div class="stat-card__label">Wins</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- READINESS -->
+    <div class="readiness">
+      <div class="section-title" style="margin-bottom:16px">Readiness</div>
+      <div class="readiness__row">
+        <div class="readiness__big">19<span class="readiness__slash"> / 23</span></div>
+        <div class="readiness__label">Players Fit</div>
+      </div>
+      <div class="readiness__track"><div class="readiness__fill" style="width: 82%"></div></div>
+      <div class="readiness__chip">
+        <div class="readiness__chip-dot"></div>
+        <div class="readiness__chip-text">4 In Recovery</div>
+      </div>
+    </div>
+
+    <!-- RECENT RESULTS -->
+    <div>
+      <div class="section-title">Recent Results</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="match-card">
+          <div class="match-card__info">
+            <div class="match-card__date">08 Oct 2026</div>
+            <div class="match-card__teams">
+              <div class="agenda__flag">🇹🇳</div>
+              <span>Tunisia</span>
+              <span style="color:var(--muted);font-size:12px">vs</span>
+              <span>Morocco</span>
+              <div class="agenda__flag">🇲🇦</div>
+            </div>
+          </div>
+          <div class="match-card__score match-card__score--w">2 - 1</div>
+        </div>
+        <div class="match-card">
+          <div class="match-card__info">
+            <div class="match-card__date">04 Oct 2026</div>
+            <div class="match-card__teams">
+              <div class="agenda__flag">🇹🇳</div>
+              <span>Tunisia</span>
+              <span style="color:var(--muted);font-size:12px">vs</span>
+              <span>Ghana</span>
+              <div class="agenda__flag">🇬🇭</div>
+            </div>
+          </div>
+          <div class="match-card__score match-card__score--d">1 - 1</div>
+        </div>
+        <div class="match-card">
+          <div class="match-card__info">
+            <div class="match-card__date">30 Sep 2026</div>
+            <div class="match-card__teams">
+              <div class="agenda__flag">🇹🇳</div>
+              <span>Tunisia</span>
+              <span style="color:var(--muted);font-size:12px">vs</span>
+              <span>Egypt</span>
+              <div class="agenda__flag">🇪🇬</div>
+            </div>
+          </div>
+          <div class="match-card__score match-card__score--l">0 - 1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLAYER GRID -->
+    <div>
+      <div class="section-title">Top Players</div>
+      <div class="player-grid">
+        <div class="player-card">
+          <div class="player-card__photo">👩</div>
+          <div class="player-card__name">S. Gharbi</div>
+          <div class="player-card__pos">Forward</div>
+          <div class="player-card__stats">
+            <div>
+              <div class="player-card__stat-num">5</div>
+              <div class="player-card__stat-lbl">Goals</div>
+            </div>
+            <div>
+              <div class="player-card__stat-num">3</div>
+              <div class="player-card__stat-lbl">Assists</div>
+            </div>
+          </div>
+        </div>
+        <div class="player-card">
+          <div class="player-card__photo">👩</div>
+          <div class="player-card__name">Y. Ben Amor</div>
+          <div class="player-card__pos">Midfielder</div>
+          <div class="player-card__stats">
+            <div>
+              <div class="player-card__stat-num">3</div>
+              <div class="player-card__stat-lbl">Goals</div>
+            </div>
+            <div>
+              <div class="player-card__stat-num">6</div>
+              <div class="player-card__stat-lbl">Assists</div>
+            </div>
+          </div>
+        </div>
+        <div class="player-card">
+          <div class="player-card__photo">👩</div>
+          <div class="player-card__name">M. Mcharek</div>
+          <div class="player-card__pos">Defender</div>
+          <div class="player-card__stats">
+            <div>
+              <div class="player-card__stat-num">1</div>
+              <div class="player-card__stat-lbl">Goals</div>
+            </div>
+            <div>
+              <div class="player-card__stat-num">2</div>
+              <div class="player-card__stat-lbl">Assists</div>
+            </div>
+          </div>
+        </div>
+        <div class="player-card">
+          <div class="player-card__photo">👩</div>
+          <div class="player-card__name">A. Saidi</div>
+          <div class="player-card__pos">Goalkeeper</div>
+          <div class="player-card__stats">
+            <div>
+              <div class="player-card__stat-num">4</div>
+              <div class="player-card__stat-lbl">CS</div>
+            </div>
+            <div>
+              <div class="player-card__stat-num">0</div>
+              <div class="player-card__stat-lbl">GA</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div class="agenda">
+      <div class="section-title">Upcoming Fixtures</div>
+      <div class="agenda__row">
+        <div class="agenda__time">15 Oct</div>
+        <div class="agenda__info">
+          <div class="agenda__teams">
+            <div class="agenda__flag">🇹🇳</div>
+            <span>Tunisia</span>
+            <span style="color:var(--muted);font-size:12px">vs</span>
+            <span>Nigeria</span>
+            <div class="agenda__flag">🇳🇬</div>
+          </div>
+          <div class="agenda__meta">WAFCON 2026 · Stade Hammadi Agrebi</div>
+        </div>
+      </div>
+      <div class="agenda__row">
+        <div class="agenda__time">22 Oct</div>
+        <div class="agenda__info">
+          <div class="agenda__teams">
+            <div class="agenda__flag">🇹🇳</div>
+            <span>Tunisia</span>
+            <span style="color:var(--muted);font-size:12px">vs</span>
+            <span>South Africa</span>
+            <div class="agenda__flag">🇿🇦</div>
+          </div>
+          <div class="agenda__meta">Friendly · Stade Olympique de Radès</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <div class="tab-item tab-item--active">
+      <div class="tab-item__icon">🏠</div>
+      <div class="tab-item__label">Home</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-item__icon">🏆</div>
+      <div class="tab-item__label">Matches</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-item__icon">👕</div>
+      <div class="tab-item__label">Lineup</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-item__icon">☰</div>
+      <div class="tab-item__label">More</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

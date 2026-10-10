@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FTF Mobile — Interactive Redesign</title>
+<style>
+  :root {
+    --navy: #0C1F3D; --navy-deep: #0B111E; --card: #101B33; --card-raised: #112950;
+    --red: #E30613; --gold: #F6C744; --white: #EDEFF4; --muted: #8FA0BD;
+    --green: #22C55E; --amber: #F59E0B; --line: rgba(148, 170, 210, 0.18);
+    --radius-card: 20px; --radius-chip: 999px;
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(148,170,210,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--navy-deep); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; gap: 16px; }
+
+  /* View Switcher */
+  .view-switcher { display: flex; gap: 8px; background: var(--card); padding: 4px; border-radius: var(--radius-chip); border: 1px solid var(--line); }
+  .view-btn { padding: 10px 24px; border-radius: var(--radius-chip); font-size: 13px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; border: none; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s; }
+  .view-btn--active { background: var(--gold); color: var(--navy); }
+
+  /* Phone Frame */
+  .phone { width: 390px; height: 844px; background: var(--navy); position: relative; overflow: hidden; border-radius: 40px; border: 8px solid #1a1a2e; box-shadow: 0 20px 60px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
+  .phone__screen { flex: 1; overflow-y: auto; display: none; }
+  .phone__screen--active { display: block; }
+
+  /* Header */
+  .app-header { display: flex; align-items: center; gap: 12px; padding: 16px 16px 12px; background: var(--navy); position: sticky; top: 0; z-index: 10; }
+  .app-header__logo { width: 44px; height: 44px; border-radius: 12px; background: var(--card-raised); border: 1px solid var(--line); display: grid; place-items: center; font-weight: 900; font-size: 18px; color: var(--red); flex-shrink: 0; }
+  .app-header__titles { flex: 1; min-width: 0; }
+  .app-header__title { font-size: 17px; font-weight: 800; letter-spacing: 0.02em; color: var(--white); }
+  .app-header__subtitle { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+  .app-header__bell { width: 40px; height: 40px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
+
+  /* Hero */
+  .hero { margin: 0 16px; border-radius: var(--radius-card); overflow: hidden; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,0.5); }
+  .hero__bg { position: absolute; inset: 0; background: linear-gradient(135deg, #B30011 0%, #5B0A24 50%, var(--navy) 100%); }
+  .hero__overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(11,17,30,0.9) 100%); }
+  .hero__content { position: relative; padding: 20px; }
+  .hero__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .hero__comp { background: var(--gold); color: var(--navy); font-size: 10px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: var(--radius-chip); }
+  .hero__label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); }
+  .hero__teams { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .hero__team { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .hero__flag { width: 48px; height: 48px; border-radius: 50%; background: var(--card-raised); border: 2px solid rgba(255,255,255,0.3); display: grid; place-items: center; font-size: 20px; }
+  .hero__team-name { font-size: 13px; font-weight: 700; text-align: center; color: var(--white); }
+  .hero__vs { font-size: 14px; font-weight: 900; color: var(--gold); letter-spacing: 0.05em; }
+  .hero__bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .hero__countdown { display: flex; gap: 8px; }
+  .hero__cd-cell { text-align: center; }
+  .hero__cd-num { font-size: 20px; font-weight: 900; color: var(--white); font-variant-numeric: tabular-nums; }
+  .hero__cd-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+  .hero__btn { background: var(--gold); color: var(--navy); font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 10px 16px; border-radius: var(--radius-chip); }
+  .hero__venue { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.7); }
+
+  /* Content */
+  .content { padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
+  .section-title { font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+
+  /* Cards */
+  .card { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 20px; box-shadow: var(--shadow-card); }
+
+  /* Stats Grid */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .stat-card { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 16px 12px; text-align: center; box-shadow: var(--shadow-card); }
+  .stat-card__value { font-size: 28px; font-weight: 900; color: var(--white); font-variant-numeric: tabular-nums; }
+  .stat-card__label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+  .stat-card--accent .stat-card__value { color: var(--gold); }
+  .stat-card--red .stat-card__value { color: var(--red); }
+  .stat-card--green .stat-card__value { color: var(--green); }
+
+  /* Readiness */
+  .readiness__row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .readiness__big { font-size: 42px; font-weight: 900; color: var(--white); font-variant-numeric: tabular-nums; }
+  .readiness__slash { font-size: 24px; font-weight: 700; color: var(--muted); }
+  .readiness__label { font-size: 14px; font-weight: 600; color: var(--muted); }
+  .readiness__track { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; margin-bottom: 12px; }
+  .readiness__fill { height: 100%; border-radius: 4px; background: var(--green); }
+  .readiness__chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(245, 158, 11, 0.15); border-radius: var(--radius-chip); padding: 8px 14px; }
+  .readiness__chip-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); }
+  .readiness__chip-text { font-size: 13px; font-weight: 700; color: var(--amber); }
+
+  /* Quick Actions */
+  .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .quick-action { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 16px; text-align: center; box-shadow: var(--shadow-card); }
+  .quick-action__icon { font-size: 24px; margin-bottom: 8px; }
+  .quick-action__label { font-size: 12px; font-weight: 700; color: var(--white); }
+
+  /* Match Card */
+  .match-card { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 16px; box-shadow: var(--shadow-card); display: flex; align-items: center; gap: 12px; }
+  .match-card__info { flex: 1; min-width: 0; }
+  .match-card__date { font-size: 12px; font-weight: 700; color: var(--gold); }
+  .match-card__teams { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 13px; font-weight: 700; }
+  .match-card__flag { width: 20px; height: 20px; border-radius: 50%; background: var(--card-raised); border: 1px solid var(--line); display: grid; place-items: center; font-size: 10px; }
+  .match-card__score { font-size: 14px; font-weight: 900; padding: 6px 12px; border-radius: var(--radius-chip); font-variant-numeric: tabular-nums; }
+  .match-card__score--w { background: var(--green); color: var(--navy-deep); }
+  .match-card__score--l { background: var(--red); color: var(--white); }
+  .match-card__score--d { background: var(--amber); color: var(--navy-deep); }
+
+  /* Player Grid */
+  .player-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .player-card { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 16px; text-align: center; box-shadow: var(--shadow-card); }
+  .player-card__photo { width: 64px; height: 64px; border-radius: 50%; background: var(--card-raised); border: 2px solid var(--line); margin: 0 auto 12px; display: grid; place-items: center; font-size: 24px; }
+  .player-card__name { font-size: 14px; font-weight: 800; color: var(--white); }
+  .player-card__pos { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+  .player-card__stats { display: flex; justify-content: center; gap: 16px; margin-top: 12px; }
+  .player-card__stat-num { font-size: 18px; font-weight: 900; color: var(--gold); }
+  .player-card__stat-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+  /* Form Card */
+  .form-card__header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .form-card__icon { width: 48px; height: 48px; border-radius: 50%; background: var(--card-raised); border: 2px solid var(--line); display: grid; place-items: center; font-size: 20px; }
+  .form-card__info { flex: 1; }
+  .form-card__title { font-size: 15px; font-weight: 800; color: var(--white); }
+  .form-card__subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .form-card__status { padding: 6px 12px; border-radius: var(--radius-chip); font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+  .form-card__status--fit { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+  .form-card__status--recovery { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
+
+  /* Messages */
+  .message { display: flex; gap: 12px; padding: 12px 0; }
+  .message + .message { border-top: 1px solid var(--line); }
+  .message__avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--card-raised); border: 1px solid var(--line); display: grid; place-items: center; font-size: 16px; flex-shrink: 0; }
+  .message__content { flex: 1; min-width: 0; }
+  .message__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .message__sender { font-size: 13px; font-weight: 800; color: var(--white); }
+  .message__time { font-size: 11px; color: var(--muted); }
+  .message__text { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+  /* Schedule */
+  .schedule__row { display: flex; align-items: center; gap: 16px; padding: 14px 0; }
+  .schedule__row + .schedule__row { border-top: 1px solid var(--line); }
+  .schedule__date { text-align: center; width: 50px; flex-shrink: 0; }
+  .schedule__day { font-size: 18px; font-weight: 900; color: var(--gold); }
+  .schedule__month { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .schedule__info { flex: 1; min-width: 0; }
+  .schedule__title { font-size: 14px; font-weight: 700; color: var(--white); }
+  .schedule__meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .schedule__type { padding: 4px 10px; border-radius: var(--radius-chip); font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+  .schedule__type--match { background: rgba(227, 6, 19, 0.15); color: var(--red); }
+  .schedule__type--training { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+  .schedule__type--event { background: rgba(246, 199, 68, 0.15); color: var(--gold); }
+
+  /* Agenda */
+  .agenda__row { display: flex; align-items: center; gap: 16px; padding: 14px 0; }
+  .agenda__row + .agenda__row { border-top: 1px solid var(--line); }
+  .agenda__time { font-size: 16px; font-weight: 800; color: var(--gold); width: 70px; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .agenda__info { flex: 1; min-width: 0; }
+  .agenda__teams { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; }
+  .agenda__meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Filter Chips */
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; flex-wrap: wrap; }
+  .chip { padding: 8px 16px; border-radius: var(--radius-chip); font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid var(--line); background: var(--card); color: var(--muted); white-space: nowrap; }
+  .chip--active { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+
+  /* Tab Bar */
+  .tab-bar { background: var(--card); border-top: 1px solid var(--line); display: flex; padding: 8px 0 24px; }
+  .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px; cursor: pointer; border: none; background: none; }
+  .tab-item__icon { font-size: 20px; opacity: 0.5; }
+  .tab-item__label { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  .tab-item--active .tab-item__icon { opacity: 1; }
+  .tab-item--active .tab-item__label { color: var(--gold); }
+
+  /* Profile Card */
+  .profile-card { text-align: center; padding: 30px 20px; }
+  .profile-card__photo { width: 100px; height: 100px; border-radius: 50%; background: var(--card-raised); border: 3px solid var(--gold); margin: 0 auto 16px; display: grid; place-items: center; font-size: 40px; }
+  .profile-card__name { font-size: 22px; font-weight: 900; color: var(--white); }
+  .profile-card__pos { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-top: 4px; }
+  .profile-card__number { display: inline-block; margin-top: 8px; padding: 4px 12px; background: var(--red); border-radius: var(--radius-chip); font-size: 14px; font-weight: 900; color: var(--white); }
+
+  /* Info Grid */
+  .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .info-item { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 14px; }
+  .info-item__label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .info-item__value { font-size: 16px; font-weight: 800; color: var(--white); margin-top: 4px; }
+
+  /* Progress Bar */
+  .progress-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; margin-top: 8px; }
+  .progress-bar__fill { height: 100%; border-radius: 3px; background: var(--gold); }
+
+  /* List Item */
+  .list-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; }
+  .list-item + .list-item { border-top: 1px solid var(--line); }
+  .list-item__icon { width: 36px; height: 36px; border-radius: 10px; background: var(--card-raised); display: grid; place-items: center; font-size: 16px; flex-shrink: 0; }
+  .list-item__content { flex: 1; min-width: 0; }
+  .list-item__title { font-size: 14px; font-weight: 700; color: var(--white); }
+  .list-item__subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .list-item__arrow { color: var(--muted); font-size: 16px; }
+</style>
+</head>
+<body>
+
+<!-- VIEW SWITCHER -->
+<div class="view-switcher">
+  <button class="view-btn view-btn--active" onclick="switchView('staff')">Staff</button>
+  <button class="view-btn" onclick="switchView('player')">Player</button>
+</div>
+
+<!-- PHONE -->
+<div class="phone" id="phone">
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- STAFF VIEW -->
+  <!-- ═══════════════════════════════════════ -->
+
+  <!-- STAFF: HOME -->
+  <div class="phone__screen phone__screen--active" id="staff-home">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">Elite Squad</div>
+        <div class="app-header__subtitle">Tunisia WNT · Staff</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero__bg"></div>
+        <div class="hero__overlay"></div>
+        <div class="hero__content">
+          <div class="hero__top">
+            <div class="hero__comp">WAFCON 2026</div>
+            <div class="hero__label">Next Match · 15 Oct 2026</div>
+          </div>
+          <div class="hero__teams">
+            <div class="hero__team">
+              <div class="hero__flag">🇹🇳</div>
+              <div class="hero__team-name">Tunisia</div>
+            </div>
+            <div class="hero__vs">VS</div>
+            <div class="hero__team">
+              <div class="hero__team-name">Nigeria</div>
+              <div class="hero__flag">🇳🇬</div>
+            </div>
+          </div>
+          <div class="hero__bottom">
+            <div class="hero__countdown">
+              <div class="hero__cd-cell"><div class="hero__cd-num">12</div><div class="hero__cd-lbl">Days</div></div>
+              <div class="hero__cd-cell"><div class="hero__cd-num">08</div><div class="hero__cd-lbl">Hrs</div></div>
+              <div class="hero__cd-cell"><div class="hero__cd-num">42</div><div class="hero__cd-lbl">Min</div></div>
+            </div>
+            <div class="hero__btn">Details →</div>
+          </div>
+          <div class="hero__venue">📍 Stade Hammadi Agrebi, Tunis</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div>
+        <div class="section-title">Quick Actions</div>
+        <div class="quick-actions">
+          <div class="quick-action"><div class="quick-action__icon">📋</div><div class="quick-action__label">Lineup</div></div>
+          <div class="quick-action"><div class="quick-action__icon">📝</div><div class="quick-action__label">Match Notes</div></div>
+          <div class="quick-action"><div class="quick-action__icon">🏥</div><div class="quick-action__label">Medical</div></div>
+          <div class="quick-action"><div class="quick-action__icon">📤</div><div class="quick-action__label">Export</div></div>
+        </div>
+      </div>
+
+      <!-- Squad Readiness -->
+      <div class="card">
+        <div class="section-title" style="margin-bottom:16px">Squad Readiness</div>
+        <div class="readiness__row">
+          <div class="readiness__big">19<span class="readiness__slash"> / 23</span></div>
+          <div class="readiness__label">Players Fit</div>
+        </div>
+        <div class="readiness__track"><div class="readiness__fill" style="width: 82%"></div></div>
+        <div class="readiness__chip">
+          <div class="readiness__chip-dot"></div>
+          <div class="readiness__chip-text">4 In Recovery</div>
+        </div>
+      </div>
+
+      <!-- Top Players -->
+      <div>
+        <div class="section-title">Top Players</div>
+        <div class="player-grid">
+          <div class="player-card">
+            <div class="player-card__photo">👩</div>
+            <div class="player-card__name">S. Gharbi</div>
+            <div class="player-card__pos">Forward</div>
+            <div class="player-card__stats">
+              <div><div class="player-card__stat-num">5</div><div class="player-card__stat-lbl">Goals</div></div>
+              <div><div class="player-card__stat-num">3</div><div class="player-card__stat-lbl">Assists</div></div>
+            </div>
+          </div>
+          <div class="player-card">
+            <div class="player-card__photo">👩</div>
+            <div class="player-card__name">Y. Ben Amor</div>
+            <div class="player-card__pos">Midfielder</div>
+            <div class="player-card__stats">
+              <div><div class="player-card__stat-num">3</div><div class="player-card__stat-lbl">Goals</div></div>
+              <div><div class="player-card__stat-num">6</div><div class="player-card__stat-lbl">Assists</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Results -->
+      <div>
+        <div class="section-title">Recent Results</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="match-card">
+            <div class="match-card__info">
+              <div class="match-card__date">08 Oct 2026</div>
+              <div class="match-card__teams">
+                <div class="match-card__flag">🇹🇳</div>
+                <span>Tunisia</span>
+                <span style="color:var(--muted);font-size:12px">vs</span>
+                <span>Morocco</span>
+                <div class="match-card__flag">🇲🇦</div>
+              </div>
+            </div>
+            <div class="match-card__score match-card__score--w">2 - 1</div>
+          </div>
+          <div class="match-card">
+            <div class="match-card__info">
+              <div class="match-card__date">04 Oct 2026</div>
+              <div class="match-card__teams">
+                <div class="match-card__flag">🇹🇳</div>
+                <span>Tunisia</span>
+                <span style="color:var(--muted);font-size:12px">vs</span>
+                <span>Ghana</span>
+                <div class="match-card__flag">🇬🇭</div>
+              </div>
+            </div>
+            <div class="match-card__score match-card__score--d">1 - 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- STAFF TAB BAR -->
+    <div class="tab-bar">
+      <button class="tab-item" onclick="switchTab('staff', 'squad')"><div class="tab-item__icon">👥</div><div class="tab-item__label">Squad</div></button>
+      <button class="tab-item tab-item--active" onclick="switchTab('staff', 'home')"><div class="tab-item__icon">🏠</div><div class="tab-item__label">Home</div></button>
+      <button class="tab-item" onclick="switchTab('staff', 'stats')"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item" onclick="switchTab('staff', 'more')"><div class="tab-item__icon">⚙️</div><div class="tab-item__label">More</div></button>
+    </div>
+  </div>
+
+  <!-- STAFF: SQUAD -->
+  <div class="phone__screen" id="staff-squad">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">Squad</div>
+        <div class="app-header__subtitle">Seniors · 23 Players</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <div class="chips">
+        <div class="chip chip--active">All</div>
+        <div class="chip">Goalkeepers</div>
+        <div class="chip">Defenders</div>
+        <div class="chip">Midfielders</div>
+        <div class="chip">Forwards</div>
+      </div>
+      <div class="player-grid">
+        <div class="player-card"><div class="player-card__photo">👩</div><div class="player-card__name">S. Gharbi</div><div class="player-card__pos">Forward · #9</div><div class="player-card__stats"><div><div class="player-card__stat-num">5</div><div class="player-card__stat-lbl">Goals</div></div><div><div class="player-card__stat-num">3</div><div class="player-card__stat-lbl">Assists</div></div></div></div>
+        <div class="player-card"><div class="player-card__photo">👩</div><div class="player-card__name">Y. Ben Amor</div><div class="player-card__pos">Midfielder · #8</div><div class="player-card__stats"><div><div class="player-card__stat-num">3</div><div class="player-card__stat-lbl">Goals</div></div><div><div class="player-card__stat-num">6</div><div class="player-card__stat-lbl">Assists</div></div></div></div>
+        <div class="player-card"><div class="player-card__photo">👩</div><div class="player-card__name">M. Mcharek</div><div class="player-card__pos">Defender · #4</div><div class="player-card__stats"><div><div class="player-card__stat-num">1</div><div class="player-card__stat-lbl">Goals</div></div><div><div class="player-card__stat-num">2</div><div class="player-card__stat-lbl">Assists</div></div></div></div>
+        <div class="player-card"><div class="player-card__photo">👩</div><div class="player-card__name">A. Saidi</div><div class="player-card__pos">Goalkeeper · #1</div><div class="player-card__stats"><div><div class="player-card__stat-num">4</div><div class="player-card__stat-lbl">CS</div></div><div><div class="player-card__stat-num">0</div><div class="player-card__stat-lbl">GA</div></div></div></div>
+        <div class="player-card"><div class="player-card__photo">👩</div><div class="player-card__name">L. Ayari</div><div class="player-card__pos">Midfielder · #6</div><div class="player-card__stats"><div><div class="player-card__stat-num">2</div><div class="player-card__stat-lbl">Goals</div></div><div><div class="player-card__stat-num">4</div><div class="player-card__stat-lbl">Assists</div></div></div></div>
+        <div class="player-card"><div class="player-card__photo">👩</div><div class="player-card__name">N. Khedira</div><div class="player-card__pos">Defender · #5</div><div class="player-card__stats"><div><div class="player-card__stat-num">0</div><div class="player-card__stat-lbl">Goals</div></div><div><div class="player-card__stat-num">1</div><div class="player-card__stat-lbl">Assists</div></div></div></div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-item tab-item--active" onclick="switchTab('staff', 'squad')"><div class="tab-item__icon">👥</div><div class="tab-item__label">Squad</div></button>
+      <button class="tab-item" onclick="switchTab('staff', 'home')"><div class="tab-item__icon">🏠</div><div class="tab-item__label">Home</div></button>
+      <button class="tab-item" onclick="switchTab('staff', 'stats')"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item" onclick="switchTab('staff', 'more')"><div class="tab-item__icon">⚙️</div><div class="tab-item__label">More</div></button>
+    </div>
+  </div>
+
+  <!-- STAFF: STATS -->
+  <div class="phone__screen" id="staff-stats">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">Stats</div>
+        <div class="app-header__subtitle">Season 2026</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-card__value">23</div><div class="stat-card__label">Players</div></div>
+        <div class="stat-card stat-card--accent"><div class="stat-card__value">18</div><div class="stat-card__label">Goals</div></div>
+        <div class="stat-card stat-card--green"><div class="stat-card__value">5</div><div class="stat-card__label">Wins</div></div>
+      </div>
+      <div class="card">
+        <div class="section-title">Top Scorers</div>
+        <div class="list-item"><div class="list-item__icon">⚽</div><div class="list-item__content"><div class="list-item__title">S. Gharbi</div><div class="list-item__subtitle">5 goals · 3 assists</div></div><div style="font-size:18px;font-weight:900;color:var(--gold)">5</div></div>
+        <div class="list-item"><div class="list-item__icon">⚽</div><div class="list-item__content"><div class="list-item__title">Y. Ben Amor</div><div class="list-item__subtitle">3 goals · 6 assists</div></div><div style="font-size:18px;font-weight:900;color:var(--gold)">3</div></div>
+        <div class="list-item"><div class="list-item__icon">⚽</div><div class="list-item__content"><div class="list-item__title">L. Ayari</div><div class="list-item__subtitle">2 goals · 4 assists</div></div><div style="font-size:18px;font-weight:900;color:var(--gold)">2</div></div>
+      </div>
+      <div class="card">
+        <div class="section-title">Team Form</div>
+        <div class="stats-grid">
+          <div class="stat-card stat-card--green"><div class="stat-card__value">5</div><div class="stat-card__label">Won</div></div>
+          <div class="stat-card" style="--tw-bg-opacity:1;background:rgba(245,158,11,0.15)"><div class="stat-card__value" style="color:var(--amber)">2</div><div class="stat-card__label">Drawn</div></div>
+          <div class="stat-card stat-card--red"><div class="stat-card__value">1</div><div class="stat-card__label">Lost</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-item" onclick="switchTab('staff', 'squad')"><div class="tab-item__icon">👥</div><div class="tab-item__label">Squad</div></button>
+      <button class="tab-item" onclick="switchTab('staff', 'home')"><div class="tab-item__icon">🏠</div><div class="tab-item__label">Home</div></button>
+      <button class="tab-item tab-item--active" onclick="switchTab('staff', 'stats')"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item" onclick="switchTab('staff', 'more')"><div class="tab-item__icon">⚙️</div><div class="tab-item__label">More</div></button>
+    </div>
+  </div>
+
+  <!-- STAFF: MORE -->
+  <div class="phone__screen" id="staff-more">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">More</div>
+        <div class="app-header__subtitle">Staff Tools</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <div class="card">
+        <div class="section-title">Tools</div>
+        <div class="list-item"><div class="list-item__icon">📋</div><div class="list-item__content"><div class="list-item__title">Lineup Templates</div><div class="list-item__subtitle">Save & load formations</div></div><div class="list-item__arrow">›</div></div>
+        <div class="list-item"><div class="list-item__icon">📝</div><div class="list-item__content"><div class="list-item__title">Match Notes</div><div class="list-item__subtitle">Record match observations</div></div><div class="list-item__arrow">›</div></div>
+        <div class="list-item"><div class="list-item__icon">🏥</div><div class="list-item__content"><div class="list-item__title">Medical Records</div><div class="list-item__subtitle">Player health & fitness</div></div><div class="list-item__arrow">›</div></div>
+        <div class="list-item"><div class="list-item__icon">📤</div><div class="list-item__content"><div class="list-item__title">Export Data</div><div class="list-item__subtitle">Download squad & stats</div></div><div class="list-item__arrow">›</div></div>
+      </div>
+      <div class="card">
+        <div class="section-title">Settings</div>
+        <div class="list-item"><div class="list-item__icon">🔔</div><div class="list-item__content"><div class="list-item__title">Notifications</div><div class="list-item__subtitle">Match alerts & updates</div></div><div class="list-item__arrow">›</div></div>
+        <div class="list-item"><div class="list-item__icon">🌐</div><div class="list-item__content"><div class="list-item__title">Language</div><div class="list-item__subtitle">English</div></div><div class="list-item__arrow">›</div></div>
+        <div class="list-item"><div class="list-item__icon">👤</div><div class="list-item__content"><div class="list-item__title">Profile</div><div class="list-item__subtitle">Account settings</div></div><div class="list-item__arrow">›</div></div>
+        <div class="list-item"><div class="list-item__icon">🚪</div><div class="list-item__content"><div class="list-item__title">Sign Out</div><div class="list-item__subtitle">End session</div></div><div class="list-item__arrow">›</div></div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-item" onclick="switchTab('staff', 'squad')"><div class="tab-item__icon">👥</div><div class="tab-item__label">Squad</div></button>
+      <button class="tab-item" onclick="switchTab('staff', 'home')"><div class="tab-item__icon">🏠</div><div class="tab-item__label">Home</div></button>
+      <button class="tab-item" onclick="switchTab('staff', 'stats')"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item tab-item--active" onclick="switchTab('staff', 'more')"><div class="tab-item__icon">⚙️</div><div class="tab-item__label">More</div></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PLAYER VIEW -->
+  <!-- ═══════════════════════════════════════ -->
+
+  <!-- PLAYER: HOME -->
+  <div class="phone__screen" id="player-home">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">Elite Squad</div>
+        <div class="app-header__subtitle">Tunisia WNT · Player</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero__bg"></div>
+        <div class="hero__overlay"></div>
+        <div class="hero__content">
+          <div class="hero__top">
+            <div class="hero__comp">WAFCON 2026</div>
+            <div class="hero__label">Next Match · 15 Oct 2026</div>
+          </div>
+          <div class="hero__teams">
+            <div class="hero__team">
+              <div class="hero__flag">🇹🇳</div>
+              <div class="hero__team-name">Tunisia</div>
+            </div>
+            <div class="hero__vs">VS</div>
+            <div class="hero__team">
+              <div class="hero__team-name">Nigeria</div>
+              <div class="hero__flag">🇳🇬</div>
+            </div>
+          </div>
+          <div class="hero__bottom">
+            <div class="hero__countdown">
+              <div class="hero__cd-cell"><div class="hero__cd-num">12</div><div class="hero__cd-lbl">Days</div></div>
+              <div class="hero__cd-cell"><div class="hero__cd-num">08</div><div class="hero__cd-lbl">Hrs</div></div>
+              <div class="hero__cd-cell"><div class="hero__cd-num">42</div><div class="hero__cd-lbl">Min</div></div>
+            </div>
+            <div class="hero__btn">Details →</div>
+          </div>
+          <div class="hero__venue">📍 Stade Hammadi Agrebi, Tunis</div>
+        </div>
+      </div>
+
+      <!-- My Form -->
+      <div class="card">
+        <div class="form-card__header">
+          <div class="form-card__icon">👩</div>
+          <div class="form-card__info">
+            <div class="form-card__title">S. Gharbi</div>
+            <div class="form-card__subtitle">Forward · #9</div>
+          </div>
+          <div class="form-card__status form-card__status--fit">Fit</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-card__value">5</div><div class="stat-card__label">Goals</div></div>
+          <div class="stat-card"><div class="stat-card__value">3</div><div class="stat-card__label">Assists</div></div>
+          <div class="stat-card"><div class="stat-card__value">6</div><div class="stat-card__label">Matches</div></div>
+        </div>
+      </div>
+
+      <!-- Staff Messages -->
+      <div class="card">
+        <div class="section-title">Staff Messages</div>
+        <div class="message">
+          <div class="message__avatar">👨‍💼</div>
+          <div class="message__content">
+            <div class="message__header">
+              <div class="message__sender">Coach Benali</div>
+              <div class="message__time">2h ago</div>
+            </div>
+            <div class="message__text">Great work in today's session. Keep pushing — WAFCON is approaching fast. See you tomorrow at 6 PM.</div>
+          </div>
+        </div>
+        <div class="message">
+          <div class="message__avatar">👩‍⚕️</div>
+          <div class="message__content">
+            <div class="message__header">
+              <div class="message__sender">Dr. Mcharek</div>
+              <div class="message__time">1d ago</div>
+            </div>
+            <div class="message__text">Medical checkup scheduled for Friday 10 AM at the training center. Don't be late.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- PLAYER TAB BAR -->
+    <div class="tab-bar">
+      <button class="tab-item tab-item--active" onclick="switchTab('player', 'home')"><div class="tab-item__icon">🏠</div><div class="tab-item__label">Home</div></button>
+      <button class="tab-item" onclick="switchTab('player', 'schedule')"><div class="tab-item__icon">📅</div><div class="tab-item__label">Schedule</div></button>
+      <button class="tab-item" onclick="switchTab('player', 'stats')"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item" onclick="switchTab('player', 'profile')"><div class="tab-item__icon">👤</div><div class="tab-item__label">Profile</div></button>
+    </div>
+  </div>
+
+  <!-- PLAYER: SCHEDULE -->
+  <div class="phone__screen" id="player-schedule">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">Schedule</div>
+        <div class="app-header__subtitle">October 2026</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <div class="card">
+        <div class="section-title">Upcoming Events</div>
+        <div class="schedule__row">
+          <div class="schedule__date"><div class="schedule__day">15</div><div class="schedule__month">Oct</div></div>
+          <div class="schedule__info">
+            <div class="schedule__title">vs Nigeria</div>
+            <div class="schedule__meta">WAFCON 2026 · Stade Hammadi Agrebi · 18:00</div>
+          </div>
+          <div class="schedule__type schedule__type--match">Match</div>
+        </div>
+        <div class="schedule__row">
+          <div class="schedule__date"><div class="schedule__day">18</div><div class="schedule__month">Oct</div></div>
+          <div class="schedule__info">
+            <div class="schedule__title">Training Session</div>
+            <div class="schedule__meta">National Training Center · 18:00</div>
+          </div>
+          <div class="schedule__type schedule__type--training">Training</div>
+        </div>
+        <div class="schedule__row">
+          <div class="schedule__date"><div class="schedule__day">22</div><div class="schedule__month">Oct</div></div>
+          <div class="schedule__info">
+            <div class="schedule__title">vs South Africa</div>
+            <div class="schedule__meta">Friendly · Stade Olympique de Radès · 18:00</div>
+          </div>
+          <div class="schedule__type schedule__type--match">Match</div>
+        </div>
+        <div class="schedule__row">
+          <div class="schedule__date"><div class="schedule__day">25</div><div class="schedule__month">Oct</div></div>
+          <div class="schedule__info">
+            <div class="schedule__title">Team Meeting</div>
+            <div class="schedule__meta">FTF Headquarters · 10:00</div>
+          </div>
+          <div class="schedule__type schedule__type--event">Event</div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-item" onclick="switchTab('player', 'home')"><div class="tab-item__icon">🏠</div><div class="tab-item__label">Home</div></button>
+      <button class="tab-item tab-item--active" onclick="switchTab('player', 'schedule')"><div class="tab-item__icon">📅</div><div class="tab-item__label">Schedule</div></button>
+      <button class="tab-item" onclick="switchTab('player', 'stats')"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item" onclick="switchTab('player', 'profile')"><div class="tab-item__icon">👤</div><div class="tab-item__label">Profile</div></button>
+    </div>
+  </div>
+
+  <!-- PLAYER: STATS -->
+  <div class="phone__screen" id="player-stats">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">My Stats</div>
+        <div class="app-header__subtitle">Season 2026</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-card__value">5</div><div class="stat-card__label">Goals</div></div>
+        <div class="stat-card"><div class="stat-card__value">3</div><div class="stat-card__label">Assists</div></div>
+        <div class="stat-card"><div class="stat-card__value">6</div><div class="stat-card__label">Matches</div></div>
+      </div>
+      <div class="card">
+        <div class="section-title">Performance</div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-item__label">Minutes</div><div class="info-item__value">540</div></div>
+          <div class="info-item"><div class="info-item__label">Pass Accuracy</div><div class="info-item__value">87%</div></div>
+          <div class="info-item"><div class="info-item__label">Shots</div><div class="info-item__value">18</div></div>
+          <div class="info-item"><div class="info-item__label">Key Passes</div><div class="info-item__value">12</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Goal Progression</div>
+        <div style="display:flex;align-items:flex-end;gap:8px;height:80px;padding:0 8px">
+          <div style="flex:1;height:40%;background:var(--gold);border-radius:4px 4px 0 0"></div>
+          <div style="flex:1;height:60%;background:var(--gold);border-radius:4px 4px 0 0"></div>
+          <div style="flex:1;height:80%;background:var(--gold);border-radius:4px 4px 0 0"></div>
+          <div style="flex:1;height:50%;background:var(--gold);border-radius:4px 4px 0 0"></div>
+          <div style="flex:1;height:100%;background:var(--gold);border-radius:4px 4px 0 0"></div>
+        </div>
+        <div style="display:flex;gap:8px;padding:0 8px;margin-top:8px">
+          <div style="flex:1;text-align:center;font-size:10px;color:var(--muted)">M1</div>
+          <div style="flex:1;text-align:center;font-size:10px;color:var(--muted)">M2</div>
+          <div style="flex:1;text-align:center;font-size:10px;color:var(--muted)">M3</div>
+          <div style="flex:1;text-align:center;font-size:10px;color:var(--muted)">M4</div>
+          <div style="flex:1;text-align:center;font-size:10px;color:var(--muted)">M5</div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-item" onclick="switchTab('player', 'home')"><div class="tab-item__icon">🏠</div><div class="tab-item__label">Home</div></button>
+      <button class="tab-item" onclick="switchTab('player', 'schedule')"><div class="tab-item__icon">📅</div><div class="tab-item__label">Schedule</div></button>
+      <button class="tab-item tab-item--active" onclick="switchTab('player', 'stats')"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item" onclick="switchTab('player', 'profile')"><div class="tab-item__icon">👤</div><div class="tab-item__label">Profile</div></button>
+    </div>
+  </div>
+
+  <!-- PLAYER: PROFILE -->
+  <div class="phone__screen" id="player-profile">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">Profile</div>
+        <div class="app-header__subtitle">S. Gharbi</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <div class="card profile-card">
+        <div class="profile-card__photo">👩</div>
+        <div class="profile-card__name">S. Gharbi</div>
+        <div class="profile-card__pos">Forward</div>
+        <div class="profile-card__number">#9</div>
+      </div>
+      <div class="card">
+        <div class="section-title">Personal Info</div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-item__label">Age</div><div class="info-item__value">24</div></div>
+          <div class="info-item"><div class="info-item__label">Height</div><div class="info-item__value">170 cm</div></div>
+          <div class="info-item"><div class="info-item__label">Weight</div><div class="info-item__value">62 kg</div></div>
+          <div class="info-item"><div class="info-item__label">Foot</div><div class="info-item__value">Right</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Documents</div>
+        <div class="list-item"><div class="list-item__icon">📄</div><div class="list-item__content"><div class="list-item__title">Passport</div><div class="list-item__subtitle">Valid until 2028</div></div><div class="list-item__arrow">›</div></div>
+        <div class="list-item"><div class="list-item__icon">🏥</div><div class="list-item__content"><div class="list-item__title">Medical Certificate</div><div class="list-item__subtitle">Valid until Dec 2026</div></div><div class="list-item__arrow">›</div></div>
+        <div class="list-item"><div class="list-item__icon">📋</div><div class="list-item__content"><div class="list-item__title">Contract</div><div class="list-item__subtitle">Until June 2027</div></div><div class="list-item__arrow">›</div></div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-item" onclick="switchTab('player', 'home')"><div class="tab-item__icon">🏠</div><div class="tab-item__label">Home</div></button>
+      <button class="tab-item" onclick="switchTab('player', 'schedule')"><div class="tab-item__icon">📅</div><div class="tab-item__label">Schedule</div></button>
+      <button class="tab-item" onclick="switchTab('player', 'stats')"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item tab-item--active" onclick="switchTab('player', 'profile')"><div class="tab-item__icon">👤</div><div class="tab-item__label">Profile</div></button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function switchView(view) {
+    // Hide all screens
+    document.querySelectorAll('.phone__screen').forEach(s => s.classList.remove('phone__screen--active'));
+    // Update buttons
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('view-btn--active'));
+    event.target.classList.add('view-btn--active');
+    // Show first tab of the view
+    if (view === 'staff') {
+      document.getElementById('staff-home').classList.add('phone__screen--active');
+    } else {
+      document.getElementById('player-home').classList.add('phone__screen--active');
+    }
+  }
+
+  function switchTab(view, tab) {
+    // Hide all screens
+    document.querySelectorAll('.phone__screen').forEach(s => s.classList.remove('phone__screen--active'));
+    // Show target
+    const target = document.getElementById(`${view}-${tab}`);
+    if (target) target.classList.add('phone__screen--active');
+  }
+</script>
+
+</body>
+</html>

@@ -3,15 +3,18 @@ import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Gamepad2, MapPin } from 'lucide-react-native';
+import { ChevronRight, Gamepad2, MapPin } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { SyncBanner } from '@/components/SyncBanner';
 import { AnnouncementsCard } from '@/components/AnnouncementsCard';
+import { AppHeader } from '@/components/AppHeader';
 import { Card } from '@/components/Card';
 import { MatchTravelCard } from '@/components/MatchTravelCard';
 import { Countdown } from '@/components/Countdown';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { Flag } from '@/components/Flag';
+import { MatchTravelCard } from '@/components/MatchTravelCard';
+import { SyncBanner } from '@/components/SyncBanner';
 import { flagCodeFor } from '@/lib/countryFlags';
 import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
@@ -64,7 +67,11 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.bottomRow}>
-            <Countdown kickoff={nextMatch ? `${nextMatch.date}T00:00:00` : ''} label={t('kickoffIn')} />
+            {/* The platform stores a date only, so the countdown runs to the start of that day. */}
+            <Countdown
+              target={nextMatch ? `${nextMatch.date}T00:00:00` : ''}
+              labels={{ days: t('days'), hrs: t('hrs'), min: t('min'), sec: t('sec') }}
+            />
             <TouchableOpacity style={styles.heroBtn} onPress={() => router.push('/match-details')} accessibilityRole="button" accessibilityLabel={t('viewDetails')}>
               <Text style={styles.heroBtnText} numberOfLines={1}>{t('matchDetails')}</Text>
               <ForwardChevron color={colors.navy} size={14} />

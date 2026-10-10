@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { I18nManager, Platform } from 'react-native';
 import { STRINGS, type StringKey } from '@/i18n/strings';
 import { getJson, KEYS, setJson } from '@/lib/storage';
 import type { Language } from '@/types';
@@ -39,6 +40,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const isRtl = language === 'ar';
+
+  // Force RTL layout on iOS/Android when Arabic is selected
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    if (I18nManager.isRTL !== isRtl) {
+      I18nManager.forceRTL(isRtl);
+    }
+  }, [isRtl]);
+
   const t = useCallback((key: StringKey) => STRINGS[language][key], [language]);
   const value = useMemo(() => ({ language, isRtl, ready, setLanguage, t }), [language, isRtl, ready, setLanguage, t]);
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;

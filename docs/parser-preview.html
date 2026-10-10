@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camp Schedule Parser — Preview v2</title>
+<style>
+  :root {
+    --navy: #0C1F3D; --navy-deep: #0B111E; --card: #101B33; --card-raised: #112950;
+    --red: #E30613; --gold: #F6C744; --white: #EDEFF4; --muted: #8FA0BD;
+    --green: #22C55E; --amber: #F59E0B; --line: rgba(148, 170, 210, 0.18);
+    --radius-card: 20px; --radius-chip: 999px;
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(148,170,210,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--navy-deep); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; gap: 16px; }
+
+  .phone { width: 390px; height: 844px; background: var(--navy); position: relative; overflow: hidden; border-radius: 40px; border: 8px solid #1a1a2e; box-shadow: 0 20px 60px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
+  .phone__screen { flex: 1; overflow-y: auto; display: none; }
+  .phone__screen--active { display: block; }
+
+  /* Header */
+  .app-header { display: flex; align-items: center; gap: 12px; padding: 16px 16px 12px; background: var(--navy); position: sticky; top: 0; z-index: 10; }
+  .app-header__logo { width: 44px; height: 44px; border-radius: 12px; background: var(--card-raised); border: 1px solid var(--line); display: grid; place-items: center; font-weight: 900; font-size: 18px; color: var(--red); flex-shrink: 0; }
+  .app-header__titles { flex: 1; min-width: 0; }
+  .app-header__title { font-size: 17px; font-weight: 800; letter-spacing: 0.02em; color: var(--white); }
+  .app-header__subtitle { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+  .app-header__bell { width: 40px; height: 40px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
+
+  /* Content */
+  .content { padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
+  .section-title { font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+
+  /* Upload Zone */
+  .upload-zone { background: var(--card); border-radius: var(--radius-card); border: 2px dashed var(--line); padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .upload-zone:hover { border-color: var(--gold); background: var(--card-raised); }
+  .upload-zone__icon { font-size: 48px; margin-bottom: 16px; }
+  .upload-zone__title { font-size: 16px; font-weight: 800; color: var(--white); }
+  .upload-zone__desc { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .upload-zone__formats { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+  .upload-zone__format { padding: 4px 12px; border-radius: var(--radius-chip); background: var(--card-raised); font-size: 11px; font-weight: 700; color: var(--muted); }
+
+  /* Textarea */
+  .textarea { width: 100%; min-height: 200px; background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 16px; color: var(--white); font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; resize: vertical; }
+  .textarea:focus { outline: none; border-color: var(--gold); }
+
+  /* Button */
+  .btn { width: 100%; padding: 16px; border-radius: var(--radius-card); font-size: 14px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; border: none; cursor: pointer; transition: all 0.2s; }
+  .btn--primary { background: var(--gold); color: var(--navy); }
+  .btn--primary:hover { opacity: 0.9; }
+  .btn--secondary { background: var(--card-raised); color: var(--white); border: 1px solid var(--line); }
+
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .stat-card { background: var(--card); border-radius: var(--radius-card); border: 1px solid var(--line); padding: 16px 12px; text-align: center; box-shadow: var(--shadow-card); }
+  .stat-card__value { font-size: 28px; font-weight: 900; color: var(--white); font-variant-numeric: tabular-nums; }
+  .stat-card__label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+  .stat-card--accent .stat-card__value { color: var(--gold); }
+  .stat-card--red .stat-card__value { color: var(--red); }
+  .stat-card--green .stat-card__value { color: var(--green); }
+
+  /* Activity List */
+  .activity-list { display: flex; flex-direction: column; gap: 8px; }
+  .activity-item { background: var(--card); border-radius: 16px; border: 1px solid var(--line); padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+  .activity-item__time { font-size: 14px; font-weight: 800; color: var(--gold); width: 50px; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .activity-item__info { flex: 1; min-width: 0; }
+  .activity-item__name { font-size: 14px; font-weight: 700; color: var(--white); }
+  .activity-item__player { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* Day Section */
+  .day-section { margin-bottom: 20px; }
+  .day-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .day-header__date { font-size: 16px; font-weight: 800; color: var(--white); }
+  .day-header__count { font-size: 12px; color: var(--muted); }
+
+  /* Tab Bar */
+  .tab-bar { background: var(--card); border-top: 1px solid var(--line); display: flex; padding: 8px 0 24px; }
+  .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px; cursor: pointer; border: none; background: none; }
+  .tab-item__icon { font-size: 20px; opacity: 0.5; }
+  .tab-item__label { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  .tab-item--active .tab-item__icon { opacity: 1; }
+  .tab-item--active .tab-item__label { color: var(--gold); }
+
+  /* Success Message */
+  .success-msg { background: rgba(34, 197, 94, 0.15); border: 1px solid var(--green); border-radius: var(--radius-card); padding: 16px; text-align: center; }
+  .success-msg__icon { font-size: 32px; margin-bottom: 8px; }
+  .success-msg__title { font-size: 16px; font-weight: 800; color: var(--green); }
+  .success-msg__desc { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* Player Tag */
+  .player-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--card-raised); border-radius: var(--radius-chip); padding: 4px 10px; font-size: 11px; font-weight: 700; color: var(--white); }
+  .player-tag__icon { font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- SCREEN 1: UPLOAD -->
+  <div class="phone__screen phone__screen--active" id="screen-upload">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">Camp Schedule</div>
+        <div class="app-header__subtitle">Staff · Upload Program</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <div>
+        <div class="section-title">Upload Program</div>
+        <div class="upload-zone" onclick="showScreen('screen-text')">
+          <div class="upload-zone__icon">📄</div>
+          <div class="upload-zone__title">Drop file here or tap to upload</div>
+          <div class="upload-zone__desc">Word, PDF or scanned image</div>
+          <div class="upload-zone__formats">
+            <div class="upload-zone__format">.docx</div>
+            <div class="upload-zone__format">.pdf</div>
+            <div class="upload-zone__format">.jpg</div>
+            <div class="upload-zone__format">.png</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Or type manually</div>
+        <textarea class="textarea" placeholder="Day ONE - 21 October 2026&#10;09:00 Waking up&#10;10:00 Training - Main Pitch&#10;12:00 Lunch&#10;11:30 S. Gharbi: Meeting with Coach&#10;..."></textarea>
+      </div>
+
+      <button class="btn btn--primary" onclick="parseAndShow()">Parse Schedule</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-item tab-item--active"><div class="tab-item__icon">📋</div><div class="tab-item__label">Schedule</div></button>
+      <button class="tab-item"><div class="tab-item__icon">👥</div><div class="tab-item__label">Squad</div></button>
+      <button class="tab-item"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item"><div class="tab-item__icon">⚙️</div><div class="tab-item__label">More</div></button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: TEXT INPUT -->
+  <div class="phone__screen" id="screen-text">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">Camp Schedule</div>
+        <div class="app-header__subtitle">Staff · Type Program</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <div>
+        <div class="section-title">Program Text</div>
+        <textarea class="textarea" id="programText" style="min-height: 400px">Day ONE - 21 October 2026
+09:00 Waking up
+10:00 Training - Main Pitch
+12:00 Lunch
+14:00 Video Analysis - Team Meeting
+16:00 Gym Session
+18:00 Dinner
+21:00 Lights out
+
+Day TWO - 22 October 2026
+08:00 Breakfast
+09:30 Training - Tactical Drills
+11:30 S. Gharbi: Meeting with Coach
+12:30 Lunch
+14:00 Pool Recovery
+15:00 Y. Ben Amor: Physio Session
+17:00 Free Time
+19:00 Dinner
+21:00 Lights out
+
+Day THREE - 23 October 2026
+09:00 Waking up
+10:00 Match vs Nigeria - Stadium
+12:00 Lunch
+14:00 Debrief
+16:00 M. Mcharek: Medical Check
+18:00 Dinner
+21:00 Lights out</textarea>
+      </div>
+      <button class="btn btn--primary" onclick="parseAndShow()">Parse Schedule</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-item tab-item--active"><div class="tab-item__icon">📋</div><div class="tab-item__label">Schedule</div></button>
+      <button class="tab-item"><div class="tab-item__icon">👥</div><div class="tab-item__label">Squad</div></button>
+      <button class="tab-item"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item"><div class="tab-item__icon">⚙️</div><div class="tab-item__label">More</div></button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: PARSED RESULT -->
+  <div class="phone__screen" id="screen-result">
+    <div class="app-header">
+      <div class="app-header__logo">🔥</div>
+      <div class="app-header__titles">
+        <div class="app-header__title">Camp Schedule</div>
+        <div class="app-header__subtitle">Staff · Parsed Result</div>
+      </div>
+      <div class="app-header__bell">🔔</div>
+    </div>
+    <div class="content">
+      <div class="success-msg">
+        <div class="success-msg__icon">✅</div>
+        <div class="success-msg__title">Schedule Parsed Successfully</div>
+        <div class="success-msg__desc">23 activities detected across 3 days</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card__value">23</div>
+          <div class="stat-card__label">Activities</div>
+        </div>
+        <div class="stat-card stat-card--accent">
+          <div class="stat-card__value">3</div>
+          <div class="stat-card__label">Days</div>
+        </div>
+        <div class="stat-card stat-card--green">
+          <div class="stat-card__value">3</div>
+          <div class="stat-card__label">Players</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Players with Private Activities</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="player-tag"><div class="player-tag__icon">👤</div>S. Gharbi</div>
+          <div class="player-tag"><div class="player-tag__icon">👤</div>Y. Ben Amor</div>
+          <div class="player-tag"><div class="player-tag__icon">👤</div>M. Mcharek</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Day ONE — 21 October</div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-item__time">09:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Waking up</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">10:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Training - Main Pitch</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">12:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Lunch</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">14:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Video Analysis - Team Meeting</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">16:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Gym Session</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">18:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Dinner</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">21:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Lights out</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Day TWO — 22 October</div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-item__time">08:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Breakfast</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">09:30</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Training - Tactical Drills</div>
+            </div>
+          </div>
+          <div class="activity-item" style="border-color: var(--red)">
+            <div class="activity-item__time">11:30</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Meeting with Coach</div>
+              <div class="activity-item__player">👤 S. Gharbi</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">12:30</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Lunch</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">14:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Pool Recovery</div>
+            </div>
+          </div>
+          <div class="activity-item" style="border-color: var(--red)">
+            <div class="activity-item__time">15:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Physio Session</div>
+              <div class="activity-item__player">👤 Y. Ben Amor</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">17:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Free Time</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">19:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Dinner</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">21:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Lights out</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Day THREE — 23 October</div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-item__time">09:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Waking up</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">10:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Match vs Nigeria - Stadium</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">12:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Lunch</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">14:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Debrief</div>
+            </div>
+          </div>
+          <div class="activity-item" style="border-color: var(--red)">
+            <div class="activity-item__time">16:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Medical Check</div>
+              <div class="activity-item__player">👤 M. Mcharek</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">18:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Dinner</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-item__time">21:00</div>
+            <div class="activity-item__info">
+              <div class="activity-item__name">Lights out</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn--primary">Send to Players</button>
+      <button class="btn btn--secondary" onclick="showScreen('screen-upload')">Edit Program</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-item tab-item--active"><div class="tab-item__icon">📋</div><div class="tab-item__label">Schedule</div></button>
+      <button class="tab-item"><div class="tab-item__icon">👥</div><div class="tab-item__label">Squad</div></button>
+      <button class="tab-item"><div class="tab-item__icon">📊</div><div class="tab-item__label">Stats</div></button>
+      <button class="tab-item"><div class="tab-item__icon">⚙️</div><div class="tab-item__label">More</div></button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showScreen(id) {
+    document.querySelectorAll('.phone__screen').forEach(s => s.classList.remove('phone__screen--active'));
+    document.getElementById(id).classList.add('phone__screen--active');
+  }
+
+  function parseAndShow() {
+    const btn = document.querySelector('.btn--primary');
+    btn.textContent = 'Parsing...';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = 'Parse Schedule';
+      btn.disabled = false;
+      showScreen('screen-result');
+    }, 800);
+  }
+</script>
+
+</body>
+</html>
