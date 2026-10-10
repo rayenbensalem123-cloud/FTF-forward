@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION public.my_linked_card()
 RETURNS TABLE (member_id bigint, name text, jersey_number text, card_position text, category text, club text)
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
 AS $$
-  SELECT m.id, m.name, m.jersey_number::text, m."position"::text, m.category::text, m.club::text
+  SELECT m.id, m.name, m.jersey_number::text, m."position"::text, m.team_category::text, m.club::text
   FROM profiles p JOIN members m ON m.id = p.member_id
   WHERE p.id = auth.uid() AND m.role = 'PLAYERS';
 $$;

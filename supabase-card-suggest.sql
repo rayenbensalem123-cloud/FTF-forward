@@ -46,7 +46,7 @@ AS $$
     SELECT public.norm_person_name(coalesce(p_first, '') || coalesce(p_last, '')) AS a,
            public.norm_person_name(coalesce(p_last, '') || coalesce(p_first, '')) AS b
   )
-  SELECT m.id, m.name, m.jersey_number::text, m."position"::text, m.category::text, m.club::text,
+  SELECT m.id, m.name, m.jersey_number::text, m."position"::text, m.team_category::text, m.club::text,
          least(levenshtein(k.a, public.norm_person_name(m.name)),
                levenshtein(k.b, public.norm_person_name(m.name))) AS dist
   FROM members m, k
