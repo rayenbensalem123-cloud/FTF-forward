@@ -6,6 +6,7 @@ import { Key, User } from 'lucide-react-native';
 import { FedScreen, fed } from '@/components/FedScreen';
 import { useAuth, type SignInResult } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { FG } from '@/i18n/forgotStrings';
 import { LG } from '@/i18n/loginStrings';
 import type { StringKey } from '@/i18n/strings';
 
@@ -80,6 +81,10 @@ export default function SignInScreen() {
         <LinearGradient colors={['#E30613', '#8F0319']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={fed.btnFill}>
           {busy ? <ActivityIndicator color="#fff" /> : <Text style={fed.btnText}>{L.authorize}</Text>}
         </LinearGradient>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => router.push('/forgot-password')} accessibilityRole="link">
+        <Text style={fed.link}>{FG[language].link}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push('/sign-up')} accessibilityRole="link">

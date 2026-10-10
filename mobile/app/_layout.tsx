@@ -35,6 +35,7 @@ export default function RootLayout() {
                   <Stack.Screen name="(tabs)" />
                   <Stack.Screen name="sign-in" options={{ animation: 'fade' }} />
                   <Stack.Screen name="sign-up" options={{ animation: 'fade' }} />
+                  <Stack.Screen name="forgot-password" options={{ animation: 'fade' }} />
                   <Stack.Screen name="match-details" options={modal} />
                   <Stack.Screen name="match-squad" options={modal} />
                   <Stack.Screen name="add-player" options={modal} />

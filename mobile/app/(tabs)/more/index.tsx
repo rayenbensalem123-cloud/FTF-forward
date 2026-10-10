@@ -2,9 +2,11 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
-import { Bell, Calendar, ClipboardList, Gamepad2, IdCard, Trophy, User, Video } from 'lucide-react-native';
+import { Newspaper, Users, Bell, Calendar, ClipboardList, Gamepad2, IdCard, Trophy, User, Video } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { Card } from '@/components/Card';
+import { ToolRow } from '@/components/ToolRow';
+import { NT } from '@/i18n/toolStrings';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
@@ -26,7 +28,8 @@ const TOOLS: { href: Href; icon: typeof Video; title: StringKey; desc: StringKey
 ];
 
 export default function MoreScreen() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const N = NT[language];
   const router = useRouter();
   const { unread } = useNotifications();
 
@@ -46,6 +49,8 @@ export default function MoreScreen() {
             {TOOLS.map((it, i) => (
               <Row key={String(i) + it.title} item={it} first={i === 0} />
             ))}
+            <ToolRow first={false} item={{ href: '/more/news', icon: Newspaper, title: N.news, desc: N.newsDesc }} />
+            <ToolRow first={false} item={{ href: '/more/staff', icon: Users, title: N.staff, desc: N.staffDesc }} />
           </Card>
         </View>
 
