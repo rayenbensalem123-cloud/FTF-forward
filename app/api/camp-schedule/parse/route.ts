@@ -6,6 +6,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
 import Tesseract from 'tesseract.js';
+import path from 'node:path';
+
+// pdfjs needs its bundled font and cmap data to decode PDFs that use standard
+// (non-embedded) fonts - which is what a Word/Docs export usually produces.
+// Without them it warns "standardFontDataUrl is not provided" and can mis-map
+// characters.
+// Resolved from the app's own node_modules rather than via require.resolve:
+// under Turbopack require.resolve returns a module id, not a filesystem path,
+// and pdfjs rejects it with "Invalid factory url". Forward slashes because
+// pdfjs parses these as URLs and demands a trailing separator.
+const PDFJS_ASSETS = path.join(process.cwd(), 'node_modules', 'pdfjs-dist');
+const STANDARD_FONTS_URL = path.join(PDFJS_ASSETS, 'standard_fonts') + '/';
+const CMAP_URL = path.join(PDFJS_ASSETS, 'cmaps') + '/';
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -59,7 +72,12 @@ const TIME_REGEX = /(\d{1,2}):(\d{2})|(\d{1,2})\s*(am|pm|h)/gi;
 // ═══════════════════════════════════════════════════════════════
 
 async function extractTextFromPdf(buffer: ArrayBuffer): Promise<string> {
-  const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+  const pdf = await pdfjsLib.getDocument({
+    data: buffer,
+    standardFontDataUrl: STANDARD_FONTS_URL,
+    cMapUrl: CMAP_URL,
+    cMapPacked: true,
+  }).promise;
   let text = '';
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
