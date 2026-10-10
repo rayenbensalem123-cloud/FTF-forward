@@ -106,7 +106,13 @@ export default function CampScheduleScreen() {
       setActivities(linked);
       if (linked.length === 0) setError(t('failedToParse'));
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('failedToParse'));
+      // A connection failure says nothing about the file that was picked, and
+      // surfacing it bare makes a dead dev server, a stale LAN IP or a phone
+      // on another network look like a malformed document. Name the server so
+      // the two cases can be told apart at a glance.
+      const msg = err instanceof Error ? err.message : t('failedToParse');
+      const unreachable = /network request failed|could not connect|failed to fetch|fetch failed|aborted/i.test(msg);
+      setError(unreachable ? `${msg}\n${API_URL}` : msg);
     } finally {
       setLoading(false);
     }
