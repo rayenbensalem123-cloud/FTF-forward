@@ -40,6 +40,7 @@ export default function RootLayout() {
                   <Stack.Screen name="add-player" options={modal} />
                   <Stack.Screen name="edit-player" options={modal} />
                   <Stack.Screen name="notifications" options={modal} />
+                  <Stack.Screen name="id-card" options={modal} />
                 </Stack>
               </NotificationsProvider>
             </MatchProvider>

@@ -1,9 +1,9 @@
 import React from 'react';
-import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ChevronRight, Gamepad2, MapPin } from 'lucide-react-native';
+import { CalendarPlus, Gamepad2, MapPin } from 'lucide-react-native';
 import { AnnouncementsCard } from '@/components/AnnouncementsCard';
 import { AppHeader } from '@/components/AppHeader';
 import { Card } from '@/components/Card';
@@ -16,12 +16,26 @@ import { flagCodeFor } from '@/lib/countryFlags';
 import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
-import { formatDate, pad2 } from '@/lib/format';
+import { formatDate } from '@/lib/format';
+import { addMatchToCalendar } from '@/lib/calendar';
+import { CS } from '@/i18n/careerStrings';
 
 export default function HomeScreen() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const CT = CS[language];
   const router = useRouter();
   const { players, nextMatch, upcoming, refresh, refreshing } = usePlayers();
+  const [addingToCal, setAddingToCal] = React.useState(false);
+
+  const onAddToCalendar = async () => {
+    if (!nextMatch) return;
+    setAddingToCal(true);
+    const res = await addMatchToCalendar(nextMatch);
+    setAddingToCal(false);
+    if (res === 'added') Alert.alert(CT.addToCalendar, CT.addedToCalendar);
+    else if (res === 'denied') Alert.alert(CT.addToCalendar, CT.calendarDenied);
+    else Alert.alert(CT.addToCalendar, CT.calendarFailed);
+  };
   // The platform stores a date only, so the countdown runs to the start of that day.
   const known = players.filter((p) => p.status !== 'unknown');
   const total = known.length;
@@ -75,10 +89,24 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {!!nextMatch?.venue && (
+          {!!nextMatch && (
             <View style={styles.infoRow}>
-              <MapPin color={colors.gold} size={12} />
-              <Text style={styles.infoText} numberOfLines={1}>{nextMatch.venue}</Text>
+              {!!nextMatch.venue && (
+                <>
+                  <MapPin color={colors.gold} size={12} />
+                  <Text style={[styles.infoText, { flex: 1 }]} numberOfLines={1}>{nextMatch.venue}</Text>
+                </>
+              )}
+              <TouchableOpacity
+                style={styles.calChip}
+                onPress={onAddToCalendar}
+                disabled={addingToCal}
+                accessibilityRole="button"
+                accessibilityLabel={CT.addToCalendar}
+              >
+                <CalendarPlus color={colors.gold} size={12} />
+                <Text style={styles.calChipText}>{CT.addToCalendar}</Text>
+              </TouchableOpacity>
             </View>
           )}
         </LinearGradient>
@@ -151,6 +179,8 @@ const styles = StyleSheet.create({
   vs: { color: colors.gold, fontWeight: '800', fontSize: 11 },
   infoRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   infoText: { color: colors.white, fontSize: 11, flexShrink: 1 },
+  calChip: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(246,199,68,0.14)', borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3 },
+  calChipText: { color: colors.gold, fontSize: 9, fontWeight: '800', textTransform: 'uppercase' },
   heroBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, height: 32,
     borderRadius: radius.sm + 2, backgroundColor: colors.gold, marginLeft: space.sm,

@@ -9,7 +9,13 @@
     "backgroundColor": "#0C1F3D",
     "plugins": [
       "expo-router",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Tunisia WNT uses the calendar to add your national-team matches so you don't miss one."
+        }
+      ]
     ],
     "ios": {
       "supportsTablet": false
