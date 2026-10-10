@@ -111,18 +111,40 @@ async function refreshSession(): Promise<boolean> {
 }
 
 // ───────── Auth ─────────
+/**
+ * Usernames are stored folded to lowercase alphanumerics, mirroring the
+ * database's norm_person_name() - which is also what autolink_player_card()
+ * matches on. So a player who types their own name the natural way, with a
+ * space or an accent ("Ghada Ayadi", "Ghadà Ayadi"), still resolves.
+ */
+function foldUsername(s: string): string {
+  return s
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
 /** Username -> login email, using the same RPC as the website's login form. */
 async function emailForUsername(username: string): Promise<string | null> {
   const { url, key } = need();
-  const res = await timedFetch(`${url}/rest/v1/rpc/get_login_email`, {
-    method: 'POST',
-    // New-style publishable keys (sb_publishable_...) are not JWTs and go in apikey only.
-    headers: { apikey: key, ...(key.startsWith('eyJ') ? { Authorization: `Bearer ${key}` } : {}), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ p_username: username.trim().toLowerCase() }),
-  });
-  if (!res.ok) return null;
-  const email = await res.json();
-  return typeof email === 'string' && email ? email : null;
+  // The raw form is tried first, so a login that works today keeps working -
+  // including usernames that legitimately contain "_" or "-".
+  const forms = [username.trim().toLowerCase(), foldUsername(username)];
+  const tried = forms.filter((v, i) => v && forms.indexOf(v) === i);
+  for (const p_username of tried) {
+    const res = await timedFetch(`${url}/rest/v1/rpc/get_login_email`, {
+      method: 'POST',
+      // New-style publishable keys (sb_publishable_...) are not JWTs and go in apikey only.
+      headers: { apikey: key, ...(key.startsWith('eyJ') ? { Authorization: `Bearer ${key}` } : {}), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_username }),
+    });
+    if (!res.ok) continue;
+    const email = await res.json();
+    if (typeof email === 'string' && email) return email;
+  }
+  return null;
 }
 
 export type SignInError = 'not_found' | 'wrong_password' | 'network';
