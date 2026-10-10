@@ -17,7 +17,18 @@ import {
 import { loadLatestSchedule, saveSchedule } from '@/lib/campSchedule';
 
 /** Base URL of the Next.js server that hosts /api/camp-schedule/parse. */
-const API_URL = (process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/$/, '');
+// EXPO_PUBLIC_* does not reach the runtime in this project: every value that
+// actually works here (the Supabase URL and key in lib/supabase.ts) comes from
+// a hardcoded default, not from the env var. So the dev server is defaulted the
+// same way, and the env var stays as an override for when it does resolve.
+//
+// The default must NOT be localhost. On a physical device localhost names the
+// phone itself, so a missing env var turns into a connection error that reads
+// like a malformed document. If the PC's address changes, this is the line to
+// update - the error box below names the server it tried.
+const DEFAULT_API_URL = 'http://192.168.1.72:3000';
+const FROM_ENV = (process.env.EXPO_PUBLIC_API_URL || '').replace(/\/$/, '');
+const API_URL = !FROM_ENV || FROM_ENV.startsWith('http://localhost') ? DEFAULT_API_URL : FROM_ENV;
 
 interface ParseResponse extends ParsedLine {
   days: ParsedLine[];
