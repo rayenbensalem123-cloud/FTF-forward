@@ -11,9 +11,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { formatDate } from '@/lib/format';
 import type { Player } from '@/types';
-import { Avatar } from './Avatar';
 import { FitnessBadge, STATUS_STYLE } from './FitnessBadge';
-import { Flag } from './Flag';
+import { PlatformCard } from './PlatformCard';
 
 interface Props {
   /** Pass a player to open the sheet, null to close it. */
@@ -117,35 +116,9 @@ export function PlayerSheet({ player, onClose }: Props) {
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
             >
-              {/* Identity */}
-              <View style={styles.identity}>
-                <Avatar name={shown.name} number={shown.number} photoUrl={shown.photoUrl} size={104} />
-                <Text style={styles.name}>{shown.name}</Text>
-                <View style={styles.tags}>
-                  <View style={styles.pill}><Text style={styles.pillText}>{shown.number ? `#${shown.number} · ` : ''}{shown.position}</Text></View>
-                  {shown.age > 0 && <View style={styles.pill}><Text style={styles.pillText}>{t('age')} {shown.age}</Text></View>}
-                  <View style={styles.pill}><Text style={styles.pillText}>{shown.category}</Text></View>
-                </View>
-                <View style={styles.clubRow}><Flag name={shown.nationality} width={22} /><Text style={styles.club}>{shown.club}</Text></View>
-                <FitnessBadge status={shown.status} large />
-              </View>
-
-              {/* Career stats */}
-              <View>
-                <Text style={styles.section}>{t('careerStats')}</Text>
-                <View style={styles.statRow}>
-                  {([
-                    ['caps', shown.caps],
-                    ['goals', shown.goals],
-                    ['assists', shown.assists],
-                  ] as const).map(([k, v]) => (
-                    <View key={k} style={styles.statTile}>
-                      <Text style={styles.statValue}>{v.toLocaleString('en-US')}</Text>
-                      <Text style={styles.statLabel} numberOfLines={1}>{t(k)}</Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
+              {/* The platform's player card */}
+              <PlatformCard player={shown} />
+              <View style={styles.statusRow}><FitnessBadge status={shown.status} large /></View>
 
               {/* Medical */}
               <View style={[styles.panel, { borderColor: STATUS_STYLE[shown.status].color }]}>
@@ -221,7 +194,7 @@ const styles = StyleSheet.create({
     position: 'absolute', top: 12, right: 14, zIndex: 2, width: 34, height: 34, borderRadius: 17,
     backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center',
   },
-  identity: { alignItems: 'center', gap: 8 },
+  statusRow: { alignItems: 'center' },
   name: { color: colors.white, fontSize: 24, fontWeight: '800', marginTop: 10, textAlign: 'center' },
   tags: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8 },
   pill: { backgroundColor: colors.goldSoft, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
