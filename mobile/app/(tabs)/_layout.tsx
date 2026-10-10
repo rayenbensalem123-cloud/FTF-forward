@@ -8,11 +8,12 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
-  const { t } = useLanguage();
+  const { t, ready: langReady } = useLanguage();
   const { ready, user } = useAuth();
 
-  // Wait for the saved session, then send signed-out users to the sign-in screen.
-  if (!ready) return null;
+  // Wait for the saved session and language (so the tabs never flash the wrong text or direction),
+  // then send signed-out users to the sign-in screen.
+  if (!ready || !langReady) return null;
   if (!user) return <Redirect href="/sign-in" />;
 
   return (

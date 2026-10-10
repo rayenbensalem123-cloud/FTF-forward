@@ -2,8 +2,9 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
-import { Bell, BarChart3, ChevronRight, ClipboardList, Gamepad2, User, Users } from 'lucide-react-native';
+import { Bell, BarChart3, ClipboardList, Gamepad2, User, Users } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
+import { ForwardChevron } from '@/components/ForwardChevron';
 import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNotifications } from '@/context/NotificationsContext';
@@ -47,7 +48,7 @@ export default function MoreScreen() {
                   <Text style={styles.rowDesc} numberOfLines={1}>{t(it.desc)}</Text>
                 </View>
                 {badge > 0 && <View style={styles.badge}><Text style={styles.badgeText}>{badge > 9 ? '9+' : badge}</Text></View>}
-                <ChevronRight color={colors.muted} size={18} />
+                <ForwardChevron />
               </TouchableOpacity>
             );
           })}
