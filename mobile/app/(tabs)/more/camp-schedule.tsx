@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { Calendar, Clock, Send, Upload } from 'lucide-react-native';
+import { Clock, Send, Upload } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { currentSession } from '@/lib/supabase';
+
+/** Base URL of the Next.js server that hosts /api/camp-schedule/parse. */
+const API_URL = (process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/$/, '');
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -36,8 +38,7 @@ interface ParsedSchedule {
 
 export default function CampScheduleScreen() {
   const { t } = useLanguage();
-  const router = useRouter();
-  const { user, can } = useAuth();
+  const { user } = useAuth();
   const [programText, setProgramText] = useState('');
   const [parsed, setParsed] = useState<ParsedSchedule | null>(null);
   const [loading, setLoading] = useState(false);
@@ -49,7 +50,7 @@ export default function CampScheduleScreen() {
       <SafeAreaView style={styles.safe} edges={['top']}>
         <AppHeader />
         <View style={styles.center}>
-          <Text style={styles.errorText}>Access denied. Staff only.</Text>
+          <Text style={styles.errorText}>{t('accessDeniedStaff')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -57,7 +58,7 @@ export default function CampScheduleScreen() {
 
   const parseSchedule = async () => {
     if (!programText.trim()) {
-      setError('Please enter the program text');
+      setError(t('pleaseEnterProgram'));
       return;
     }
 
@@ -68,7 +69,7 @@ export default function CampScheduleScreen() {
       const session = currentSession();
       if (!session) throw new Error('Not authenticated');
 
-      const response = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_URL}/api/camp-schedule/parse`, {
+      const response = await fetch(`${API_URL}/api/camp-schedule/parse`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,21 +80,20 @@ export default function CampScheduleScreen() {
 
       if (!response.ok) {
         const err = await response.json();
-        throw new Error(err.error || 'Failed to parse schedule');
+        throw new Error(err.error || t('failedToParse'));
       }
 
       const result = await response.json();
       setParsed(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to parse schedule');
+      setError(err instanceof Error ? err.message : t('failedToParse'));
     } finally {
       setLoading(false);
     }
   };
 
   const sendToPlayers = async () => {
-    // TODO: Implement send to players
-    alert('Send to players - coming soon');
+    // TODO: Persist the parsed schedule and push it to the camp players.
   };
 
   // Group activities by day
@@ -108,14 +108,14 @@ export default function CampScheduleScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <AppHeader />
 
-        <Text style={styles.title}>Camp Schedule</Text>
-        <Text style={styles.subtitle}>Upload or type the camp program</Text>
+        <Text style={styles.title}>{t('tabCampSchedule')}</Text>
+        <Text style={styles.subtitle}>{t('campScheduleSubtitle')}</Text>
 
         {/* Upload Zone */}
         <TouchableOpacity style={styles.uploadZone} activeOpacity={0.8}>
           <Upload color={colors.gold} size={32} />
-          <Text style={styles.uploadTitle}>Upload Program</Text>
-          <Text style={styles.uploadDesc}>Word, PDF or scanned image</Text>
+          <Text style={styles.uploadTitle}>{t('uploadProgram')}</Text>
+          <Text style={styles.uploadDesc}>{t('uploadProgramDesc')}</Text>
           <View style={styles.formatRow}>
             <Text style={styles.format}>.docx</Text>
             <Text style={styles.format}>.pdf</Text>
@@ -126,12 +126,12 @@ export default function CampScheduleScreen() {
 
         {/* Text Input */}
         <View style={styles.inputSection}>
-          <Text style={styles.inputLabel}>Or type manually</Text>
+          <Text style={styles.inputLabel}>{t('orTypeManually')}</Text>
           <TextInput
             style={styles.textarea}
             value={programText}
             onChangeText={setProgramText}
-            placeholder="Day ONE - 21 October 2026&#10;09:00 Waking up&#10;10:00 Training - Main Pitch&#10;12:00 Lunch&#10;11:30 S. Gharbi: Meeting with Coach&#10;..."
+            placeholder={'Day ONE - 21 October 2026\n09:00 Waking up\n10:00 Training - Main Pitch\n12:00 Lunch\n11:30 S. Gharbi: Meeting with Coach\n...'}
             placeholderTextColor={colors.muted}
             multiline
             textAlignVertical="top"
@@ -148,7 +148,7 @@ export default function CampScheduleScreen() {
           {loading ? (
             <ActivityIndicator color={colors.navy} />
           ) : (
-            <Text style={styles.parseBtnText}>Parse Schedule</Text>
+            <Text style={styles.parseBtnText}>{t('parseSchedule')}</Text>
           )}
         </TouchableOpacity>
 
@@ -166,22 +166,22 @@ export default function CampScheduleScreen() {
             <View style={styles.statsRow}>
               <View style={styles.statBox}>
                 <Text style={styles.statValue}>{parsed.totalActivities}</Text>
-                <Text style={styles.statLabel}>Activities</Text>
+                <Text style={styles.statLabel}>{t('activitiesLabel')}</Text>
               </View>
               <View style={styles.statBox}>
                 <Text style={styles.statValue}>{parsed.days.length}</Text>
-                <Text style={styles.statLabel}>Days</Text>
+                <Text style={styles.statLabel}>{t('daysLabel')}</Text>
               </View>
               <View style={styles.statBox}>
                 <Text style={styles.statValue}>{parsed.playersMentioned.length}</Text>
-                <Text style={styles.statLabel}>Players</Text>
+                <Text style={styles.statLabel}>{t('playersLabel')}</Text>
               </View>
             </View>
 
-            {/* Players with private activities */}
+            {/* Players with individual activities */}
             {parsed.playersMentioned.length > 0 && (
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Players with Private Activities</Text>
+                <Text style={styles.sectionTitle}>{t('concernedPlayers')}</Text>
                 <View style={styles.playerTags}>
                   {parsed.playersMentioned.map((name) => (
                     <View key={name} style={styles.playerTag}>
@@ -218,7 +218,7 @@ export default function CampScheduleScreen() {
             {/* Send Button */}
             <TouchableOpacity style={styles.sendBtn} onPress={sendToPlayers} activeOpacity={0.8}>
               <Send color={colors.navy} size={18} />
-              <Text style={styles.sendBtnText}>Send to Players</Text>
+              <Text style={styles.sendBtnText}>{t('sendToPlayers')}</Text>
             </TouchableOpacity>
           </View>
         )}

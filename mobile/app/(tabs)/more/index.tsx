@@ -2,16 +2,18 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
-import { Bell, BarChart3, ClipboardList, Gamepad2, Video, User, Users } from 'lucide-react-native';
+import { Bell, BarChart3, Calendar, ClipboardList, Gamepad2, Video, User, Users } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { colors, radius, space } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNotifications } from '@/context/NotificationsContext';
 import type { StringKey } from '@/i18n/strings';
 
-const ITEMS: { href: Href; icon: typeof Users; title: StringKey; desc: StringKey }[] = [
+const ITEMS: { href: Href; icon: typeof Users; title: StringKey; desc: StringKey; staffOnly?: boolean }[] = [
   { href: '/more/squad', icon: Users, title: 'tabSquad', desc: 'moreSquadDesc' },
+  { href: '/more/camp-schedule', icon: Calendar, title: 'tabCampSchedule', desc: 'moreCampScheduleDesc', staffOnly: true },
   { href: '/more/stats', icon: BarChart3, title: 'tabStats', desc: 'moreStatsDesc' },
   { href: '/more/reports', icon: ClipboardList, title: 'tabReports', desc: 'moreReportsDesc' },
   { href: '/more/meetings', icon: Video, title: 'tabMeetings', desc: 'moreMeetingsDesc' },
@@ -24,6 +26,9 @@ export default function MoreScreen() {
   const { t } = useLanguage();
   const router = useRouter();
   const { unread } = useNotifications();
+  const { user } = useAuth();
+  const isStaff = user?.role === 'staff' || user?.role === 'admin';
+  const items = ITEMS.filter((it) => !it.staffOnly || isStaff);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -31,7 +36,7 @@ export default function MoreScreen() {
         <AppHeader showBell={false} />
         <Text style={styles.title}>{t('tabMore')}</Text>
         <View style={{ gap: space.sm + 2 }}>
-          {ITEMS.map((it) => {
+          {items.map((it) => {
             const Icon = it.icon;
             const badge = it.title === 'notifications' ? unread : 0;
             return (
