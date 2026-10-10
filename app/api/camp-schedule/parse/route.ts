@@ -57,15 +57,31 @@ const ACTIVITY_KEYWORDS = [
   'travel', 'arrival', 'departure', 'free time', 'rest', 'lights out',
   'briefing', 'debrief', 'warm up', 'cool down', 'fitness', 'running',
   'weights', 'skills', 'drills', 'scrimmage', 'practice', 'game',
+  // French, in both accented and plain spelling - the team's own documents
+  // are written in French and every one of these was invisible before.
+  'reveil', 'réveil', 'entrainement', 'entraînement', 'dejeuner', 'déjeuner',
+  'petit-dejeuner', 'petit-déjeuner', 'diner', 'dîner', 'reunion', 'réunion',
+  'seance', 'séance', 'salle', 'piscine', 'etirement', 'étirement',
+  'tactique', 'video', 'vidéo', 'medical', 'médical', 'recupération',
+  'récupération', 'kine', 'kiné', 'conference', 'conférence', 'presse',
+  'voyage', 'arrivee', 'arrivée', 'depart', 'départ', 'repos', 'libre',
+  'echauffement', 'échauffement', 'course', 'jeu', 'entrainement collectif',
 ];
 
 const PRIVATE_INDICATORS = [
   'meeting with', 'private', 'one on one', '1:1', 'individual',
   'medical check', 'physio session', 'counseling', 'interview with',
   'coach talk', 'review', 'assessment', 'evaluation',
+  // French counterparts, same reason as above.
+  'reunion avec', 'réunion avec', 'prive', 'privé', 'individuel',
+  'individuelle', 'entretien avec', 'tete-a-tete', 'tête-à-tête', 'bilan',
 ];
 
-const TIME_REGEX = /(\d{1,2}):(\d{2})|(\d{1,2})\s*(am|pm|h)/gi;
+// A time, in either notation the team's documents use: "09:00" and "09.00".
+// Declared once at module scope with /g, so only String.match is safe on it -
+// RegExp.test would carry lastIndex between lines and skip activities at
+// random. Never call .test() on this.
+const TIME_REGEX = /(\d{1,2}):(\d{2})|(\d{1,2})\.(\d{2})|(\d{1,2})\s*(am|pm|h)/gi;
 
 // ═══════════════════════════════════════════════════════════════
 // TEXT EXTRACTION
@@ -136,6 +152,47 @@ function base64ToBuffer(base64: string): ArrayBuffer {
 // PARSING
 // ═══════════════════════════════════════════════════════════════
 
+const MONTHS = 'jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec';
+const WEEKDAYS =
+  'monday|tuesday|wednesday|thursday|friday|saturday|sunday|' +
+  'lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche';
+// Spelled-out day numbers, both languages. Missing ones were why a header
+// like "Day eight" fell through and its activities joined the previous day.
+const DAY_NUMERALS =
+  'one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|' +
+  'deux|trois|quatre|cinq|sept|huit|neuf|dix';
+
+/**
+ * Returns the day label a line opens, or null if it is not a header.
+ *
+ * Covers what a real proposal actually contains: "Day 3", "Day ONE",
+ * "21 October", "October 21, 2026", "Monday", "Lundi", "21/10/2026".
+ * The English weekday and the numeric date were both absent, which is what
+ * collapsed a multi-day programme into a single day.
+ */
+function detectDayHeader(line: string): string | null {
+  if (line.length > 80) return null; // a paragraph that merely mentions a date
+  // A full date such as "21.10.2026" must still count as a header even though
+  // its first two components look exactly like a European time, so that test
+  // runs first. Only a two-component value is treated as a time.
+  const isFullDate = /^\d{1,2}[/.-]\d{1,2}[/.-]\d{2,4}\b/.test(line);
+  if (!isFullDate && /^\d{1,2}[.:]\d{2}\b/.test(line)) return null;
+  const m = line.match(
+    new RegExp(
+      [
+        `\\bday\\s*(?:\\d{1,2}|${DAY_NUMERALS})\\b`,
+        `\\b(?:jour|etape)\\s*(?:n[o°.]?\\s*)?(?:\\d{1,2}|${DAY_NUMERALS})\\b`,
+        `\\b(?:${WEEKDAYS})\\b`,
+        `\\b\\d{1,2}(?:st|nd|rd|th)?\\s+(?:${MONTHS})[a-z]*\\b`, // 21 October
+        `\\b(?:${MONTHS})[a-z]*\\s+\\d{1,2}(?:st|nd|rd|th)?\\b`, // October 21
+        `\\b\\d{1,2}[/.-]\\d{1,2}(?:[/.-]\\d{2,4})?\\b`, // 21/10/2026
+      ].join('|'),
+      'i',
+    ),
+  );
+  return m ? m[0] : null;
+}
+
 function parseSchedule(text: string): ParsedSchedule {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   const activities: CampActivity[] = [];
@@ -144,11 +201,13 @@ function parseSchedule(text: string): ParsedSchedule {
 
   for (const line of lines) {
     // Detect day headers: "Day ONE", "Day 1", "21 October", "21 Oct", "Lundi 21"
-    const dayMatch = line.match(/(?:day\s+(?:\d+|one|two|three|four|five|six|seven))|(?:\d{1,2}\s+(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*)|(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)/i);
-    if (dayMatch && line.length < 50) {
-      currentDay = dayMatch[0];
-      continue;
-    }
+    const dayLabel = detectDayHeader(line);
+    if (dayLabel) currentDay = dayLabel;
+
+    // A header that also carries a time ("21 Oct  09:00  Training") still opens
+    // the day, but the line is an activity too - `continue`-ing here threw the
+    // activity away. Only a bare header is consumed as a header.
+    if (dayLabel && !line.match(TIME_REGEX)) continue;
 
     // Detect time
     const timeMatch = line.match(TIME_REGEX);
@@ -187,8 +246,13 @@ function parseSchedule(text: string): ParsedSchedule {
       }
     }
 
-    // Determine activity type
-    let activity = beforeTime || afterTime || 'Activity';
+    // Determine activity type. Prefer whichever side of the time actually
+    // reads like an activity: "21 Oct  09:00  Training" has the date before
+    // the time, and taking beforeTime blindly made "21 Oct" the activity -
+    // which then failed the keyword check and dropped the line entirely.
+    const sides = [beforeTime, afterTime].filter(Boolean);
+    const keywordSide = sides.find(s => ACTIVITY_KEYWORDS.some(kw => s.toLowerCase().includes(kw)));
+    let activity = keywordSide || sides[0] || 'Activity';
     activity = activity.replace(/^[-–—]\s*/, '').trim();
 
     // Check if activity contains keywords
