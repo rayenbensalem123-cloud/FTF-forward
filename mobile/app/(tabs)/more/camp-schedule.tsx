@@ -1,51 +1,42 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Clock, Send, Upload } from 'lucide-react-native';
+import * as DocumentPicker from 'expo-document-picker';
+import { Clock, FileText, Send, Upload, X } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { colors, radius, space } from '@/constants/theme';
-import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { currentSession } from '@/lib/supabase';
+import { useLanguage } from '@/context/LanguageContext';
+import { usePlayers } from '@/context/PlayersContext';
+import {
+  activitiesFromParsed, groupByDay, matchPlayerId, type CampActivity, type ParsedLine,
+} from '@/lib/campProgram';
+import { loadLatestSchedule, saveSchedule } from '@/lib/campSchedule';
 
 /** Base URL of the Next.js server that hosts /api/camp-schedule/parse. */
 const API_URL = (process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/$/, '');
 
-// ═══════════════════════════════════════════════════════════════
-// TYPES
-// ═══════════════════════════════════════════════════════════════
-
-interface CampActivity {
-  id: string;
-  day: string;
-  time: string;
-  activity: string;
-  type: 'collective' | 'private';
-  playerName?: string;
+interface ParseResponse extends ParsedLine {
+  days: ParsedLine[];
 }
-
-interface ParsedSchedule {
-  days: CampActivity[];
-  totalActivities: number;
-  collectiveCount: number;
-  privateCount: number;
-  playersMentioned: string[];
-}
-
-// ═══════════════════════════════════════════════════════════════
-// COMPONENT
-// ═══════════════════════════════════════════════════════════════
 
 export default function CampScheduleScreen() {
   const { t } = useLanguage();
   const { user } = useAuth();
-  const [programText, setProgramText] = useState('');
-  const [parsed, setParsed] = useState<ParsedSchedule | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { players } = usePlayers();
 
-  // Only staff can access this screen
-  if (!user || (user.role !== 'staff' && user.role !== 'admin')) {
+  const [file, setFile] = useState<{ name: string; uri: string; mimeType: string } | null>(null);
+  const [programText, setProgramText] = useState('');
+  const [activities, setActivities] = useState<CampActivity[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
+
+  const isStaff = !!user && (user.role === 'staff' || user.role === 'admin');
+
+  // Only staff can access this screen.
+  if (!isStaff) {
     return (
       <SafeAreaView style={styles.safe} edges={['top']}>
         <AppHeader />
@@ -56,35 +47,52 @@ export default function CampScheduleScreen() {
     );
   }
 
-  const parseSchedule = async () => {
-    if (!programText.trim()) {
+  // ───────── Parse ─────────
+  const parse = async () => {
+    setError(null);
+    setSent(false);
+
+    const hasFile = !!file;
+    const hasText = !!programText.trim();
+    if (!hasFile && !hasText) {
       setError(t('pleaseEnterProgram'));
       return;
     }
 
     setLoading(true);
-    setError(null);
-
     try {
-      const session = currentSession();
-      if (!session) throw new Error('Not authenticated');
+      let res: Response;
+      if (hasFile && file) {
+        // Multipart upload: the server extracts the text (pdf/docx/OCR).
+        const form = new FormData();
+        form.append('file', {
+          uri: file.uri,
+          name: file.name,
+          type: file.mimeType || 'application/octet-stream',
+        } as unknown as Blob);
+        res = await fetch(`${API_URL}/api/camp-schedule/parse`, { method: 'POST', body: form });
+      } else {
+        res = await fetch(`${API_URL}/api/camp-schedule/parse`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: programText }),
+        });
+      }
 
-      const response = await fetch(`${API_URL}/api/camp-schedule/parse`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.accessToken}`,
-        },
-        body: JSON.stringify({ text: programText }),
-      });
-
-      if (!response.ok) {
-        const err = await response.json();
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: t('failedToParse') }));
         throw new Error(err.error || t('failedToParse'));
       }
 
-      const result = await response.json();
-      setParsed(result);
+      const result: ParseResponse = await res.json();
+      const lines = activitiesFromParsed(result.days ?? []);
+
+      // Resolve "S. Gharbi" against the roster so the line reaches only her.
+      const linked = lines.map((a) =>
+        a.playerLabel ? { ...a, playerId: matchPlayerId(a.playerLabel, players) } : a,
+      );
+      setActivities(linked);
+      if (linked.length === 0) setError(t('failedToParse'));
     } catch (err) {
       setError(err instanceof Error ? err.message : t('failedToParse'));
     } finally {
@@ -92,16 +100,54 @@ export default function CampScheduleScreen() {
     }
   };
 
-  const sendToPlayers = async () => {
-    // TODO: Persist the parsed schedule and push it to the camp players.
+  // ───────── Pick a file ─────────
+  const pickFile = async () => {
+    setError(null);
+    const res = await DocumentPicker.getDocumentAsync({
+      type: [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/msword',
+        'image/*',
+      ],
+      copyToCacheDirectory: true,
+      multiple: false,
+    });
+    if (res.canceled || !res.assets?.[0]) return;
+    const a = res.assets[0];
+    setFile({ name: a.name, uri: a.uri, mimeType: a.mimeType ?? '' });
+    setActivities(null);
   };
 
-  // Group activities by day
-  const groupedByDay = parsed?.days.reduce((acc, activity) => {
-    if (!acc[activity.day]) acc[activity.day] = [];
-    acc[activity.day].push(activity);
-    return acc;
-  }, {} as Record<string, CampActivity[]>);
+  // ───────── Send to the players ─────────
+  const send = async () => {
+    if (!activities || activities.length === 0) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const existing = await loadLatestSchedule();
+      await saveSchedule(
+        {
+          title: file?.name ? file.name.replace(/\.[^.]+$/, '') : t('tabCampSchedule'),
+          sourceFile: file?.name ?? '',
+          activities,
+          publish: true,
+          author: user?.username ?? null,
+        },
+        existing && existing.status === 'published' ? existing : undefined,
+      );
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('failedToParse'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const days = activities ? groupByDay(activities) : [];
+  const personalCount = activities?.filter((a) => a.playerLabel).length ?? 0;
+  // A name the roster could not resolve stays staff-only until it is linked.
+  const unlinked = activities?.filter((a) => a.playerLabel && !a.playerId).length ?? 0;
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -111,20 +157,30 @@ export default function CampScheduleScreen() {
         <Text style={styles.title}>{t('tabCampSchedule')}</Text>
         <Text style={styles.subtitle}>{t('campScheduleSubtitle')}</Text>
 
-        {/* Upload Zone */}
-        <TouchableOpacity style={styles.uploadZone} activeOpacity={0.8}>
-          <Upload color={colors.gold} size={32} />
-          <Text style={styles.uploadTitle}>{t('uploadProgram')}</Text>
-          <Text style={styles.uploadDesc}>{t('uploadProgramDesc')}</Text>
-          <View style={styles.formatRow}>
-            <Text style={styles.format}>.docx</Text>
-            <Text style={styles.format}>.pdf</Text>
-            <Text style={styles.format}>.jpg</Text>
-            <Text style={styles.format}>.png</Text>
+        {/* Upload zone */}
+        {file ? (
+          <View style={styles.fileRow}>
+            <FileText color={colors.gold} size={20} />
+            <Text style={styles.fileName} numberOfLines={1}>{file.name}</Text>
+            <TouchableOpacity onPress={() => { setFile(null); setActivities(null); }} hitSlop={10}>
+              <X color={colors.muted} size={18} />
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.uploadZone} activeOpacity={0.8} onPress={pickFile}>
+            <Upload color={colors.gold} size={32} />
+            <Text style={styles.uploadTitle}>{t('uploadProgram')}</Text>
+            <Text style={styles.uploadDesc}>{t('uploadProgramDesc')}</Text>
+            <View style={styles.formatRow}>
+              <Text style={styles.format}>.docx</Text>
+              <Text style={styles.format}>.pdf</Text>
+              <Text style={styles.format}>.jpg</Text>
+              <Text style={styles.format}>.png</Text>
+            </View>
+          </TouchableOpacity>
+        )}
 
-        {/* Text Input */}
+        {/* Manual input */}
         <View style={styles.inputSection}>
           <Text style={styles.inputLabel}>{t('orTypeManually')}</Text>
           <TextInput
@@ -138,10 +194,10 @@ export default function CampScheduleScreen() {
           />
         </View>
 
-        {/* Parse Button */}
+        {/* Parse */}
         <TouchableOpacity
           style={[styles.parseBtn, loading && styles.parseBtnDisabled]}
-          onPress={parseSchedule}
+          onPress={parse}
           disabled={loading}
           activeOpacity={0.8}
         >
@@ -152,62 +208,60 @@ export default function CampScheduleScreen() {
           )}
         </TouchableOpacity>
 
-        {/* Error */}
         {error && (
           <View style={styles.errorBox}>
             <Text style={styles.errorBoxText}>{error}</Text>
           </View>
         )}
 
-        {/* Results */}
-        {parsed && (
+        {sent && (
+          <View style={styles.sentBox}>
+            <Text style={styles.sentBoxText}>{t('scheduleSent')}</Text>
+          </View>
+        )}
+
+        {/* Preview */}
+        {activities && activities.length > 0 && (
           <View style={styles.results}>
-            {/* Stats */}
             <View style={styles.statsRow}>
               <View style={styles.statBox}>
-                <Text style={styles.statValue}>{parsed.totalActivities}</Text>
+                <Text style={styles.statValue}>{activities.length}</Text>
                 <Text style={styles.statLabel}>{t('activitiesLabel')}</Text>
               </View>
               <View style={styles.statBox}>
-                <Text style={styles.statValue}>{parsed.days.length}</Text>
+                <Text style={styles.statValue}>{days.length}</Text>
                 <Text style={styles.statLabel}>{t('daysLabel')}</Text>
               </View>
               <View style={styles.statBox}>
-                <Text style={styles.statValue}>{parsed.playersMentioned.length}</Text>
+                <Text style={styles.statValue}>{personalCount}</Text>
                 <Text style={styles.statLabel}>{t('playersLabel')}</Text>
               </View>
             </View>
 
-            {/* Players with individual activities */}
-            {parsed.playersMentioned.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>{t('concernedPlayers')}</Text>
-                <View style={styles.playerTags}>
-                  {parsed.playersMentioned.map((name) => (
-                    <View key={name} style={styles.playerTag}>
-                      <Text style={styles.playerTagText}>👤 {name}</Text>
-                    </View>
-                  ))}
-                </View>
+            {unlinked > 0 && (
+              <View style={styles.warnBox}>
+                <Text style={styles.warnBoxText}>{t('unlinkedWarning')}</Text>
               </View>
             )}
 
-            {/* Activities by day */}
-            {groupedByDay && Object.entries(groupedByDay).map(([day, activities]) => (
-              <View key={day} style={styles.section}>
-                <Text style={styles.sectionTitle}>{day}</Text>
+            {days.map((day) => (
+              <View key={day.dayIndex} style={styles.section}>
+                <Text style={styles.sectionTitle}>{day.dayLabel}</Text>
                 <View style={styles.activityList}>
-                  {activities.map((act) => (
-                    <View key={act.id} style={[styles.activityItem, act.type === 'private' && styles.activityItemPrivate]}>
+                  {day.activities.map((act) => (
+                    <View
+                      key={String(act.id)}
+                      style={[styles.activityItem, act.playerLabel && styles.activityItemPersonal]}
+                    >
                       <View style={styles.activityTime}>
                         <Clock color={colors.gold} size={14} />
                         <Text style={styles.activityTimeText}>{act.time}</Text>
                       </View>
                       <View style={styles.activityInfo}>
                         <Text style={styles.activityName}>{act.activity}</Text>
-                        {act.playerName && (
-                          <Text style={styles.activityPlayer}>👤 {act.playerName}</Text>
-                        )}
+                        {act.playerLabel ? (
+                          <Text style={styles.activityPlayer}>👤 {act.playerLabel}</Text>
+                        ) : null}
                       </View>
                     </View>
                   ))}
@@ -215,10 +269,20 @@ export default function CampScheduleScreen() {
               </View>
             ))}
 
-            {/* Send Button */}
-            <TouchableOpacity style={styles.sendBtn} onPress={sendToPlayers} activeOpacity={0.8}>
-              <Send color={colors.navy} size={18} />
-              <Text style={styles.sendBtnText}>{t('sendToPlayers')}</Text>
+            <TouchableOpacity
+              style={[styles.sendBtn, saving && styles.parseBtnDisabled]}
+              onPress={send}
+              disabled={saving}
+              activeOpacity={0.8}
+            >
+              {saving ? (
+                <ActivityIndicator color={colors.navy} />
+              ) : (
+                <>
+                  <Send color={colors.navy} size={18} />
+                  <Text style={styles.sendBtnText}>{t('sendToPlayers')}</Text>
+                </>
+              )}
             </TouchableOpacity>
           </View>
         )}
@@ -259,6 +323,18 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
 
+  fileRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.goldBorder,
+    padding: 16,
+  },
+  fileName: { color: colors.white, fontSize: 14, fontWeight: '700', flex: 1 },
+
   inputSection: { gap: 8 },
   inputLabel: { color: colors.gold, fontSize: 13, fontWeight: '800', letterSpacing: 0.05, textTransform: 'uppercase' },
   textarea: {
@@ -270,7 +346,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 13,
     fontFamily: 'monospace',
-    minHeight: 200,
+    minHeight: 180,
   },
 
   parseBtn: {
@@ -291,6 +367,24 @@ const styles = StyleSheet.create({
   },
   errorBoxText: { color: colors.red, fontSize: 13, fontWeight: '600' },
 
+  sentBox: {
+    backgroundColor: colors.goldSoft,
+    borderRadius: radius.md,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: colors.goldBorder,
+  },
+  sentBoxText: { color: colors.white, fontSize: 13, fontWeight: '700' },
+
+  warnBox: {
+    backgroundColor: colors.cardRaised,
+    borderRadius: radius.md,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: colors.goldBorder,
+  },
+  warnBoxText: { color: colors.muted, fontSize: 12, fontWeight: '600' },
+
   results: { gap: space.lg },
 
   statsRow: { flexDirection: 'row', gap: 10 },
@@ -309,17 +403,6 @@ const styles = StyleSheet.create({
   section: { gap: 10 },
   sectionTitle: { color: colors.gold, fontSize: 13, fontWeight: '800', letterSpacing: 0.12, textTransform: 'uppercase' },
 
-  playerTags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  playerTag: {
-    backgroundColor: colors.cardRaised,
-    borderRadius: radius.pill,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-  },
-  playerTagText: { color: colors.white, fontSize: 12, fontWeight: '700' },
-
   activityList: { gap: 8 },
   activityItem: {
     backgroundColor: colors.card,
@@ -331,8 +414,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  activityItemPrivate: { borderColor: colors.red },
-  activityTime: { flexDirection: 'row', alignItems: 'center', gap: 4, width: 50 },
+  activityItemPersonal: { borderColor: colors.red },
+  activityTime: { flexDirection: 'row', alignItems: 'center', gap: 4, width: 56 },
   activityTimeText: { color: colors.gold, fontSize: 14, fontWeight: '800', fontVariant: ['tabular-nums'] },
   activityInfo: { flex: 1 },
   activityName: { color: colors.white, fontSize: 14, fontWeight: '700' },

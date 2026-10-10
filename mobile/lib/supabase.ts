@@ -256,6 +256,20 @@ export async function insert<T = any>(table: string, row: Record<string, unknown
   return rows[0];
 }
 
+/** Insert many rows in a single request (PostgREST accepts a JSON array). */
+export async function insertMany<T = any>(table: string, rows: Record<string, unknown>[]): Promise<T[]> {
+  if (rows.length === 0) return [];
+  const res = await authed(`/rest/v1/${table}`, {
+    method: 'POST',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify(rows),
+  });
+  if (!res.ok) return fail(res);
+  const out = (await res.json()) as T[];
+  if (out.length === 0) throw new ApiError('Not allowed', 403);
+  return out;
+}
+
 /** Insert, or update the row that already has the same values in `onConflict` (comma-separated columns). */
 export async function upsert(table: string, row: Record<string, unknown>, onConflict: string): Promise<void> {
   const res = await authed(`/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`, {
