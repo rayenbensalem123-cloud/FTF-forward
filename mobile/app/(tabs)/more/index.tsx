@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
-import { Newspaper, Users, Bell, Calendar, ClipboardList, Gamepad2, IdCard, Trophy, User, Video } from 'lucide-react-native';
+import { Tent, Newspaper, Users, Bell, Calendar, ClipboardList, Gamepad2, IdCard, Trophy, User, Video } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { Card } from '@/components/Card';
 import { ToolRow } from '@/components/ToolRow';
@@ -49,6 +49,7 @@ export default function MoreScreen() {
             {TOOLS.map((it, i) => (
               <Row key={String(i) + it.title} item={it} first={i === 0} />
             ))}
+            <ToolRow first={false} item={{ href: '/more/camps', icon: Tent, title: N.camps, desc: N.campsDesc }} />
             <ToolRow first={false} item={{ href: '/more/news', icon: Newspaper, title: N.news, desc: N.newsDesc }} />
             <ToolRow first={false} item={{ href: '/more/staff', icon: Users, title: N.staff, desc: N.staffDesc }} />
           </Card>

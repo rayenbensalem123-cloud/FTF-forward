@@ -1,6 +1,9 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { usePlayers } from '@/context/PlayersContext';
-import { cancelMatchReminders, ensurePermission, presentNow, scheduleMatchReminders } from '@/lib/notifications';
+import { fetchCamps } from '@/lib/camps';
+import { fetchMeetings } from '@/lib/meetings';
+import { cancelMatchReminders, ensurePermission, presentNow, syncReminders } from '@/lib/notifications';
+import { buildReminderPlan } from '@/lib/remindersLogic';
 import { getJson, KEYS, setJson } from '@/lib/storage';
 import type { AppNotification } from '@/types';
 
@@ -61,15 +64,31 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
   // Keep the scheduled reminders in step with the setting and with the fixture on the platform.
   const matchDate = nextMatch?.date;
   const matchOpponent = nextMatch?.opponent;
+  // The reminder list also covers meetings and camps; they are read here, and any failure just leaves them out.
   useEffect(() => {
     if (!loaded) return;
-    if (settings.matchReminders && matchDate && matchOpponent) {
-      void ensurePermission().then((ok) => {
-        if (ok) void scheduleMatchReminders(matchDate, matchOpponent);
-      });
-    } else {
+    let alive = true;
+    if (!settings.matchReminders) {
       void cancelMatchReminders();
+      return;
     }
+    (async () => {
+      const [ok, meetings, camps] = await Promise.all([
+        ensurePermission(),
+        fetchMeetings().catch(() => []),
+        fetchCamps().catch(() => []),
+      ]);
+      if (!ok || !alive) return;
+      const plan = buildReminderPlan({
+        match: matchDate && matchOpponent ? { date: matchDate, opponent: matchOpponent } : null,
+        meetings: meetings.map((m) => ({ title: m.title, at: m.at })),
+        camps: camps.map((c) => ({ name: c.name, start: c.start })),
+      });
+      if (alive) await syncReminders(plan);
+    })();
+    return () => {
+      alive = false;
+    };
   }, [loaded, settings.matchReminders, matchDate, matchOpponent]);
 
   const add = useCallback((title: string, body?: string) => {
