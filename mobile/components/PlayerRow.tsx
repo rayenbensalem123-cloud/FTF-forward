@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ChevronRight } from 'lucide-react-native';
+import { ForwardChevron } from '@/components/ForwardChevron';
 import { colors, radius, space } from '@/constants/theme';
 import type { Player } from '@/types';
 import { Avatar } from './Avatar';
@@ -26,7 +26,7 @@ export function PlayerRow({ player, onPress }: { player: Player; onPress: (p: Pl
       <View style={styles.right}>
         <FitnessBadge status={player.status} />
       </View>
-      <ChevronRight color={colors.muted} size={18} />
+      <ForwardChevron />
     </TouchableOpacity>
   );
 }

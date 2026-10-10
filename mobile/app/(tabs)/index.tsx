@@ -3,26 +3,26 @@ import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ChevronRight, Gamepad2, MapPin } from 'lucide-react-native';
+import { Gamepad2, MapPin } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { SyncBanner } from '@/components/SyncBanner';
 import { AnnouncementsCard } from '@/components/AnnouncementsCard';
 import { Card } from '@/components/Card';
 import { MatchTravelCard } from '@/components/MatchTravelCard';
+import { Countdown } from '@/components/Countdown';
+import { ForwardChevron } from '@/components/ForwardChevron';
 import { Flag } from '@/components/Flag';
 import { flagCodeFor } from '@/lib/countryFlags';
 import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
 import { formatDate, pad2 } from '@/lib/format';
-import { useCountdown } from '@/lib/useCountdown';
 
 export default function HomeScreen() {
   const { t } = useLanguage();
   const router = useRouter();
   const { players, nextMatch, upcoming, refresh, refreshing } = usePlayers();
   // The platform stores a date only, so the countdown runs to the start of that day.
-  const cd = useCountdown(nextMatch ? `${nextMatch.date}T00:00:00` : '');
   const known = players.filter((p) => p.status !== 'unknown');
   const total = known.length;
   const fitCount = known.filter((p) => p.status === 'fit').length;
@@ -64,22 +64,10 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.bottomRow}>
-            <View style={styles.countdown} accessibilityRole="timer" accessibilityLabel={t('kickoffIn')}>
-              {([
-                [cd.days, t('days')],
-                [cd.hours, t('hrs')],
-                [cd.minutes, t('min')],
-                [cd.seconds, t('sec')],
-              ] as const).map(([v, label]) => (
-                <View key={label} style={styles.cdBox}>
-                  <Text style={styles.cdValue}>{pad2(v)}</Text>
-                  <Text style={styles.cdLabel}>{label}</Text>
-                </View>
-              ))}
-            </View>
+            <Countdown kickoff={nextMatch ? `${nextMatch.date}T00:00:00` : ''} label={t('kickoffIn')} />
             <TouchableOpacity style={styles.heroBtn} onPress={() => router.push('/match-details')} accessibilityRole="button" accessibilityLabel={t('viewDetails')}>
               <Text style={styles.heroBtnText} numberOfLines={1}>{t('matchDetails')}</Text>
-              <ChevronRight color={colors.navy} size={14} />
+              <ForwardChevron color={colors.navy} size={14} />
             </TouchableOpacity>
           </View>
 
@@ -101,7 +89,7 @@ export default function HomeScreen() {
             <Text style={styles.gamesTitle}>{t('tabGames')}</Text>
             <Text style={styles.gamesDesc}>{t('moreGamesDesc')}</Text>
           </View>
-          <ChevronRight size={18} color={colors.muted} />
+          <ForwardChevron />
         </TouchableOpacity>
 
         {/* Squad readiness: hidden when this account cannot see medical data */}
@@ -157,10 +145,6 @@ const styles = StyleSheet.create({
   crestText: { color: colors.white, fontWeight: '800', fontSize: 9 },
   teamName: { color: colors.white, fontWeight: '700', fontSize: 13, flexShrink: 1 },
   vs: { color: colors.gold, fontWeight: '800', fontSize: 11 },
-  countdown: { flexDirection: 'row', gap: 4 },
-  cdBox: { minWidth: 36, alignItems: 'center', backgroundColor: 'rgba(7,19,38,0.55)', borderRadius: 8, paddingVertical: 3, paddingHorizontal: 3 },
-  cdValue: { color: colors.white, fontSize: 14, fontWeight: '800', fontVariant: ['tabular-nums'] },
-  cdLabel: { color: colors.muted, fontSize: 8, fontWeight: '700', letterSpacing: 0.4, textTransform: 'uppercase' },
   infoRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   infoText: { color: colors.white, fontSize: 11, flexShrink: 1 },
   heroBtn: {

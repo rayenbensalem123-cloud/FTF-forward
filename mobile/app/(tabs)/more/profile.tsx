@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ChevronRight, FileDown, LogOut, UserPlus } from 'lucide-react-native';
+import { FileDown, LogOut, UserPlus } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
+import { ForwardChevron } from '@/components/ForwardChevron';
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { Segmented, type Option } from '@/components/Chips';
@@ -75,7 +76,7 @@ export default function ProfileScreen() {
               <TouchableOpacity style={styles.action} onPress={() => router.push('/add-player')} accessibilityRole="button">
                 <View style={styles.actionIcon}><UserPlus color={colors.gold} size={18} /></View>
                 <Text style={styles.actionText}>{t('addPlayer')}</Text>
-                <ChevronRight color={colors.muted} size={18} />
+                <ForwardChevron />
               </TouchableOpacity>
             )}
             <TouchableOpacity
@@ -86,7 +87,7 @@ export default function ProfileScreen() {
             >
               <View style={styles.actionIcon}><FileDown color={colors.gold} size={18} /></View>
               <Text style={styles.actionText}>{t('exportRoster')}</Text>
-              {exporting ? <ActivityIndicator color={colors.gold} /> : <ChevronRight color={colors.muted} size={18} />}
+              {exporting ? <ActivityIndicator color={colors.gold} /> : <ForwardChevron />}
             </TouchableOpacity>
           </Card>
         </View>
