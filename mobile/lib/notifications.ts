@@ -88,3 +88,21 @@ export async function presentNow(title: string, body: string): Promise<void> {
     // ignore
   }
 }
+
+/** Replaces every scheduled reminder with this list (the phone's 64-notification limit is far away). */
+export async function syncReminders(items: { at: Date; title: string; body: string }[]): Promise<number> {
+  await cancelMatchReminders();
+  let scheduled = 0;
+  for (const item of items) {
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: { title: item.title, body: item.body },
+        trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: item.at },
+      });
+      scheduled += 1;
+    } catch {
+      // one failed reminder should not block the rest
+    }
+  }
+  return scheduled;
+}

@@ -10,6 +10,7 @@ import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchTravelCard } from '@/components/MatchTravelCard';
+import { MatchDayCard } from '@/components/MatchDayCard';
 import { Countdown } from '@/components/Countdown';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { Flag } from '@/components/Flag';
@@ -162,6 +163,8 @@ export default function HomeScreen() {
             </View>
           )}
         </LinearGradient>
+
+        <MatchDayCard match={nextMatch} />
 
         {isStaff ? (
           <>

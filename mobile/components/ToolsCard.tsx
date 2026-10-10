@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { Calendar, ClipboardList, Gamepad2, IdCard, Newspaper, Trophy, Users, Video } from 'lucide-react-native';
+import { Calendar, ClipboardList, Gamepad2, IdCard, Newspaper, Tent, Trophy, Users, Video } from 'lucide-react-native';
 import { Card } from '@/components/Card';
 import { ToolRow, type ToolItem } from '@/components/ToolRow';
 import { colors, sectionTitle, space } from '@/constants/theme';
@@ -15,6 +15,7 @@ export function ToolsCard() {
     { href: '/more/career', icon: Trophy, title: t('tabCareer'), desc: t('moreCareerDesc') },
     { href: '/id-card', icon: IdCard, title: t('tabIdCard'), desc: t('moreIdCardDesc') },
     { href: '/more/camp-schedule', icon: Calendar, title: t('tabCampSchedule'), desc: t('moreCampScheduleDesc') },
+    { href: '/more/camps', icon: Tent, title: N.camps, desc: N.campsDesc },
     { href: '/more/reports', icon: ClipboardList, title: t('tabReports'), desc: t('moreReportsDesc') },
     { href: '/more/meetings', icon: Video, title: t('tabMeetings'), desc: t('moreMeetingsDesc') },
     { href: '/more/news', icon: Newspaper, title: N.news, desc: N.newsDesc },
