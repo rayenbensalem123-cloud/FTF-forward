@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
-import { Bell, BarChart3, ClipboardList, Gamepad2, User, Users } from 'lucide-react-native';
+import { Bell, BarChart3, ClipboardList, Gamepad2, Video, User, Users } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { colors, radius, space } from '@/constants/theme';
@@ -14,6 +14,7 @@ const ITEMS: { href: Href; icon: typeof Users; title: StringKey; desc: StringKey
   { href: '/more/squad', icon: Users, title: 'tabSquad', desc: 'moreSquadDesc' },
   { href: '/more/stats', icon: BarChart3, title: 'tabStats', desc: 'moreStatsDesc' },
   { href: '/more/reports', icon: ClipboardList, title: 'tabReports', desc: 'moreReportsDesc' },
+  { href: '/more/meetings', icon: Video, title: 'tabMeetings', desc: 'moreMeetingsDesc' },
   { href: '/more/games', icon: Gamepad2, title: 'tabGames', desc: 'moreGamesDesc' },
   { href: '/notifications', icon: Bell, title: 'notifications', desc: 'moreNotificationsDesc' },
   { href: '/more/profile', icon: User, title: 'tabProfile', desc: 'moreProfileDesc' },
