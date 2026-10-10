@@ -94,21 +94,69 @@ async function extractTextFromPdf(buffer: ArrayBuffer): Promise<string> {
     cMapUrl: CMAP_URL,
     cMapPacked: true,
   }).promise;
-  let text = '';
+  const pages: string[] = [];
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    text += content.items.map((item: any) => item.str).join(' ') + '\n';
+    let out = '';
+    let lastY: number | null = null;
+    let lastEndX: number | null = null;
+    for (const raw of content.items as any[]) {
+      if (typeof raw?.str !== 'string') continue; // marked-content stubs have no str
+      const t = Array.isArray(raw.transform) ? raw.transform : null;
+      const y = typeof t?.[5] === 'number' ? t[5] : null;
+      const x = typeof t?.[4] === 'number' ? t[4] : null;
+      const width = typeof raw.width === 'number' ? raw.width : 0;
+
+      if (lastY !== null && y !== null && Math.abs(y - lastY) > 1) {
+        // New baseline -> new line. This is the whole fix: joining with a
+        // space collapsed every page into a single line, so no day header was
+        // ever found on a real PDF and the programme stayed one day.
+        out = out.trimEnd() + '\n';
+        lastEndX = null;
+      } else if (lastEndX !== null && x !== null && x - lastEndX > 1) {
+        // A real gap between runs on the same line: keep the words apart
+        // without inventing a line break.
+        if (out && !/\s$/.test(out) && !/^\s/.test(raw.str)) out += ' ';
+      }
+
+      out += raw.str;
+      lastY = y;
+      lastEndX = x !== null ? x + width : null;
+
+      if (raw.hasEOL) {
+        out = out.trimEnd() + '\n';
+        lastY = null;
+        lastEndX = null;
+      }
+    }
+    pages.push(out.trimEnd());
   }
-  return text;
+  // Blank line between pages, so a day header that starts a new page is not
+  // welded to the last activity of the page before it.
+  return pages.join('\n\n');
 }
 
 async function extractTextFromDocx(buffer: ArrayBuffer): Promise<string> {
   const zip = await JSZip.loadAsync(buffer);
   const doc = await zip.file('word/document.xml')?.async('string');
   if (!doc) throw new Error('Invalid Word document');
-  // Strip XML tags
-  return doc.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+  // Paragraph ends and explicit breaks become new lines. Replacing them with
+  // a space - as this did - turned the whole document into one line, which is
+  // the same failure the PDF path had.
+  return doc
+    .replace(/<w:br[^>]*\/>/gi, '\n')
+    .replace(/<w:tab[^>]*\/>/gi, ' ')
+    .replace(/<\/w:p>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 async function extractTextFromImage(buffer: ArrayBuffer): Promise<string> {
@@ -294,15 +342,31 @@ function parseSchedule(text: string): ParsedSchedule {
     // Check for private indicators. Diacritics removed first so a vocalised
     // Arabic line still matches its keyword.
     const haystack = stripArabicDiacritics(line.toLowerCase());
-    const isPrivate = ALL_PRIVATE.some(ind => haystack.includes(ind));
+    let isPrivate = ALL_PRIVATE.some(ind => haystack.includes(ind));
+
+    // A name in front of a colon is the coach singling one player out,
+    // whatever the activity itself says. Until now only a private keyword
+    // could make a line personal, so "Meeting with Coach" reached the player
+    // as hers while "S. Gharbi: Recovery session" did not - the clearest
+    // signal in the document was the one being ignored.
+    const colonMatch = line.match(/([A-Z][a-z]*\.?\s+[A-Z][a-z]+)\s*:/);
+    const arabicColonMatch = !colonMatch
+      ? line.match(/([ء-ي][ء-ي\s]{2,30}?)\s*:/)
+      : null;
+    if (colonMatch || arabicColonMatch) isPrivate = true;
     
     // Extract player name for private activities
     let playerName: string | undefined;
     if (isPrivate) {
       // Format 1: "S. Gharbi: Meeting with Coach" or "Y. Ben Amor: Physio"
-      const colonMatch = line.match(/([A-Z][a-z]*\.?\s+[A-Z][a-z]+)\s*:/);
       if (colonMatch) {
         playerName = colonMatch[1];
+      } else if (arabicColonMatch) {
+        // Format 4: Arabic. Arabic has no capitalisation to key off, so the
+        // Latin patterns find nothing. It only resolves to a card if that
+        // card carries the same spelling - otherwise it surfaces as unlinked
+        // for the coach to settle, which is the safe failure.
+        playerName = arabicColonMatch[1].trim();
       } else {
         // Format 2: "Meeting with Coach — S. Gharbi"
         const dashMatch = line.match(/[—–-]\s*([A-Z][a-z]*\.?\s+[A-Z][a-z]+)/);
@@ -316,33 +380,22 @@ function parseSchedule(text: string): ParsedSchedule {
           }
         }
       }
-      if (playerName) {
-        playersMentioned.add(playerName);
-      } else {
-        // Format 4: Arabic. Arabic has no capitalisation to key off, so every
-        // pattern above finds nothing. Take the run before the colon
-        // ("ياسمين: اجتماع مع المدرب") or what follows a "meeting with"
-        // indicator ("اجتماع مع ياسمين"). It will only resolve to a card if
-        // that card carries the same spelling - otherwise it surfaces as
-        // unlinked for the coach to settle, which is the safe failure.
-        const arColon = line.match(/([\u0621-\u064A][\u0621-\u064A\s]{2,30}?)\s*:/);
-        if (arColon) {
-          playerName = arColon[1].trim();
-        } else {
-          for (const ind of AR_PRIVATE) {
-            const i = haystack.indexOf(ind);
-            if (i === -1) continue;
-            const after = line.substring(i + ind.length).trim();
-            const nm = after.match(/[\u0621-\u064A]{2,}(?:\s+[\u0621-\u064A]{2,}){0,3}/);
-            if (nm) playerName = nm[0];
-            break;
-          }
+      if (!playerName) {
+        // Format 5: Arabic with no colon - take what follows an indicator
+        // ("اجتماع مع ياسمين"). The Latin patterns above find nothing here.
+        for (const ind of AR_PRIVATE) {
+          const i = haystack.indexOf(ind);
+          if (i === -1) continue;
+          const after = line.substring(i + ind.length).trim();
+          const nm = after.match(/[ء-ي]{2,}(?:\s+[ء-ي]{2,}){0,3}/);
+          if (nm) playerName = nm[0];
+          break;
         }
-        if (playerName && AR_ROLE_WORDS.has(stripArabicDiacritics(playerName))) {
-          playerName = undefined; // a role, not a person - leave the line collective
-        }
-        if (playerName) playersMentioned.add(playerName);
       }
+      if (playerName && AR_ROLE_WORDS.has(stripArabicDiacritics(playerName))) {
+        playerName = undefined; // a role, not a person - leave the line collective
+      }
+      if (playerName) playersMentioned.add(playerName);
     }
 
     // Determine activity type. Prefer whichever side of the time actually
@@ -350,9 +403,21 @@ function parseSchedule(text: string): ParsedSchedule {
     // the time, and taking beforeTime blindly made "21 Oct" the activity -
     // which then failed the keyword check and dropped the line entirely.
     const sides = [beforeTime, afterTime].filter(Boolean);
-    const keywordSide = sides.find(s => ACTIVITY_KEYWORDS.some(kw => s.toLowerCase().includes(kw)));
+    // ALL_KEYWORDS, not ACTIVITY_KEYWORDS: without the Arabic list an Arabic
+    // line with the date before the time picked the date as its activity.
+    const keywordSide = sides.find(s =>
+      ALL_KEYWORDS.some(kw => stripArabicDiacritics(s.toLowerCase()).includes(kw)),
+    );
     let activity = keywordSide || sides[0] || 'Activity';
     activity = activity.replace(/^[-–—]\s*/, '').trim();
+
+    // "S. Gharbi: Recovery session" - the name is the player, not part of
+    // what she is doing. Left in place the name showed up twice: once as her
+    // card and again inside the activity text.
+    if (playerName && activity.toLowerCase().startsWith(playerName.toLowerCase())) {
+      activity = activity.slice(playerName.length).replace(/^[\s:：-]+/, '').trim();
+    }
+    if (!activity) activity = 'Activity';
 
     // Check if activity contains keywords
     const activityHay = stripArabicDiacritics(activity.toLowerCase());
