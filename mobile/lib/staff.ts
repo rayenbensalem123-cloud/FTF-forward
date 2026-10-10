@@ -1,3 +1,4 @@
+import { withCache } from '@/lib/cached';
 import { select, signedPhotoUrls } from '@/lib/supabase';
 import { ageFromBirthdate } from '@/lib/mappers';
 
@@ -14,7 +15,9 @@ export function staffFromDb(r: any): StaffMember {
   };
 }
 
-export async function fetchStaff(): Promise<StaffMember[]> {
+export const fetchStaff = (): Promise<StaffMember[]> => withCache('wnt.staff.v1', loadStaff);
+
+async function loadStaff(): Promise<StaffMember[]> {
   const rows = await select<any>('members', 'select=id,role,name,position,nationality,birthdate,nat_matches,image_url,image_path&role=neq.PLAYERS&order=name.asc');
   const urls = await signedPhotoUrls(rows.map((r) => r.image_path).filter(Boolean));
   return rows.map((r) => {

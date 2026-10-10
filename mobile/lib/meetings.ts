@@ -1,3 +1,4 @@
+import { withCache } from '@/lib/cached';
 import { select } from '@/lib/supabase';
 
 export type Meeting = {
@@ -11,7 +12,9 @@ export const meetingFromDb = (r: any): Meeting => ({
 });
 
 /** Anyone signed in can read these; the host-only start link is never requested. */
-export async function fetchMeetings(): Promise<Meeting[]> {
+export const fetchMeetings = (): Promise<Meeting[]> => withCache('wnt.meetings.v1', loadMeetings);
+
+async function loadMeetings(): Promise<Meeting[]> {
   const rows = await select<any>('meetings', 'select=id,title,team_category,scheduled_at,status,join_url,recording_url&order=scheduled_at.asc&limit=500');
   return rows.map(meetingFromDb);
 }
