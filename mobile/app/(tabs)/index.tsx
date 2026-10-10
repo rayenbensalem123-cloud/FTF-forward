@@ -10,6 +10,7 @@ import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchTravelCard } from '@/components/MatchTravelCard';
+import { CheckInCard, CheckInSummary } from '@/components/CheckIn';
 import { MatchDayCard } from '@/components/MatchDayCard';
 import { Countdown } from '@/components/Countdown';
 import { ForwardChevron } from '@/components/ForwardChevron';
@@ -211,6 +212,8 @@ export default function HomeScreen() {
               </Card>
             )}
 
+            <CheckInSummary />
+
             {/* Top players */}
             {topPlayers.length > 0 && (
               <View style={styles.group}>
@@ -269,6 +272,8 @@ export default function HomeScreen() {
           </>
         ) : (
           <>
+            {user?.memberId != null && <CheckInCard memberId={user.memberId} />}
+
             {/* My form: the signed-in player's own card */}
             <Card>
               <Text style={styles.section}>{t('myForm')}</Text>
