@@ -36,19 +36,27 @@ function CountdownInner({ target, labels }: { target: string; labels: CountdownL
 /**
  * The second-by-second kickoff countdown, kept out of the home screen so the
  * 1-second tick only re-renders this tiny component instead of the whole screen.
+ * Styled like the hero cells of the redesign: a heavy tabular number over an
+ * uppercase micro-label, no box behind it.
  */
 export const Countdown = memo(CountdownInner);
 
 const styles = StyleSheet.create({
-  countdown: { flexDirection: 'row', gap: 4 },
-  cdBox: {
-    minWidth: 36,
-    alignItems: 'center',
-    backgroundColor: 'rgba(7,19,38,0.55)',
-    borderRadius: 8,
-    paddingVertical: 3,
-    paddingHorizontal: 3,
+  countdown: { flexDirection: 'row', gap: 14 },
+  cdBox: { alignItems: 'center', minWidth: 34 },
+  cdValue: {
+    color: colors.white,
+    fontSize: 20,
+    fontWeight: '900',
+    fontVariant: ['tabular-nums'],
+    lineHeight: 22,
   },
-  cdValue: { color: colors.white, fontSize: 14, fontWeight: '800', fontVariant: ['tabular-nums'] },
-  cdLabel: { color: colors.muted, fontSize: 8, fontWeight: '700', letterSpacing: 0.4, textTransform: 'uppercase' },
+  cdLabel: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.7,
+    textTransform: 'uppercase',
+    marginTop: 2,
+  },
 });

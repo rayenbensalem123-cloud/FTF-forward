@@ -8,7 +8,7 @@ import { ForwardChevron } from '@/components/ForwardChevron';
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { Segmented, type Option } from '@/components/Chips';
-import { colors, radius, space } from '@/constants/theme';
+import { colors, radius, sectionTitle, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNotifications, type NotificationSettings } from '@/context/NotificationsContext';
@@ -29,6 +29,8 @@ export default function ProfileScreen() {
   const { t, language, setLanguage } = useLanguage();
   const { user, can, signOut } = useAuth();
   const { players } = usePlayers();
+  // A player account owns a members row: player.id is String(member_id).
+  const me = user?.memberId != null ? players.find((p) => p.id === String(user.memberId)) ?? null : null;
   const { settings, setSetting } = useNotifications();
   const router = useRouter();
   const [exporting, setExporting] = useState(false);
@@ -59,13 +61,14 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <AppHeader showBell={false} back />
+        <AppHeader title={t('tabProfile')} subtitle={user?.name ?? ''} />
 
+        {/* Prototype profile card: a 100px portrait ringed in gold, name, role. */}
         <Card style={styles.profile}>
-          <Avatar name={user?.name ?? 'Staff'} size={64} />
-          <View style={{ flex: 1, minWidth: 0 }}>
+          <Avatar name={user?.name ?? 'Staff'} size={100} number={me?.number} photoUrl={me?.photoUrl} />
+          <View style={styles.profileText}>
             <Text style={styles.name} numberOfLines={1}>{user?.name ?? ''}</Text>
-            <Text style={styles.role}>{user ? t(ROLE_LABEL[user.role]) : ''} · Tunisia WNT</Text>
+            <Text style={styles.role}>{user ? t(ROLE_LABEL[user.role]) : ''}</Text>
           </View>
         </Card>
 
@@ -133,18 +136,22 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
-  profile: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
-  name: { color: colors.white, fontSize: 20, fontWeight: '800' },
-  role: { color: colors.muted, fontSize: 13, marginTop: 3 },
-  heading: { color: colors.white, fontSize: 18, fontWeight: '800', marginBottom: 10 },
+  profile: { alignItems: 'center', gap: space.md, paddingVertical: space.xl },
+  profileText: { alignItems: 'center', gap: 4 },
+  name: { color: colors.white, fontSize: 22, fontWeight: '900', textAlign: 'center' },
+  role: {
+    color: colors.gold, fontSize: 13, fontWeight: '700', letterSpacing: 1.3,
+    textTransform: 'uppercase',
+  },
+  heading: sectionTitle,
   action: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: 14 },
   switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md, paddingVertical: 10 },
-  divider: { borderTopWidth: 1, borderTopColor: colors.line },
-  actionIcon: { width: 38, height: 38, borderRadius: radius.sm + 2, backgroundColor: colors.goldSoft, alignItems: 'center', justifyContent: 'center' },
-  actionText: { flex: 1, color: colors.white, fontSize: 15, fontWeight: '600' },
+  divider: { borderTopWidth: 1, borderTopColor: colors.hairline },
+  actionIcon: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.cardRaised, alignItems: 'center', justifyContent: 'center' },
+  actionText: { flex: 1, color: colors.white, fontSize: 14, fontWeight: '700' },
   signOut: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: 50,
-    borderRadius: radius.md, borderWidth: 1, borderColor: colors.red, backgroundColor: colors.redSoft,
+    borderRadius: radius.card, borderWidth: 1, borderColor: colors.red, backgroundColor: colors.redSoft,
   },
   signOutText: { color: colors.red, fontWeight: '800', fontSize: 15 },
 });

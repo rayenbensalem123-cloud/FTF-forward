@@ -52,11 +52,13 @@ export default function SquadScreen() {
         ItemSeparatorComponent={() => <View style={{ height: space.sm + 2 }} />}
         ListHeaderComponent={
           <View style={styles.header}>
-            <AppHeader showBell={false} back />
+            <AppHeader
+              title={t('tabSquad')}
+              subtitle={`${categories.find((c) => c.value === category)?.label ?? t('seniors')} · ${list.length} ${t('players')}`}
+            />
             <SyncBanner />
             <Segmented options={categories} value={category} onChange={setCategory} />
             <Chips options={positions} value={position} onChange={setPosition} />
-            <Text style={styles.count}>{list.length} {t('players')}</Text>
           </View>
         }
         ListEmptyComponent={<Text style={styles.empty}>{t('noPlayers')}</Text>}
@@ -71,6 +73,5 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, paddingBottom: space.xl * 2 },
   header: { gap: space.md, marginBottom: space.md },
-  count: { color: colors.muted, fontSize: 12, fontWeight: '600' },
   empty: { color: colors.muted, textAlign: 'center', paddingVertical: space.xl * 2 },
 });

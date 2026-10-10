@@ -6,7 +6,23 @@ import { colors, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNotifications } from '@/context/NotificationsContext';
 
-export function AppHeader({ showBell = true, back = false }: { showBell?: boolean; back?: boolean }) {
+/**
+ * The redesign's header: a 44px logo tile, a sentence-case title (17/800) and
+ * an uppercase meta line (11/600). Screens pass their own `title`/`subtitle`
+ * ("Squad" / "Seniors · 23 Players"); without them the app name and the
+ * federation show, which is what the home screens want.
+ */
+export function AppHeader({
+  showBell = true,
+  back = false,
+  title,
+  subtitle,
+}: {
+  showBell?: boolean;
+  back?: boolean;
+  title?: string;
+  subtitle?: string;
+}) {
   const { t } = useLanguage();
   const router = useRouter();
   const { unread } = useNotifications();
@@ -19,10 +35,12 @@ export function AppHeader({ showBell = true, back = false }: { showBell?: boolea
         </TouchableOpacity>
       )}
       {/* Bundled in the app, so it shows offline and on the first frame. Same crest as the website. */}
-      <Image source={require('../assets/ftf-logo.png')} style={styles.logo} resizeMode="contain" accessibilityLabel="FTF crest" />
+      <View style={styles.logoTile}>
+        <Image source={require('../assets/ftf-logo.png')} style={styles.logo} resizeMode="contain" accessibilityLabel="FTF crest" />
+      </View>
       <View style={styles.titles}>
-        <Text style={styles.title} numberOfLines={1}>{t('appName')}</Text>
-        <Text style={styles.subtitle} numberOfLines={1}>{t('federation')}</Text>
+        <Text style={styles.title} numberOfLines={1}>{title ?? t('appName')}</Text>
+        <Text style={styles.subtitle} numberOfLines={1}>{subtitle ?? t('federation')}</Text>
       </View>
       {showBell && (
         <TouchableOpacity
@@ -31,7 +49,7 @@ export function AppHeader({ showBell = true, back = false }: { showBell?: boolea
           accessibilityRole="button"
           accessibilityLabel={`${t('notifications')}, ${unread}`}
         >
-          <Bell color={colors.gold} size={20} />
+          <Bell color={colors.gold} size={18} />
           {unread > 0 && (
             <View style={styles.badge}><Text style={styles.badgeText}>{unread > 9 ? '9+' : unread}</Text></View>
           )}
@@ -42,17 +60,22 @@ export function AppHeader({ showBell = true, back = false }: { showBell?: boolea
 }
 
 const styles = StyleSheet.create({
-  back: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.goldBorder, alignItems: 'center', justifyContent: 'center' },
+  back: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.sm },
-  logo: { width: 44, height: 44 },
-  logoFallback: { borderRadius: 22, backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center' },
-  logoText: { color: colors.white, fontWeight: '800', fontSize: 14 },
+  logoTile: {
+    width: 44, height: 44, borderRadius: 12, backgroundColor: colors.cardRaised,
+    borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center',
+  },
+  logo: { width: 30, height: 30 },
   titles: { flex: 1, minWidth: 0 },
-  title: { color: colors.white, fontSize: 20, fontWeight: '800' },
-  subtitle: { color: colors.muted, fontSize: 12, marginTop: 1 },
+  title: { color: colors.white, fontSize: 17, fontWeight: '800', letterSpacing: 0.3 },
+  subtitle: {
+    color: colors.muted, fontSize: 11, fontWeight: '600', letterSpacing: 0.9,
+    textTransform: 'uppercase', marginTop: 2,
+  },
   bell: {
-    width: 42, height: 42, borderRadius: radius.md, backgroundColor: colors.card,
-    borderWidth: 1, borderColor: colors.goldBorder, alignItems: 'center', justifyContent: 'center',
+    width: 40, height: 40, borderRadius: 14, backgroundColor: colors.card,
+    borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center',
   },
   badge: {
     position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, borderRadius: 9,

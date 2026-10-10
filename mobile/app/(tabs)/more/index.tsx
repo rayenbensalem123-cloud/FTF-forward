@@ -2,81 +2,113 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
-import { Bell, BarChart3, Calendar, ClipboardList, Gamepad2, IdCard, Trophy, Video, User, Users } from 'lucide-react-native';
+import { Bell, Calendar, ClipboardList, Gamepad2, IdCard, Trophy, User, Video } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
+import { Card } from '@/components/Card';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { colors, radius, space } from '@/constants/theme';
-import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNotifications } from '@/context/NotificationsContext';
 import type { StringKey } from '@/i18n/strings';
 
-const ITEMS: { href: Href; icon: typeof Users; title: StringKey; desc: StringKey; staffOnly?: boolean }[] = [
-  { href: '/more/squad', icon: Users, title: 'tabSquad', desc: 'moreSquadDesc' },
-  { href: '/more/camp-schedule', icon: Calendar, title: 'tabCampSchedule', desc: 'moreCampScheduleDesc', staffOnly: true },
-  { href: '/more/stats', icon: BarChart3, title: 'tabStats', desc: 'moreStatsDesc' },
+/**
+ * Staff "More", built as the prototype's two cards: Tools first, Settings
+ * under it. Squad, Stats and Profile are tabs now, so they are no longer
+ * listed here -- Profile stays in Settings because it is not a staff tab.
+ */
+const TOOLS: { href: Href; icon: typeof Video; title: StringKey; desc: StringKey }[] = [
+  { href: '/more/camp-schedule', icon: Calendar, title: 'tabCampSchedule', desc: 'moreCampScheduleDesc' },
   { href: '/more/reports', icon: ClipboardList, title: 'tabReports', desc: 'moreReportsDesc' },
   { href: '/more/meetings', icon: Video, title: 'tabMeetings', desc: 'moreMeetingsDesc' },
   { href: '/more/career', icon: Trophy, title: 'tabCareer', desc: 'moreCareerDesc' },
   { href: '/id-card', icon: IdCard, title: 'tabIdCard', desc: 'moreIdCardDesc' },
   { href: '/more/games', icon: Gamepad2, title: 'tabGames', desc: 'moreGamesDesc' },
-  { href: '/notifications', icon: Bell, title: 'notifications', desc: 'moreNotificationsDesc' },
-  { href: '/more/profile', icon: User, title: 'tabProfile', desc: 'moreProfileDesc' },
 ];
 
 export default function MoreScreen() {
   const { t } = useLanguage();
   const router = useRouter();
   const { unread } = useNotifications();
-  const { user } = useAuth();
-  const isStaff = user?.role === 'staff' || user?.role === 'admin';
-  const items = ITEMS.filter((it) => !it.staffOnly || isStaff);
+
+  const settings: { href: Href; icon: typeof Video; title: StringKey; desc: StringKey; badge?: number }[] = [
+    { href: '/notifications', icon: Bell, title: 'notifications', desc: 'moreNotificationsDesc', badge: unread },
+    { href: '/profile', icon: User, title: 'tabProfile', desc: 'moreProfileDesc' },
+  ];
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <AppHeader showBell={false} />
-        <Text style={styles.title}>{t('tabMore')}</Text>
-        <View style={{ gap: space.sm + 2 }}>
-          {items.map((it) => {
-            const Icon = it.icon;
-            const badge = it.title === 'notifications' ? unread : 0;
-            return (
-              <TouchableOpacity
-                key={it.title}
-                style={styles.row}
-                onPress={() => router.push(it.href)}
-                activeOpacity={0.75}
-                accessibilityRole="button"
-                accessibilityLabel={t(it.title)}
-              >
-                <View style={styles.iconWrap}><Icon color={colors.gold} size={20} /></View>
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={styles.rowTitle}>{t(it.title)}</Text>
-                  <Text style={styles.rowDesc} numberOfLines={1}>{t(it.desc)}</Text>
-                </View>
-                {badge > 0 && <View style={styles.badge}><Text style={styles.badgeText}>{badge > 9 ? '9+' : badge}</Text></View>}
-                <ForwardChevron />
-              </TouchableOpacity>
-            );
-          })}
+        <AppHeader title={t('tabMore')} subtitle={t('moreSubtitle')} />
+
+        <View style={styles.group}>
+          <Text style={styles.groupTitle}>{t('moreTools')}</Text>
+          <Card style={{ paddingVertical: space.xs }}>
+            {TOOLS.map((it, i) => (
+              <Row key={String(i) + it.title} item={it} first={i === 0} />
+            ))}
+          </Card>
+        </View>
+
+        <View style={styles.group}>
+          <Text style={styles.groupTitle}>{t('moreSettings')}</Text>
+          <Card style={{ paddingVertical: space.xs }}>
+            {settings.map((it, i) => (
+              <Row key={String(i) + it.title} item={it} first={i === 0} />
+            ))}
+          </Card>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
+function Row({
+  item,
+  first,
+}: {
+  item: { href: Href; icon: typeof Video; title: StringKey; desc: StringKey; badge?: number };
+  first: boolean;
+}) {
+  const { t } = useLanguage();
+  const router = useRouter();
+  const Icon = item.icon;
+  return (
+    <TouchableOpacity
+      style={[styles.row, !first && styles.divider]}
+      onPress={() => router.push(item.href)}
+      activeOpacity={0.75}
+      accessibilityRole="button"
+      accessibilityLabel={t(item.title)}
+    >
+      <View style={styles.iconWrap}><Icon color={colors.gold} size={18} /></View>
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Text style={styles.rowTitle}>{t(item.title)}</Text>
+        <Text style={styles.rowDesc} numberOfLines={1}>{t(item.desc)}</Text>
+      </View>
+      {!!item.badge && item.badge > 0 && (
+        <View style={styles.badge}><Text style={styles.badgeText}>{item.badge > 9 ? '9+' : item.badge}</Text></View>
+      )}
+      <ForwardChevron />
+    </TouchableOpacity>
+  );
+}
+
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
-  title: { color: colors.white, fontSize: 28, fontWeight: '800' },
-  row: {
-    flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.card,
-    borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder, padding: space.md + 2,
+  group: { gap: 10 },
+  groupTitle: { color: colors.gold, fontSize: 13, fontWeight: '800', letterSpacing: 1.5, textTransform: 'uppercase' },
+  row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: 14 },
+  divider: { borderTopWidth: 1, borderTopColor: colors.hairline },
+  iconWrap: {
+    width: 36, height: 36, borderRadius: 10, backgroundColor: colors.cardRaised,
+    alignItems: 'center', justifyContent: 'center',
   },
-  iconWrap: { width: 40, height: 40, borderRadius: 12, backgroundColor: colors.goldSoft, alignItems: 'center', justifyContent: 'center' },
-  rowTitle: { color: colors.white, fontSize: 16, fontWeight: '800' },
+  rowTitle: { color: colors.white, fontSize: 14, fontWeight: '700' },
   rowDesc: { color: colors.muted, fontSize: 12, marginTop: 2 },
-  badge: { backgroundColor: colors.red, borderRadius: 10, minWidth: 20, height: 20, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 5 },
+  badge: {
+    minWidth: 20, height: 20, borderRadius: 10, backgroundColor: colors.red,
+    alignItems: 'center', justifyContent: 'center', paddingHorizontal: 5,
+  },
   badgeText: { color: colors.white, fontSize: 11, fontWeight: '800' },
 });

@@ -6,7 +6,7 @@ import { Card } from '@/components/Card';
 import { Segmented, type Option } from '@/components/Chips';
 import { Flag } from '@/components/Flag';
 import { SyncBanner } from '@/components/SyncBanner';
-import { colors, space } from '@/constants/theme';
+import { colors, sectionTitle, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
 import { formatDate } from '@/lib/format';
@@ -48,7 +48,7 @@ export default function MatchesScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.gold} colors={[colors.gold]} />}
       >
-        <AppHeader />
+        <AppHeader back title={t('tabMatches')} subtitle={t('statsSubtitle')} />
         <SyncBanner />
         <Segmented options={options} value={filter} onChange={setFilter} />
 
@@ -92,7 +92,7 @@ function MatchRow({ m }: { m: Match }) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.md, paddingBottom: space.xl * 2 },
-  heading: { color: colors.white, fontSize: 18, fontWeight: '800', marginTop: space.sm },
+  heading: { ...sectionTitle, marginTop: space.sm },
   empty: { color: colors.muted, fontSize: 13 },
   meta: { flexDirection: 'row', justifyContent: 'space-between', gap: 8 },
   date: { color: colors.gold, fontSize: 12, fontWeight: '800' },

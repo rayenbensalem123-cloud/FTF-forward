@@ -5,7 +5,7 @@ import { AppHeader } from '@/components/AppHeader';
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { PlayerSheet } from '@/components/PlayerSheet';
-import { colors, radius, space } from '@/constants/theme';
+import { colors, radius, sectionTitle, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
 import type { Player } from '@/types';
@@ -36,7 +36,7 @@ export default function StatsScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <AppHeader showBell={false} back />
+        <AppHeader title={t('tabStats')} subtitle={t('statsSubtitle')} />
 
         {/* Team form */}
         <Card>
@@ -45,7 +45,9 @@ export default function StatsScreen() {
             {FORM.map((f, i) => (
               <View key={i} style={styles.formItem}>
                 <View style={[styles.formDot, { backgroundColor: RESULT_COLOR[f.result] }]}>
-                  <Text style={styles.formLetter}>{f.result}</Text>
+                  <Text style={[styles.formLetter, { color: f.result === 'L' ? colors.white : colors.navyDeep }]}>
+                    {f.result}
+                  </Text>
                 </View>
                 <Text style={styles.formScore}>{f.goalsFor}-{f.goalsAgainst}</Text>
                 <Text style={styles.formOpp}>{f.opponent}</Text>
@@ -57,6 +59,9 @@ export default function StatsScreen() {
             <Text style={styles.totalText}><Text style={styles.totalNum}>{goalsAgainst}</Text> {t('conceded')}</Text>
           </View>
         </Card>
+
+        {/* Caps first: this is a national team, appearances are the headline stat. */}
+        <Leaderboard title={t('mostCaps')} rows={capped} value={(p) => p.caps} onPress={setSelected} />
 
         {/* Top scorers podium */}
         <View>
@@ -83,7 +88,6 @@ export default function StatsScreen() {
         </View>
 
         <Leaderboard title={t('mostAssists')} rows={assisters} value={(p) => p.assists} onPress={setSelected} />
-        <Leaderboard title={t('mostCaps')} rows={capped} value={(p) => p.caps} onPress={setSelected} />
 
         {/* Competition stats */}
         <View>
@@ -131,38 +135,41 @@ function Leaderboard({
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
-  section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 14 },
-  heading: { color: colors.white, fontSize: 18, fontWeight: '800', marginBottom: 10 },
+  section: sectionTitle,
+  heading: sectionTitle,
   formRow: { flexDirection: 'row', justifyContent: 'space-between' },
   formItem: { alignItems: 'center', gap: 4, flex: 1 },
   formDot: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
-  formLetter: { color: colors.navy, fontWeight: '800', fontSize: 15 },
+  formLetter: { fontWeight: '900', fontSize: 15 },
   formScore: { color: colors.white, fontSize: 13, fontWeight: '700', marginTop: 2 },
   formOpp: { color: colors.muted, fontSize: 11 },
-  formTotals: { flexDirection: 'row', gap: space.xl, marginTop: 14, borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 12 },
+  formTotals: { flexDirection: 'row', gap: space.xl, marginTop: 14, borderTopWidth: 1, borderTopColor: colors.hairline, paddingTop: 12 },
   totalText: { color: colors.muted, fontSize: 13 },
-  totalNum: { color: colors.white, fontSize: 18, fontWeight: '800' },
+  totalNum: { color: colors.white, fontSize: 18, fontWeight: '900' },
   podium: { flexDirection: 'row', alignItems: 'flex-end', gap: 8 },
   podiumCard: {
-    flex: 1, alignItems: 'center', gap: 6, backgroundColor: colors.card, borderRadius: radius.lg,
-    borderWidth: 1, borderColor: colors.goldBorder, paddingHorizontal: 6, paddingBottom: space.md,
+    flex: 1, alignItems: 'center', gap: 6, backgroundColor: colors.card, borderRadius: radius.card,
+    borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 6, paddingBottom: space.md,
   },
   podiumFirst: { borderColor: colors.gold },
   rank: { color: colors.muted, fontSize: 14, fontWeight: '800' },
   podiumName: { color: colors.white, fontSize: 12, fontWeight: '700', textAlign: 'center', minHeight: 30 },
   podiumClub: { color: colors.muted, fontSize: 10, textAlign: 'center' },
-  podiumGoals: { color: colors.gold, fontSize: 26, fontWeight: '800' },
-  lbRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: 10 },
-  lbDivider: { borderTopWidth: 1, borderTopColor: colors.line },
-  lbRank: { color: colors.muted, width: 16, textAlign: 'center', fontWeight: '800', fontSize: 15 },
+  podiumGoals: { color: colors.gold, fontSize: 26, fontWeight: '900', fontVariant: ['tabular-nums'] },
+  lbRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: 12 },
+  lbDivider: { borderTopWidth: 1, borderTopColor: colors.hairline },
+  lbRank: { color: colors.gold, width: 18, textAlign: 'center', fontWeight: '900', fontSize: 18 },
   lbName: { color: colors.white, fontSize: 14, fontWeight: '700' },
   lbClub: { color: colors.muted, fontSize: 12, marginTop: 1 },
-  lbValue: { color: colors.white, fontSize: 20, fontWeight: '800' },
-  tiles: { flexDirection: 'row', gap: 8 },
+  lbValue: { color: colors.white, fontSize: 20, fontWeight: '900', fontVariant: ['tabular-nums'] },
+  tiles: { flexDirection: 'row', gap: 10 },
   tile: {
-    flex: 1, backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder,
+    flex: 1, backgroundColor: colors.card, borderRadius: radius.card, borderWidth: 1, borderColor: colors.hairline,
     paddingVertical: 16, paddingHorizontal: 6, alignItems: 'center', gap: 4,
   },
-  tileValue: { color: colors.white, fontSize: 24, fontWeight: '800' },
-  tileLabel: { color: colors.muted, fontSize: 11, textAlign: 'center' },
+  tileValue: { color: colors.white, fontSize: 28, fontWeight: '900', fontVariant: ['tabular-nums'] },
+  tileLabel: {
+    color: colors.muted, fontSize: 10, fontWeight: '700', letterSpacing: 0.8,
+    textTransform: 'uppercase', textAlign: 'center',
+  },
 });

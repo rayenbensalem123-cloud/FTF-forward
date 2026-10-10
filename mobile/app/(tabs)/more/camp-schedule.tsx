@@ -39,7 +39,7 @@ export default function CampScheduleScreen() {
   if (!isStaff) {
     return (
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <AppHeader />
+        <AppHeader back showBell={false} />
         <View style={styles.center}>
           <Text style={styles.errorText}>{t('accessDeniedStaff')}</Text>
         </View>
@@ -152,10 +152,7 @@ export default function CampScheduleScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <AppHeader />
-
-        <Text style={styles.title}>{t('tabCampSchedule')}</Text>
-        <Text style={styles.subtitle}>{t('campScheduleSubtitle')}</Text>
+        <AppHeader back showBell={false} title={t('tabCampSchedule')} subtitle={t('campScheduleSubtitle')} />
 
         {/* Upload zone */}
         {file ? (
@@ -297,8 +294,6 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   errorText: { color: colors.red, fontSize: 16, fontWeight: '700' },
 
-  title: { color: colors.white, fontSize: 28, fontWeight: '800' },
-  subtitle: { color: colors.muted, fontSize: 14, marginTop: 4 },
 
   uploadZone: {
     backgroundColor: colors.card,
