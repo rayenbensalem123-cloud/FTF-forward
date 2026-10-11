@@ -7,6 +7,13 @@ import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
 import Tesseract from 'tesseract.js';
 import path from 'node:path';
+import Anthropic from '@anthropic-ai/sdk';
+
+// OCR (image uploads) and the AI parsing call on top of it can both take a
+// while; Vercel's default function timeout is too short for the combination.
+// Matches app/api/import-players/route.ts, the other route in this app doing
+// slow server-side file processing.
+export const maxDuration = 60;
 
 // pdfjs needs its bundled font and cmap data to decode PDFs that use standard
 // (non-embedded) fonts - which is what a Word/Docs export usually produces.
@@ -451,6 +458,182 @@ function parseSchedule(text: string): ParsedSchedule {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// AI PARSING (primary path)
+// ═══════════════════════════════════════════════════════════════
+
+// The regex parser above only recognizes the handful of layouts it was
+// written against: a literal "Day N" header, a keyword list, a time on the
+// same line as the activity. A real federation document is a table, a bullet
+// list, a paragraph per day, or some house format nobody anticipated, and the
+// regex parser silently drops everything it doesn't recognize - which is why
+// a real multi-day camp was coming back as one or two days. Claude reads the
+// extracted text the way a staff member would: it knows what a training camp
+// programme looks like regardless of layout, in English, French or Arabic,
+// and returns every activity it finds as structured data instead of lines
+// that happened to match a pattern.
+const AI_MODEL = 'claude-sonnet-5';
+// A long, dense multi-week camp document can run past this in output tokens
+// before it has listed every activity; raise it if a real document still gets
+// cut short (check `stop_reason` in the server logs).
+const AI_MAX_OUTPUT_TOKENS = 8000;
+// Guards against an enormous or garbled extraction (e.g. OCR noise) blowing
+// the context window or the per-request cost. A typical multi-day camp
+// programme is a few thousand characters; this leaves generous headroom.
+const AI_MAX_INPUT_CHARS = 60000;
+
+const SCHEDULE_TOOL: Anthropic.Tool = {
+  name: 'submit_camp_schedule',
+  description: 'Submit the structured training-camp programme extracted from the document.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      activities: {
+        type: 'array',
+        description: 'Every activity in the programme, in the order the document lists them, grouped implicitly by day.',
+        items: {
+          type: 'object',
+          properties: {
+            day: {
+              type: 'string',
+              description:
+                'The day this activity belongs to, in the document\'s own words where possible (e.g. "Day 1", "Day 1 — Mon 21 Oct", "21 October", "اليوم 1"). Every activity on the same calendar day must use the exact same string so the app can group them.',
+            },
+            time: {
+              type: 'string',
+              description: 'Start time in 24-hour HH:MM, e.g. "09:00". Empty string if the document genuinely gives no time for this activity.',
+            },
+            activity: {
+              type: 'string',
+              description: 'The activity itself (e.g. "Training", "Team breakfast", "Video analysis"), in the document\'s own language - do not translate it.',
+            },
+            type: {
+              type: 'string',
+              enum: ['collective', 'private'],
+              description: 'collective: the whole squad or a group. private: aimed at one named player (a 1:1 meeting, an individual medical or physio session, etc).',
+            },
+            playerName: {
+              type: 'string',
+              description: 'Only for type "private": the player\'s name exactly as the document spells it. Omit for collective activities.',
+            },
+            duration: {
+              type: 'string',
+              description: 'Only if the document states one explicitly, e.g. "60min". Omit otherwise - do not guess.',
+            },
+            location: {
+              type: 'string',
+              description: 'Only if the document states one explicitly, e.g. "Main Pitch", "Hotel conference room". Omit otherwise.',
+            },
+            notes: {
+              type: 'string',
+              description: 'Any other detail attached to this specific activity worth keeping. Omit if there is none.',
+            },
+          },
+          required: ['day', 'time', 'activity', 'type'],
+        },
+      },
+    },
+    required: ['activities'],
+  },
+};
+
+const SCHEDULE_SYSTEM_PROMPT = `You read training-camp programmes for a national football team's staff and \
+players and turn them into a clean, day-by-day, hour-by-hour schedule.
+
+The source text below was extracted from a PDF, Word document or scanned image, so its layout may be \
+flattened, a table may read as run-together columns, and OCR text may have minor errors - read past that \
+and recover the programme a human would see in the original document.
+
+Rules:
+- Extract every single activity the document lists, for every day it covers. Do not skip a day or an \
+activity because it does not match a pattern you expect; this is a real staff document, read it as one.
+- Keep each activity's day, time and wording faithful to the source. Do not invent activities, times, or \
+days that are not in the document, and do not translate text to another language.
+- If the same label (e.g. a person's name before a colon, or a header like "Individual sessions") clearly \
+marks several following lines as private to one player, apply that to each of them.
+- A role ("the coach", "medical staff", "الطاقم") is not a player's name - never \
+set playerName to a role.
+- If the document is not a training-camp programme at all (e.g. it's unrelated paperwork), call the tool \
+with an empty activities array.
+Call the submit_camp_schedule tool exactly once with everything you found.`;
+
+/**
+ * Structures the extracted text with Claude. Returns null (not a thrown
+ * error) when the model can't be reached or doesn't comply, so the caller can
+ * fall back to the regex parser rather than failing the whole upload.
+ */
+async function parseScheduleWithAI(text: string): Promise<ParsedSchedule | null> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    console.warn('camp-schedule parse: ANTHROPIC_API_KEY is not set, falling back to the regex parser');
+    return null;
+  }
+
+  const truncated = text.length > AI_MAX_INPUT_CHARS;
+  const input = truncated ? text.slice(0, AI_MAX_INPUT_CHARS) : text;
+
+  try {
+    const anthropic = new Anthropic({ apiKey });
+    const response = await anthropic.messages.create({
+      model: AI_MODEL,
+      max_tokens: AI_MAX_OUTPUT_TOKENS,
+      system: SCHEDULE_SYSTEM_PROMPT,
+      tools: [SCHEDULE_TOOL],
+      tool_choice: { type: 'tool', name: 'submit_camp_schedule' },
+      messages: [
+        {
+          role: 'user',
+          content: `Extracted document text${truncated ? ' (truncated - document was longer)' : ''}:\n\n${input}`,
+        },
+      ],
+    });
+
+    const toolUse = response.content.find(
+      (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use' && block.name === 'submit_camp_schedule',
+    );
+    if (!toolUse) {
+      console.error('camp-schedule parse: model did not call the tool', JSON.stringify(response.content));
+      return null;
+    }
+
+    const raw = toolUse.input as { activities?: Partial<CampActivity>[] };
+    const playersMentioned = new Set<string>();
+    const activities: CampActivity[] = (raw.activities ?? [])
+      .filter((a) => typeof a.day === 'string' && typeof a.activity === 'string')
+      .map((a, i) => {
+        const type: CampActivity['type'] = a.type === 'private' ? 'private' : 'collective';
+        if (type === 'private' && a.playerName) playersMentioned.add(a.playerName);
+        return {
+          id: `act-${i}`,
+          day: a.day!.trim(),
+          time: (a.time ?? '').trim(),
+          activity: a.activity!.trim(),
+          type,
+          playerName: type === 'private' ? a.playerName?.trim() || undefined : undefined,
+          duration: a.duration?.trim() || undefined,
+          location: a.location?.trim() || undefined,
+          notes: a.notes?.trim() || undefined,
+        };
+      });
+
+    if (response.stop_reason === 'max_tokens') {
+      console.warn('camp-schedule parse: model hit the output token limit, the schedule below may be cut short');
+    }
+
+    return {
+      days: activities,
+      totalActivities: activities.length,
+      collectiveCount: activities.filter((a) => a.type === 'collective').length,
+      privateCount: activities.filter((a) => a.type === 'private').length,
+      playersMentioned: Array.from(playersMentioned),
+      rawText: text,
+    };
+  } catch (err) {
+    console.error('camp-schedule parse: Claude request failed, falling back to the regex parser', err);
+    return null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 // API ROUTE
 // ═══════════════════════════════════════════════════════════════
 
@@ -518,11 +701,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const parsed = parseSchedule(text);
+    // AI parsing first: it reads the document the way a person would,
+    // regardless of layout or language. Only when it can't run or doesn't
+    // come back (no API key, a down model, a malformed response) does this
+    // fall back to the regex parser, which is deliberately kept rather than
+    // deleted so an upload still produces something before that key exists.
+    const aiParsed = await parseScheduleWithAI(text);
+    const parsed = aiParsed ?? parseSchedule(text);
 
     return NextResponse.json({
       success: true,
       fileType: type,
+      parsedBy: aiParsed ? 'ai' : 'regex',
       ...parsed,
     });
   } catch (error) {

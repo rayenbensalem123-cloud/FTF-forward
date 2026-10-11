@@ -27,6 +27,7 @@ pnpm dev
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser anon key (safe to expose) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server only — **never commit, never ship to the client** |
 | `BLOB_READ_WRITE_TOKEN` | Legacy Vercel Blob token (optional) |
+| `ANTHROPIC_API_KEY` | Server only. Structures an uploaded camp programme (PDF/Word/image/text) into a day-by-day schedule. Without it, `/api/camp-schedule/parse` falls back to a cruder regex parser. |
 
 ## Database setup
 
