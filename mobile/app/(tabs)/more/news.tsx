@@ -33,14 +33,14 @@ export default function NewsScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.gold} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.white} />}
       >
         <AppHeader back showBell={false} />
         <View>
           <Text style={styles.title}>{T.title}</Text>
           <Text style={styles.sub}>{T.sub}</Text>
         </View>
-        {loading ? <ActivityIndicator color={colors.gold} style={{ marginTop: space.xl }} />
+        {loading ? <ActivityIndicator color={colors.white} style={{ marginTop: space.xl }} />
           : failed ? <Text style={styles.empty}>{T.failed}</Text>
           : items.map((n, i) => (
             <TouchableOpacity key={n.link + i} onPress={() => open(n.link)} activeOpacity={0.8} accessibilityRole="link">
@@ -67,6 +67,6 @@ const styles = StyleSheet.create({
   empty: { color: colors.muted, fontSize: 13, textAlign: 'center', paddingVertical: space.xl },
   headline: { color: colors.white, fontSize: 15, fontWeight: '700', lineHeight: 21 },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  source: { color: colors.gold, fontSize: 12, fontWeight: '800', flexShrink: 1 },
+  source: { color: colors.white, fontSize: 12, fontWeight: '800', flexShrink: 1 },
   time: { color: colors.muted, fontSize: 12, flex: 1 },
 });

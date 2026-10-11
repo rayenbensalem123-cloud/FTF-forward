@@ -93,7 +93,7 @@ export default function ReportsScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.gold} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.white} />}
       >
         <AppHeader back showBell={false} />
         <View>
@@ -118,7 +118,7 @@ export default function ReportsScreen() {
         {!canLog && !isStaff && <Text style={styles.empty}>{T.notLinked}</Text>}
 
         {loading ? (
-          <ActivityIndicator color={colors.gold} style={{ marginTop: space.xl }} />
+          <ActivityIndicator color={colors.white} style={{ marginTop: space.xl }} />
         ) : shown.length === 0 ? (
           (canLog || isStaff) && <Text style={styles.empty}>{T.none}</Text>
         ) : (
@@ -180,9 +180,9 @@ function ReportCard({ r, T, who, canVerify, canDelete, onVerify, onDelete }: {
           <Text style={styles.stat}>{r.minutes}&apos; {T.mins}</Text>
           <Text style={[styles.stat, { color: colors.green }]}>{r.goals} {T.goals}</Text>
           <Text style={[styles.stat, { color: '#7EC3FF' }]}>{r.assists} {T.assists}</Text>
-          {r.yellow > 0 && <Text style={[styles.stat, { color: colors.gold }]}>{r.yellow} {T.yc}</Text>}
+          {r.yellow > 0 && <Text style={[styles.stat, { color: colors.white }]}>{r.yellow} {T.yc}</Text>}
           {r.red > 0 && <Text style={[styles.stat, { color: colors.red }]}>{r.red} {T.rc}</Text>}
-          {r.rating != null && <Text style={[styles.stat, { color: colors.gold }]}>{T.ratingShort} {r.rating}</Text>}
+          {r.rating != null && <Text style={[styles.stat, { color: colors.white }]}>{T.ratingShort} {r.rating}</Text>}
         </View>
       )}
 
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   logBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', borderColor: 'rgba(227,6,19,0.5)' },
   logText: { color: colors.red, fontWeight: '800', fontSize: 13 },
   rowTop: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },
-  who: { color: colors.gold, fontSize: 12, fontWeight: '800', marginBottom: 2 },
+  who: { color: colors.white, fontSize: 12, fontWeight: '800', marginBottom: 2 },
   opp: { color: colors.white, fontSize: 16, fontWeight: '800' },
   meta: { color: colors.muted, fontSize: 12, marginTop: 2 },
   verified: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.greenSoft, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3 },
@@ -349,17 +349,17 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', justifyContent: 'flex-end', gap: space.lg, paddingTop: space.xs },
   action: { fontSize: 12, fontWeight: '800' },
   scrim: { flex: 1, backgroundColor: colors.scrim, justifyContent: 'flex-end' },
-  sheet: { backgroundColor: colors.navyDeep, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg, padding: space.lg, maxHeight: '92%', borderWidth: 1, borderColor: colors.goldBorder },
+  sheet: { backgroundColor: colors.navyDeep, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg, padding: space.lg, maxHeight: '92%', borderWidth: 1, borderColor: colors.hairline },
   sheetHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: space.md },
   sheetTitle: { color: colors.white, fontSize: 17, fontWeight: '800' },
-  input: { backgroundColor: colors.card, color: colors.white, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.goldBorder, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14 },
+  input: { backgroundColor: colors.card, color: colors.white, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14 },
   label: { color: colors.muted, fontSize: 11, fontWeight: '800', marginBottom: 4 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   cell: { width: '48%' },
-  toggle: { flex: 1, paddingVertical: 10, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.goldBorder, backgroundColor: colors.card, alignItems: 'center' },
+  toggle: { flex: 1, paddingVertical: 10, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.card, alignItems: 'center' },
   toggleText: { color: colors.muted, fontWeight: '800', fontSize: 12 },
   btn: { flex: 1, backgroundColor: colors.red, borderRadius: radius.md, paddingVertical: 13, alignItems: 'center' },
   btnText: { color: '#fff', fontWeight: '800', fontSize: 14 },
-  btnGhost: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.goldBorder },
+  btnGhost: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairline },
   btnGhostText: { color: colors.muted, fontWeight: '800', fontSize: 14 },
 });

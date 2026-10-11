@@ -33,7 +33,7 @@ export function IconTile({
       accessibilityLabel={label}
     >
       <View style={styles.iconWrap}>
-        <Icon color={colors.gold} size={20} strokeWidth={2} />
+        <Icon color={colors.white} size={20} strokeWidth={2} />
       </View>
       <Text style={styles.label} numberOfLines={1}>{label}</Text>
     </TouchableOpacity>

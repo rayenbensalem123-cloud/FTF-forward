@@ -18,7 +18,7 @@ export function MatchDayCard({ match }: { match: Match | null | undefined }) {
   return (
     <View style={[styles.card, state === 'today' && styles.today]}>
       <View style={styles.head}>
-        <Swords size={18} color={state === 'today' ? colors.red : colors.gold} />
+        <Swords size={18} color={state === 'today' ? colors.red : colors.white} />
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>{state === 'today' ? T.today : T.tomorrow}</Text>
           <Text style={styles.sub} numberOfLines={1}>{T.vs} {match.opponent}{match.venue ? `  ·  ${match.venue}` : ''}</Text>
@@ -30,7 +30,7 @@ export function MatchDayCard({ match }: { match: Match | null | undefined }) {
           <Text style={styles.btnText}>{T.lineup}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/match-details')} accessibilityRole="button">
-          <Text style={[styles.btnText, { color: colors.gold }]}>{T.details}</Text>
+          <Text style={[styles.btnText, { color: colors.white }]}>{T.details}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -38,13 +38,13 @@ export function MatchDayCard({ match }: { match: Match | null | undefined }) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.goldBorder, padding: space.lg, gap: space.md },
+  card: { backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.hairline, padding: space.lg, gap: space.md },
   today: { borderColor: colors.red, borderWidth: 1.5 },
   head: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   title: { color: colors.white, fontSize: 16, fontWeight: '800' },
   sub: { color: colors.muted, fontSize: 12, marginTop: 2 },
   row: { flexDirection: 'row', gap: space.sm },
   btnPrimary: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: 44, borderRadius: radius.md, backgroundColor: colors.red },
-  btn: { flex: 1, alignItems: 'center', justifyContent: 'center', height: 44, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder, backgroundColor: colors.cardRaised },
+  btn: { flex: 1, alignItems: 'center', justifyContent: 'center', height: 44, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.cardRaised },
   btnText: { color: colors.white, fontWeight: '800', fontSize: 13 },
 });

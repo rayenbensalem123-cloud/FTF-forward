@@ -34,13 +34,13 @@ export function PlayerRow({ player, onPress }: { player: Player; onPress: (p: Pl
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.card,
-    borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder, padding: space.md,
+    borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, padding: space.md,
   },
   center: { flex: 1, minWidth: 0, gap: 5 },
   name: { color: colors.white, fontSize: 15, fontWeight: '800' },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  pill: { backgroundColor: colors.goldSoft, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 2 },
-  pillText: { color: colors.gold, fontSize: 10, fontWeight: '800', letterSpacing: 0.6 },
+  pill: { backgroundColor: colors.whiteSoft, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 2 },
+  pillText: { color: colors.white, fontSize: 10, fontWeight: '800', letterSpacing: 0.6 },
   club: { color: colors.muted, fontSize: 12, flexShrink: 1 },
   right: { alignItems: 'flex-end' },
 });

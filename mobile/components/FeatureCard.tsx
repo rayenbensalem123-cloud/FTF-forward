@@ -6,7 +6,7 @@ import { Button } from '@/components/Button';
 
 /**
  * One of the home screen's feature cards: a title, an optional one-line
- * description, a visual, and a gold call to action that opens a real screen.
+ * description, a visual, and a red call to action that opens a real screen.
  *
  * The four cards are the home's way into the parts of the app that are
  * otherwise buried behind the staff-only "More" tab -- the tactic board,

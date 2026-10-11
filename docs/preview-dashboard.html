@@ -9,7 +9,7 @@
 <style>
 :root{
   --navy:#0C1F3D; --card:#101B33;
-  --gold:#F6C744; --red:#E30613; --white:#EDEFF4; --muted:#8FA0BD;
+  --red:#E30613; --white:#EDEFF4; --muted:#8FA0BD;
   --green:#22C55E; --hairline:rgba(148,170,210,.18);
   --r-sm:10px; --r-md:16px; --r-card:20px; --r-pill:999px;
 }
@@ -24,8 +24,8 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 /* Screen backdrop: faint squad photo, heavy navy wash, red aura on top */
 .phone-bg{position:absolute;inset:0;pointer-events:none;
   background:
-    linear-gradient(180deg,rgba(227,6,19,.12) 0%,rgba(227,6,19,0) 280px),
-    linear-gradient(180deg,rgba(12,31,61,.80) 0%,rgba(11,17,30,.94) 100%),
+    linear-gradient(180deg,rgba(227,6,19,.18) 0%,rgba(227,6,19,0) 320px),
+    linear-gradient(180deg,rgba(12,31,61,.55) 0%,rgba(11,17,30,.92) 100%),
     url('../mobile/assets/home-bg.jpg') center top/cover no-repeat}
 .status,.hdr,.body,.tabbar{position:relative}
 .status{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;
@@ -74,9 +74,10 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .teams{display:flex;align-items:center;gap:8px;margin-top:12px}
 .team{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
 .team.r{justify-content:flex-end}
-.crest{width:42px;height:42px;border-radius:21px;overflow:hidden;flex:none;
-  background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:18px}
-.crest img{width:100%;height:100%;object-fit:cover}
+.crest{width:46px;height:46px;border-radius:23px;overflow:hidden;flex:none;
+  background:var(--card-raised);border:2px solid rgba(255,255,255,.35);
+  display:grid;place-items:center;font-size:18px}
+.crest img{width:46px;height:34px}
 .center{flex:1.15;text-align:center}
 .big{font-family:Oswald;font-size:26px;font-weight:700;letter-spacing:.5px;color:#fff;
   font-variant-numeric:tabular-nums;line-height:28px}
@@ -94,7 +95,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .venue{display:flex;align-items:center;gap:5px;flex:1;min-width:0;font-size:12px;color:rgba(255,255,255,.75);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* Weather: icon + temperature, pinned to the end of the footer, never wraps */
-.weather{display:flex;align-items:center;gap:4px;color:var(--gold);flex:none;
+.weather{display:flex;align-items:center;gap:4px;color:var(--white);flex:none;
   font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
 
 /* Buttons: red rounded rectangles */
@@ -129,7 +130,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .pitch .bb{position:absolute;left:50%;bottom:0;width:34%;height:16%;margin-left:-17%;
   border:1px solid rgba(255,255,255,.3);border-bottom:0}
 .pitch .dot{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:8px;
-  background:var(--gold);border:1px solid rgba(0,0,0,.3);display:grid;place-items:center;
+  background:var(--white);border:1px solid rgba(0,0,0,.3);display:grid;place-items:center;
   font-size:7px;font-weight:800;color:#06210F}
 
 /* Checklist */
@@ -145,15 +146,15 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 
 .tabbar{display:flex;border-top:1px solid var(--hairline);background:var(--card);padding:10px 0 18px}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);opacity:.55}
-.tab.on{color:var(--gold);opacity:1}
+.tab.on{color:var(--white);opacity:1}
 .tab span{font-family:Oswald;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 
 .notes{margin-top:40px;max-width:900px}
 .notes h3{font-family:Oswald;font-size:16px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.5px;color:var(--gold);margin-bottom:12px}
+  letter-spacing:.5px;color:var(--white);margin-bottom:12px}
 .notes ul{list-style:none;display:flex;flex-direction:column;gap:9px}
 .notes li{color:var(--muted);font-size:13px;line-height:1.6;padding-left:18px;position:relative}
-.notes li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:3px;background:var(--gold)}
+.notes li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:3px;background:var(--white)}
 .notes li b{color:var(--white);font-weight:700}
 </style>
 </head>
@@ -208,7 +209,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
           </div>
           <div class="venue-row">
             <div class="venue">📍 Stade de Radès</div>
-            <div class="weather"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg> 24°/18°</div>
+            <div class="weather"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg> 24°/18°</div>
           </div>
         </div>
       </div>
@@ -220,10 +221,10 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
           <h3>Today's Program</h3>
           <div class="visual">
             <div style="display:flex;flex-direction:column;gap:7px;justify-content:center;width:100%">
-              <div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--gold)">24 November</div>
-              <div style="display:flex;gap:7px;align-items:baseline"><span style="font-size:11px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums">09:00</span><span style="font-size:11px;font-weight:600">Training – Annex, grass</span></div>
-              <div style="display:flex;gap:7px;align-items:baseline"><span style="font-size:11px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums">12:00</span><span style="font-size:11px;font-weight:600">Lunch &amp; rest</span></div>
-              <div style="display:flex;gap:7px;align-items:baseline"><span style="font-size:11px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums">16:00</span><span style="font-size:11px;font-weight:600">Video analysis · S. Gharbi</span></div>
+              <div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--white)">24 November</div>
+              <div style="display:flex;gap:7px;align-items:baseline"><span style="font-size:11px;font-weight:800;color:var(--white);font-variant-numeric:tabular-nums">09:00</span><span style="font-size:11px;font-weight:600">Training – Annex, grass</span></div>
+              <div style="display:flex;gap:7px;align-items:baseline"><span style="font-size:11px;font-weight:800;color:var(--white);font-variant-numeric:tabular-nums">12:00</span><span style="font-size:11px;font-weight:600">Lunch &amp; rest</span></div>
+              <div style="display:flex;gap:7px;align-items:baseline"><span style="font-size:11px;font-weight:800;color:var(--white);font-variant-numeric:tabular-nums">16:00</span><span style="font-size:11px;font-weight:600">Video analysis · S. Gharbi</span></div>
             </div>
           </div>
           <div class="btn primary">Open schedule <span class="chev">›</span></div>
@@ -234,17 +235,17 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
           <div class="visual">
             <div style="display:flex;flex-direction:column;gap:10px;justify-content:center;width:100%">
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-family:Oswald;font-size:12px;font-weight:700;color:var(--gold)">12</span>
+                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-family:Oswald;font-size:12px;font-weight:700;color:var(--white)">12</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Y. Ben Amor</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">MID · #12</span></span>
                 <span style="width:22px;height:22px;border-radius:11px;background:var(--green);display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff">✓</span>
               </div>
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-family:Oswald;font-size:12px;font-weight:700;color:var(--gold)">07</span>
+                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-family:Oswald;font-size:12px;font-weight:700;color:var(--white)">07</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">S. Gharbi</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">FWD · #07</span></span>
                 <span style="width:22px;height:22px;border-radius:11px;background:var(--green);display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff">✓</span>
               </div>
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-family:Oswald;font-size:12px;font-weight:700;color:var(--gold)">10</span>
+                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-family:Oswald;font-size:12px;font-weight:700;color:var(--white)">10</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">M. Hamdi</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">DEF · #10</span></span>
                 <span style="width:22px;height:22px;border-radius:11px;border:1.5px solid var(--hairline);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted)">–</span>
               </div>
@@ -260,7 +261,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
               <img src="../mobile/assets/home-bg.jpg" alt="" style="width:100%;height:64px;object-fit:cover;border-radius:10px;margin-bottom:8px">
               <div style="font-size:13px;font-weight:700;line-height:18px">Tunisia name squad for WAFCON qualifying double-header</div>
               <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
-                <span style="font-size:11px;font-weight:800;color:var(--gold)">CAF Online</span>
+                <span style="font-size:11px;font-weight:800;color:var(--white)">CAF Online</span>
                 <span style="font-size:11px;color:var(--muted)">2h ago</span>
                 <span style="font-size:11px;color:var(--muted)">↗</span>
               </div>
@@ -276,17 +277,17 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
               <div style="display:flex;align-items:center;gap:8px">
                 <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--white)">A</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Amira</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">4 games</span></span>
-                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">86</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:100%;background:var(--gold);border-radius:2px"></span></span></span>
+                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">86</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:100%;background:var(--white);border-radius:2px"></span></span></span>
               </div>
               <div style="display:flex;align-items:center;gap:8px">
                 <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--white)">S</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Syrine</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">4 games</span></span>
-                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">71</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:82%;background:var(--gold);border-radius:2px"></span></span></span>
+                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">71</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:82%;background:var(--white);border-radius:2px"></span></span></span>
               </div>
               <div style="display:flex;align-items:center;gap:8px">
                 <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--white)">N</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Nour</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">3 games</span></span>
-                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">58</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:67%;background:var(--gold);border-radius:2px"></span></span></span>
+                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">58</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:67%;background:var(--white);border-radius:2px"></span></span></span>
               </div>
             </div>
           </div>
@@ -308,7 +309,8 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>Buttons are red rounded rectangles.</b> Federation red fill with white text, 14px corners that match the cards instead of fighting them, slightly taller at 44px. Gold is out of the buttons entirely.</li>
+      <li><b>The background is visible now.</b> Photo opacity up 0.16 to 0.38, with a wash that starts lighter up top (0.55) and deepens to 0.92 where the list content lives. The previous values disappeared on a phone panel.</li>
+      <li><b>Crests are proper circles.</b> A white ring with the flag cropped to fill the disc -- no distortion, no letterbox floating in a translucent circle -- and a plain "?" when there is no opponent.</li>
       <li><b>The bingo list shows player pictures.</b> Each row opens with a small avatar -- the roster photo when the username matches a player, initials otherwise -- instead of the rank numeral.</li>
       <li><b>News carries the team photo.</b> The feed has no thumbnails, so the squad photo anchors the card above the live headline, source and age. Tapping opens the article; "See all" opens the news screen.</li>
       <li><b>Injury Prevention is replaced by the Bingo score list.</b> The card shows the season leaderboard's top three from the real prediction entries and played matches -- rank, name, games and points with bars -- opening the games screen. It agrees with the leaderboard tab because it is the same computation.</li>

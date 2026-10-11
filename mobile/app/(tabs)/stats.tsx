@@ -76,7 +76,7 @@ export default function StatsScreen() {
                   onPress={() => setSelected(p)}
                   activeOpacity={0.8}
                 >
-                  <Text style={[styles.rank, rank === 1 && { color: colors.gold }]}>{rank}</Text>
+                  <Text style={[styles.rank, rank === 1 && { color: colors.white }]}>{rank}</Text>
                   <Avatar name={p.name} size={rank === 1 ? 58 : 48} photoUrl={p.photoUrl} />
                   <Text style={styles.podiumName} numberOfLines={2}>{p.name}</Text>
                   <Text style={styles.podiumClub} numberOfLines={1}>{p.club}</Text>
@@ -118,7 +118,7 @@ function Leaderboard({
             onPress={() => onPress(p)}
             activeOpacity={0.75}
           >
-            <Text style={[styles.lbRank, i === 0 && { color: colors.gold }]}>{i + 1}</Text>
+            <Text style={[styles.lbRank, i === 0 && { color: colors.white }]}>{i + 1}</Text>
             <Avatar name={p.name} size={38} photoUrl={p.photoUrl} />
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text style={styles.lbName} numberOfLines={1}>{p.name}</Text>
@@ -151,14 +151,14 @@ const styles = StyleSheet.create({
     flex: 1, alignItems: 'center', gap: 6, backgroundColor: colors.card, borderRadius: radius.card,
     borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 6, paddingBottom: space.md,
   },
-  podiumFirst: { borderColor: colors.gold },
+  podiumFirst: { borderColor: colors.white },
   rank: { color: colors.muted, fontSize: 14, fontWeight: '800' },
   podiumName: { color: colors.white, fontSize: 12, fontWeight: '700', textAlign: 'center', minHeight: 30 },
   podiumClub: { color: colors.muted, fontSize: 10, textAlign: 'center' },
-  podiumGoals: { color: colors.gold, fontSize: 26, fontWeight: '900', fontVariant: ['tabular-nums'] },
+  podiumGoals: { color: colors.white, fontSize: 26, fontWeight: '900', fontVariant: ['tabular-nums'] },
   lbRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: 12 },
   lbDivider: { borderTopWidth: 1, borderTopColor: colors.hairline },
-  lbRank: { color: colors.gold, width: 18, textAlign: 'center', fontWeight: '900', fontSize: 18 },
+  lbRank: { color: colors.white, width: 18, textAlign: 'center', fontWeight: '900', fontSize: 18 },
   lbName: { color: colors.white, fontSize: 14, fontWeight: '700' },
   lbClub: { color: colors.muted, fontSize: 12, marginTop: 1 },
   lbValue: { color: colors.white, fontSize: 20, fontWeight: '900', fontVariant: ['tabular-nums'] },

@@ -14,7 +14,7 @@ export function RadarChart({
   data,
   labels,
   size = 116,
-  color = colors.gold,
+  color = colors.white,
 }: {
   /** One value per axis, each 0..1. */
   data: number[];
@@ -65,7 +65,7 @@ export function RadarChart({
 /** A simple bar chart with a shared baseline and value-scaled heights. */
 export function BarChart({
   data,
-  color = colors.gold,
+  color = colors.white,
   height = 76,
 }: {
   data: { label: string; value: number }[];

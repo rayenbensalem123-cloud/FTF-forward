@@ -12,25 +12,25 @@ export function cardCode(player: Player): string {
 
 export function buildIdCardHtml(player: Player, username: string): string {
   const photo = player.photoUrl
-    ? `<img src="${esc(player.photoUrl)}" style="width:120px;height:120px;border-radius:60px;object-fit:cover;border:3px solid #F6C744;" />`
-    : `<div style="width:120px;height:120px;border-radius:60px;background:#0C1F3D;border:3px solid #F6C744;display:flex;align-items:center;justify-content:center;color:#fff;font-size:34px;font-weight:800;">${esc(
+    ? `<img src="${esc(player.photoUrl)}" style="width:120px;height:120px;border-radius:60px;object-fit:cover;border:3px solid #EDEFF4;" />`
+    : `<div style="width:120px;height:120px;border-radius:60px;background:#0C1F3D;border:3px solid #EDEFF4;display:flex;align-items:center;justify-content:center;color:#fff;font-size:34px;font-weight:800;">${esc(
         player.name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase(),
       )}</div>`;
 
   return `<html><head><meta charset="utf-8" />
     <style>
       body { font-family: -apple-system, Helvetica, Arial, sans-serif; padding: 0; margin: 0; background: #0C1F3D; }
-      .card { width: 480px; margin: 40px auto; background: linear-gradient(135deg,#0C1F3D,#15284d); border: 2px solid #F6C744; border-radius: 24px; padding: 28px; color: #EDEFF4; }
-      .top { text-align: center; color: #F6C744; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; }
+      .card { width: 480px; margin: 40px auto; background: linear-gradient(135deg,#0C1F3D,#15284d); border: 2px solid #EDEFF4; border-radius: 24px; padding: 28px; color: #EDEFF4; }
+      .top { text-align: center; color: #EDEFF4; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; }
       .federation { text-align: center; color: #8FA0BD; font-size: 11px; margin-top: 2px; margin-bottom: 18px; }
       .head { display: flex; align-items: center; gap: 18px; }
       .name { font-size: 22px; font-weight: 800; margin: 0; }
-      .number { color: #F6C744; font-size: 13px; font-weight: 800; margin: 4px 0 0; }
+      .number { color: #EDEFF4; font-size: 13px; font-weight: 800; margin: 4px 0 0; }
       .grid { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
       .label { color: #8FA0BD; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
       .value { color: #fff; font-size: 14px; font-weight: 700; margin-top: 2px; }
       .footer { margin-top: 22px; text-align: center; color: #8FA0BD; font-size: 9px; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 12px; }
-      .code { text-align: center; color: #F6C744; font-size: 11px; font-weight: 800; letter-spacing: 1px; margin-top: 4px; }
+      .code { text-align: center; color: #EDEFF4; font-size: 11px; font-weight: 800; letter-spacing: 1px; margin-top: 4px; }
     </style></head><body>
     <div class="card">
       <div class="top">Tunisia WNT</div>

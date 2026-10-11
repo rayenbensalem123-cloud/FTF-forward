@@ -86,7 +86,7 @@ function Row({
       accessibilityRole="button"
       accessibilityLabel={t(item.title)}
     >
-      <View style={styles.iconWrap}><Icon color={colors.gold} size={18} /></View>
+      <View style={styles.iconWrap}><Icon color={colors.white} size={18} /></View>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={styles.rowTitle}>{t(item.title)}</Text>
         <Text style={styles.rowDesc} numberOfLines={1}>{t(item.desc)}</Text>

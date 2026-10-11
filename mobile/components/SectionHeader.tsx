@@ -30,7 +30,7 @@ export function SectionHeader({ title, href }: { title: string; href?: Href }) {
           accessibilityLabel={t('seeAll')}
         >
           <Text style={styles.linkText}>{t('seeAll')}</Text>
-          <ForwardChevron color={colors.gold} size={12} />
+          <ForwardChevron color={colors.white} size={12} />
         </TouchableOpacity>
       ) : null}
     </View>
@@ -43,5 +43,5 @@ const styles = StyleSheet.create({
   // block; here the caller's layout gap does that job, so drop it.
   title: { ...sectionTitle, marginBottom: 0 },
   link: { flexDirection: 'row', alignItems: 'center', gap: 2 },
-  linkText: { color: colors.gold, fontSize: 12, fontWeight: '600' },
+  linkText: { color: colors.white, fontSize: 12, fontWeight: '600' },
 });

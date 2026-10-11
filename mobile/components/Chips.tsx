@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.45 },
   segment: {
     flexDirection: 'row', backgroundColor: colors.card, borderRadius: radius.md, padding: 4,
-    borderWidth: 1, borderColor: colors.goldBorder,
+    borderWidth: 1, borderColor: colors.hairline,
   },
   segmentItem: { flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: radius.sm + 2 },
   segmentActive: { backgroundColor: colors.red },
@@ -79,9 +79,9 @@ const styles = StyleSheet.create({
   chips: { gap: space.sm, paddingVertical: 2 },
   chip: {
     paddingHorizontal: 16, paddingVertical: 8, borderRadius: radius.pill,
-    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.goldBorder,
+    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.hairline,
   },
-  chipActive: { backgroundColor: colors.gold, borderColor: colors.gold },
+  chipActive: { backgroundColor: colors.white, borderColor: colors.white },
   chipText: { color: colors.muted, fontWeight: '700', fontSize: 13 },
   chipTextActive: { color: colors.navy },
 });

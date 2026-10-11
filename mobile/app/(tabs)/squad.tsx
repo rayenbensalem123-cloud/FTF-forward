@@ -48,7 +48,7 @@ export default function SquadScreen() {
         keyExtractor={(p) => p.id}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.gold} colors={[colors.gold]} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.white} colors={[colors.white]} />}
         ItemSeparatorComponent={() => <View style={{ height: space.sm + 2 }} />}
         ListHeaderComponent={
           <View style={styles.header}>

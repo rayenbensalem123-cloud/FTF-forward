@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   circle: {
     backgroundColor: colors.cardRaised,
     borderWidth: 2,
-    borderColor: colors.gold,
+    borderColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',

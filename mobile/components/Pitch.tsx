@@ -60,7 +60,7 @@ const LINE = 'rgba(255,255,255,0.18)';
 const styles = StyleSheet.create({
   pitch: {
     width: '100%', aspectRatio: 0.78, backgroundColor: '#0E3B2E', borderRadius: 20,
-    borderWidth: 1, borderColor: colors.goldBorder, overflow: 'hidden',
+    borderWidth: 1, borderColor: colors.hairline, overflow: 'hidden',
   },
   halfway: { position: 'absolute', left: 0, right: 0, top: '50%', height: 1, backgroundColor: LINE },
   centerCircle: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   circle: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', borderWidth: 2 },
   circleFilled: { backgroundColor: colors.red, borderColor: colors.white },
   circleEmpty: { backgroundColor: 'rgba(7,19,38,0.55)', borderColor: 'rgba(255,255,255,0.35)', borderStyle: 'dashed' },
-  circleActive: { borderColor: colors.gold, borderStyle: 'solid', borderWidth: 3 },
+  circleActive: { borderColor: colors.white, borderStyle: 'solid', borderWidth: 3 },
   circleText: { color: colors.white, fontWeight: '800', fontSize: 16 },
   label: {
     color: colors.white, fontSize: 11, fontWeight: '700', textAlign: 'center', maxWidth: 72, height: 14,

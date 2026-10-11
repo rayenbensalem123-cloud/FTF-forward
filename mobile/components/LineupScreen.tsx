@@ -131,7 +131,7 @@ export function LineupScreen({ embedded = false }: { embedded?: boolean }) {
                   <Text style={styles.btnText}>{t('autoPick')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.btn, styles.btnLine, { flex: 1 }]} onPress={() => { match.clearLineup(); setSlot(null); }} accessibilityRole="button">
-                  <Text style={[styles.btnText, { color: colors.gold }]}>{t('clearLineup')}</Text>
+                  <Text style={[styles.btnText, { color: colors.white }]}>{t('clearLineup')}</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -251,10 +251,10 @@ const styles = StyleSheet.create({
   close: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
   viewOnly: { color: colors.amber, fontSize: 13, backgroundColor: colors.amberSoft, borderRadius: radius.sm + 2, padding: 10 },
-  label: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
+  label: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
   actions: { flexDirection: 'row', gap: space.sm + 2 },
   btn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: 48, borderRadius: radius.md, backgroundColor: colors.red },
-  btnLine: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.goldBorder },
+  btnLine: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.hairline },
   btnText: { color: colors.white, fontWeight: '800', fontSize: 14 },
   remove: { alignSelf: 'flex-start', backgroundColor: colors.redSoft, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8 },
   removeText: { color: '#FF6B75', fontWeight: '800', fontSize: 13 },
@@ -262,19 +262,19 @@ const styles = StyleSheet.create({
   pickRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: 6 },
   pickName: { color: colors.white, fontSize: 14, fontWeight: '700' },
   pickMeta: { color: colors.muted, fontSize: 12, marginTop: 2 },
-  callRow: { backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder, padding: space.md },
-  callRowOn: { borderColor: colors.gold },
+  callRow: { backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, padding: space.md },
+  callRowOn: { borderColor: colors.white },
   check: { width: 24, height: 24, borderRadius: 8, borderWidth: 2, borderColor: colors.muted, alignItems: 'center', justifyContent: 'center' },
-  checkOn: { backgroundColor: colors.gold, borderColor: colors.gold },
+  checkOn: { backgroundColor: colors.white, borderColor: colors.white },
   saveRow: { flexDirection: 'row', gap: space.sm },
-  nameInput: { flex: 1, height: 44, borderRadius: radius.md, backgroundColor: colors.navy, borderWidth: 1, borderColor: colors.goldBorder, color: colors.white, paddingHorizontal: 12, fontSize: 14 },
+  nameInput: { flex: 1, height: 44, borderRadius: radius.md, backgroundColor: colors.navy, borderWidth: 1, borderColor: colors.hairline, color: colors.white, paddingHorizontal: 12, fontSize: 14 },
   saveBtn: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center' },
   tplRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 4 },
-  loadBtn: { backgroundColor: colors.goldSoft, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 7 },
-  loadText: { color: colors.gold, fontWeight: '800', fontSize: 12 },
+  loadBtn: { backgroundColor: colors.whiteSoft, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 7 },
+  loadText: { color: colors.white, fontWeight: '800', fontSize: 12 },
   trash: { padding: 8 },
   benchWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  benchPill: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.card, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.goldBorder, paddingHorizontal: 10, paddingVertical: 5 },
-  benchNo: { color: colors.gold, fontWeight: '800', fontSize: 12 },
+  benchPill: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.card, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 10, paddingVertical: 5 },
+  benchNo: { color: colors.white, fontWeight: '800', fontSize: 12 },
   benchName: { color: colors.white, fontSize: 12, fontWeight: '600' },
 });

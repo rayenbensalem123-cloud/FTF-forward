@@ -7,11 +7,11 @@ import type { Language } from '@/types';
 
 /**
  * The platform's entry-screen look (login / register): the stadium photo under a navy and red
- * wash, the crest, a gold kicker and a frosted card with a red-to-gold bar.
+ * wash, the crest, a light kicker and a frosted card with a red-to-white bar.
  * Source: FedBg, LoginScreen and .fed-screen in the website.
  */
 const NAVY = '#0A1226';
-const GOLD = '#F6C744';
+const LIGHT = '#EDEFF4';
 const RED = '#E30613';
 
 const LANGS: { value: Language; label: string }[] = [
@@ -49,7 +49,7 @@ export function FedScreen({ title, kicker, children, footer }: Props) {
             accessibilityRole="button"
             accessibilityState={{ selected: language === l.value }}
           >
-            <Text style={[styles.langText, language === l.value && { color: GOLD }]}>{l.label}</Text>
+            <Text style={[styles.langText, language === l.value && { color: LIGHT }]}>{l.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -65,7 +65,7 @@ export function FedScreen({ title, kicker, children, footer }: Props) {
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.kicker}>{kicker}</Text>
           <View style={styles.card}>
-            <LinearGradient colors={[RED, GOLD]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.bar} />
+            <LinearGradient colors={[RED, LIGHT]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.bar} />
             <View style={{ marginTop: 24, gap: 14 }}>{children}</View>
           </View>
           {!!footer && <Text style={styles.footer}>{footer}</Text>}
@@ -101,13 +101,13 @@ const styles = StyleSheet.create({
   aura: { position: 'absolute', top: 0, left: 0, right: 0, height: 320 },
   langRow: { flexDirection: 'row', justifyContent: 'flex-end', gap: 6, paddingHorizontal: 16 },
   langBtn: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8, borderWidth: 1, borderColor: 'rgba(148,170,210,0.28)', backgroundColor: 'rgba(13,31,60,0.7)' },
-  langOn: { borderColor: 'rgba(246,199,68,0.55)' },
+  langOn: { borderColor: 'rgba(255,255,255,0.55)' },
   langText: { color: '#CDC2B0', fontSize: 10, fontWeight: '900', letterSpacing: 1.4 },
   body: { flex: 1 },
   content: { flexGrow: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24, paddingTop: 16 },
   logo: { height: 80, width: 140 },
   title: { marginTop: 32, color: '#fff', fontSize: 30, fontWeight: '900', textTransform: 'uppercase', letterSpacing: -0.5, textAlign: 'center' },
-  kicker: { marginTop: 12, color: GOLD, fontSize: 9, fontWeight: '700', letterSpacing: 3.6, textTransform: 'uppercase', textAlign: 'center' },
+  kicker: { marginTop: 12, color: LIGHT, fontSize: 9, fontWeight: '700', letterSpacing: 3.6, textTransform: 'uppercase', textAlign: 'center' },
   card: {
     marginTop: 32, width: '100%', maxWidth: 420, borderRadius: 24, padding: 28,
     backgroundColor: 'rgba(255,255,255,0.07)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)',

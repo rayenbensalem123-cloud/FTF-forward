@@ -65,14 +65,14 @@ export function MatchTravelCard() {
       <View style={styles.head}>
         <Text style={styles.section}>{t('matchCity')}</Text>
         <View style={styles.place}>
-          <MapPin color={colors.gold} size={12} />
+          <MapPin color={colors.white} size={12} />
           <Text style={styles.placeText} numberOfLines={1}>{[info.place.name, info.place.country].filter(Boolean).join(', ')}</Text>
         </View>
       </View>
 
       {f ? (
         <View style={styles.wx}>
-          <WxIcon color={colors.gold} size={34} />
+          <WxIcon color={colors.white} size={34} />
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={styles.temp}>{f.maxC}° <Text style={styles.tempLow}>/ {f.minC}°</Text></Text>
             <Text style={styles.muted}>{t(LABEL[f.kind])}</Text>
@@ -94,12 +94,12 @@ export function MatchTravelCard() {
       <View style={styles.trip}>
         {info.flightMinutes > 0 && (
           <View style={styles.stat}>
-            <Plane color={colors.gold} size={14} />
+            <Plane color={colors.white} size={14} />
             <Text style={styles.tripText}>~{formatDuration(info.flightMinutes)} {t('flightApprox')} · {info.distanceKm.toLocaleString('en-US')} km</Text>
           </View>
         )}
         <View style={styles.stat}>
-          <Clock color={colors.gold} size={14} />
+          <Clock color={colors.white} size={14} />
           <Text style={styles.tripText}>{timeText}</Text>
         </View>
       </View>
@@ -109,7 +109,7 @@ export function MatchTravelCard() {
 
 const styles = StyleSheet.create({
   head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
-  section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
+  section: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
   place: { flexDirection: 'row', alignItems: 'center', gap: 4, flexShrink: 1 },
   placeText: { color: colors.white, fontSize: 12, fontWeight: '600', flexShrink: 1 },
   wx: { flexDirection: 'row', alignItems: 'center', gap: space.md },

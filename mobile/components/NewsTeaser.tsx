@@ -35,7 +35,7 @@ export function NewsTeaser() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="small" color={colors.gold} />
+        <ActivityIndicator size="small" color={colors.white} />
       </View>
     );
   }
@@ -71,6 +71,6 @@ const styles = StyleSheet.create({
   photo: { width: '100%', height: 64, borderRadius: radius.sm, marginBottom: 8 },
   headline: { color: colors.white, fontSize: 13, fontWeight: '700', lineHeight: 18 },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 },
-  source: { color: colors.gold, fontSize: 11, fontWeight: '800', flexShrink: 1 },
+  source: { color: colors.white, fontSize: 11, fontWeight: '800', flexShrink: 1 },
   time: { color: colors.muted, fontSize: 11, flex: 1 },
 });

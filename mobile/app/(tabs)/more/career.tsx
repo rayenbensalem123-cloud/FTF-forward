@@ -34,9 +34,9 @@ function RatingSparkline({ reports }: { reports: ClubReport[] }) {
   return (
     <View>
       <Svg width="100%" height={H} viewBox={`0 0 ${W} ${H}`}>
-        <Polyline points={points} fill="none" stroke={colors.gold} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+        <Polyline points={points} fill="none" stroke={colors.white} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
         {rated.map((r, i) => (
-          <Circle key={r.id} cx={PAD + i * step} cy={y(r.rating as number)} r={3} fill={colors.gold} />
+          <Circle key={r.id} cx={PAD + i * step} cy={y(r.rating as number)} r={3} fill={colors.white} />
         ))}
       </Svg>
       <Text style={styles.avgText}>{avg.toFixed(1)}/10</Text>
@@ -121,13 +121,13 @@ export default function CareerScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { load(); refresh(); }} tintColor={colors.gold} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { load(); refresh(); }} tintColor={colors.white} />}
       >
         <AppHeader back showBell={false} />
         <Text style={styles.title}>{T.career}</Text>
 
         {loading ? (
-          <ActivityIndicator color={colors.gold} style={{ marginTop: space.xl }} />
+          <ActivityIndicator color={colors.white} style={{ marginTop: space.xl }} />
         ) : (
           <>
             <Card style={{ gap: space.md }}>
@@ -160,7 +160,7 @@ export default function CareerScreen() {
                 {clips.length > 0 && (
                   <TouchableOpacity onPress={() => router.push('/more/highlights')} accessibilityRole="button" style={styles.rowBetween}>
                     <Text style={styles.link}>{T.viewAllHighlights}</Text>
-                    <ChevronRight size={14} color={colors.gold} />
+                    <ChevronRight size={14} color={colors.white} />
                   </TouchableOpacity>
                 )}
               </View>
@@ -169,7 +169,7 @@ export default function CareerScreen() {
               ) : (
                 clips.map((r) => (
                   <TouchableOpacity key={r.id} style={styles.clipRow} onPress={() => router.push('/more/highlights')} accessibilityRole="button">
-                    <View style={styles.clipIcon}><Film size={16} color={colors.gold} /></View>
+                    <View style={styles.clipIcon}><Film size={16} color={colors.white} /></View>
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={styles.clipTitle} numberOfLines={1}>{r.opponent || '—'}</Text>
                       <Text style={styles.clipMeta}>{r.date ? formatDate(r.date) : ''}</Text>
@@ -204,14 +204,14 @@ export default function CareerScreen() {
             </Card>
 
             <Card style={{ gap: space.sm }}>
-              <View style={styles.rowStart}><CalendarPlus size={16} color={colors.gold} /><Text style={styles.section}>{T.addToCalendar}</Text></View>
+              <View style={styles.rowStart}><CalendarPlus size={16} color={colors.white} /><Text style={styles.section}>{T.addToCalendar}</Text></View>
               {nextMatch ? (
                 <>
                   <TouchableOpacity style={styles.calBtn} onPress={syncNext} disabled={syncing !== null} accessibilityRole="button">
                     {syncing === 'one' ? <ActivityIndicator color={colors.navy} /> : <Text style={styles.calBtnText}>vs {nextMatch.opponent} · {formatDate(nextMatch.date)}</Text>}
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.calBtnGhost} onPress={syncAll} disabled={syncing !== null} accessibilityRole="button">
-                    {syncing === 'all' ? <ActivityIndicator color={colors.gold} /> : <Text style={styles.calBtnGhostText}>{T.syncAllMatches}</Text>}
+                    {syncing === 'all' ? <ActivityIndicator color={colors.white} /> : <Text style={styles.calBtnGhostText}>{T.syncAllMatches}</Text>}
                   </TouchableOpacity>
                 </>
               ) : (
@@ -240,32 +240,32 @@ const styles = StyleSheet.create({
   title: { color: colors.white, fontSize: 28, fontWeight: '800' },
   empty: { color: colors.muted, fontSize: 13, textAlign: 'center', paddingVertical: space.xl },
   emptySmall: { color: colors.muted, fontSize: 12, paddingVertical: space.sm },
-  section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
+  section: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
   subSection: { color: colors.muted, fontSize: 11, fontWeight: '700', textTransform: 'uppercase', marginBottom: 4 },
   rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 4 },
   rowStart: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   statRow: { flexDirection: 'row', gap: space.sm },
-  statTile: { flex: 1, backgroundColor: colors.navyDeep, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.goldBorder, paddingVertical: space.sm, alignItems: 'center' },
+  statTile: { flex: 1, backgroundColor: colors.navyDeep, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.hairline, paddingVertical: space.sm, alignItems: 'center' },
   statValue: { color: colors.white, fontSize: 18, fontWeight: '800' },
   statLabel: { color: colors.muted, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', marginTop: 2 },
-  avgText: { color: colors.gold, fontSize: 11, fontWeight: '800', textAlign: 'right', marginTop: 2 },
-  link: { color: colors.gold, fontSize: 11, fontWeight: '800' },
+  avgText: { color: colors.white, fontSize: 11, fontWeight: '800', textAlign: 'right', marginTop: 2 },
+  link: { color: colors.white, fontSize: 11, fontWeight: '800' },
   clipRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.xs },
-  clipIcon: { width: 32, height: 32, borderRadius: 10, backgroundColor: colors.goldSoft, alignItems: 'center', justifyContent: 'center' },
+  clipIcon: { width: 32, height: 32, borderRadius: 10, backgroundColor: colors.whiteSoft, alignItems: 'center', justifyContent: 'center' },
   clipTitle: { color: colors.white, fontSize: 13, fontWeight: '700' },
   clipMeta: { color: colors.muted, fontSize: 11, marginTop: 1 },
   timelineRow: { flexDirection: 'row', gap: space.sm },
   timelineRail: { width: 14, alignItems: 'center' },
   timelineDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.amber, marginTop: 3 },
   timelineLine: { width: 2, flex: 1, backgroundColor: colors.line, marginTop: 2 },
-  timelineDate: { color: colors.gold, fontSize: 11, fontWeight: '800' },
+  timelineDate: { color: colors.white, fontSize: 11, fontWeight: '800' },
   timelineNote: { color: colors.white, fontSize: 13, marginTop: 2 },
-  calBtn: { backgroundColor: colors.gold, borderRadius: radius.md, paddingVertical: 12, alignItems: 'center' },
+  calBtn: { backgroundColor: colors.white, borderRadius: radius.md, paddingVertical: 12, alignItems: 'center' },
   calBtnText: { color: colors.navy, fontWeight: '800', fontSize: 13 },
-  calBtnGhost: { borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder, paddingVertical: 12, alignItems: 'center' },
-  calBtnGhostText: { color: colors.gold, fontWeight: '800', fontSize: 13 },
-  idCardCard: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.goldBorder, padding: space.md },
-  idCardIcon: { width: 40, height: 40, borderRadius: 12, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' },
+  calBtnGhost: { borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, paddingVertical: 12, alignItems: 'center' },
+  calBtnGhostText: { color: colors.white, fontWeight: '800', fontSize: 13 },
+  idCardCard: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.hairline, padding: space.md },
+  idCardIcon: { width: 40, height: 40, borderRadius: 12, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center' },
   idCardTitle: { color: colors.white, fontSize: 15, fontWeight: '800' },
   idCardSub: { color: colors.muted, fontSize: 12, marginTop: 2 },
 });

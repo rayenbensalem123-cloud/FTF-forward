@@ -59,7 +59,7 @@ export function AnnouncementsCard() {
     <Card style={{ gap: space.sm + 2 }}>
       <View style={styles.head}>
         <View style={styles.titleRow}>
-          <Megaphone color={colors.gold} size={14} />
+          <Megaphone color={colors.white} size={14} />
           <Text style={styles.section}>{t('announcements')}</Text>
         </View>
         {isAdmin && (
@@ -100,7 +100,7 @@ export function AnnouncementsCard() {
           accessibilityHint={isAdmin ? t('delete') : undefined}
         >
           <View style={styles.itemHead}>
-            {a.pinned && <Pin color={colors.gold} size={12} />}
+            {a.pinned && <Pin color={colors.white} size={12} />}
             <Text style={styles.itemTitle} numberOfLines={2}>{a.title}</Text>
           </View>
           <Text style={styles.itemBody} numberOfLines={4}>{a.body}</Text>
@@ -114,18 +114,18 @@ export function AnnouncementsCard() {
 const styles = StyleSheet.create({
   head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
+  section: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
   addBtn: { width: 30, height: 30, borderRadius: 15, backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center' },
   form: { gap: space.sm },
   input: {
-    backgroundColor: colors.navy, borderRadius: radius.sm + 2, borderWidth: 1, borderColor: colors.goldBorder,
+    backgroundColor: colors.navy, borderRadius: radius.sm + 2, borderWidth: 1, borderColor: colors.hairline,
     color: colors.white, paddingHorizontal: 12, height: 44, fontSize: 14,
   },
   multi: { height: undefined, minHeight: 80, paddingTop: 12, textAlignVertical: 'top' },
   formRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   pinRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   check: { width: 20, height: 20, borderRadius: 6, borderWidth: 2, borderColor: colors.muted, alignItems: 'center', justifyContent: 'center' },
-  checkOn: { backgroundColor: colors.gold, borderColor: colors.gold },
+  checkOn: { backgroundColor: colors.white, borderColor: colors.white },
   pinText: { color: colors.white, fontSize: 13 },
   postBtn: { minWidth: 76, height: 36, borderRadius: radius.sm + 2, backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14 },
   postText: { color: colors.white, fontWeight: '800', fontSize: 13 },

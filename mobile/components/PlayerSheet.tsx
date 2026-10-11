@@ -163,12 +163,12 @@ export function PlayerSheet({ player, onClose }: Props) {
                   <Text style={styles.primaryText}>{composing ? t('send') : t('messagePlayer')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.secondaryBtn} onPress={() => setShowLog((v) => !v)} accessibilityRole="button">
-                  <ClipboardList color={colors.gold} size={16} />
+                  <ClipboardList color={colors.white} size={16} />
                   <Text style={styles.secondaryText}>{showLog ? t('hideMedicalLog') : t('medicalLog')}</Text>
                 </TouchableOpacity>
                 {canEdit && (
                   <TouchableOpacity style={styles.secondaryBtn} onPress={openEdit} accessibilityRole="button">
-                    <Pencil color={colors.gold} size={16} />
+                    <Pencil color={colors.white} size={16} />
                     <Text style={styles.secondaryText}>{t('editPlayer')}</Text>
                   </TouchableOpacity>
                 )}
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   backdrop: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.scrim },
   sheet: {
     backgroundColor: colors.navy, borderTopLeftRadius: 28, borderTopRightRadius: 28,
-    borderWidth: 1, borderBottomWidth: 0, borderColor: colors.goldBorder, overflow: 'hidden',
+    borderWidth: 1, borderBottomWidth: 0, borderColor: colors.hairline, overflow: 'hidden',
   },
   handleArea: { alignItems: 'center', paddingTop: 10, paddingBottom: 14 },
   handle: { width: 44, height: 5, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.25)' },
@@ -197,27 +197,27 @@ const styles = StyleSheet.create({
   statusRow: { alignItems: 'center' },
   name: { color: colors.white, fontSize: 24, fontWeight: '800', marginTop: 10, textAlign: 'center' },
   tags: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8 },
-  pill: { backgroundColor: colors.goldSoft, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
-  pillText: { color: colors.gold, fontSize: 12, fontWeight: '800' },
+  pill: { backgroundColor: colors.whiteSoft, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
+  pillText: { color: colors.white, fontSize: 12, fontWeight: '800' },
   clubRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   club: { color: colors.muted, fontSize: 14 },
-  section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 },
+  section: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 },
   statRow: { flexDirection: 'row', gap: 8 },
   statTile: {
-    flex: 1, backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder,
+    flex: 1, backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline,
     paddingVertical: 12, alignItems: 'center',
   },
   statValue: { color: colors.white, fontSize: 18, fontWeight: '800' },
   statLabel: { color: colors.muted, fontSize: 11, marginTop: 2 },
-  panel: { backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.goldBorder, padding: space.lg },
+  panel: { backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.hairline, padding: space.lg },
   medicalNote: { color: colors.white, fontSize: 14, lineHeight: 20 },
   checkup: { color: colors.muted, fontSize: 12, marginTop: 8 },
   log: { marginTop: 12, gap: 10, borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 12 },
   logRow: { gap: 2 },
-  logDate: { color: colors.gold, fontSize: 12, fontWeight: '700' },
+  logDate: { color: colors.white, fontSize: 12, fontWeight: '700' },
   logNote: { color: colors.white, fontSize: 13, lineHeight: 18 },
   input: {
-    backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder,
+    backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline,
     color: colors.white, padding: 14, minHeight: 84, textAlignVertical: 'top', fontSize: 15,
   },
   actions: { gap: 10 },
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   primaryText: { color: colors.white, fontWeight: '800', fontSize: 15 },
   secondaryBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: 50,
-    borderRadius: radius.md, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.goldBorder,
+    borderRadius: radius.md, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.hairline,
   },
-  secondaryText: { color: colors.gold, fontWeight: '800', fontSize: 15 },
+  secondaryText: { color: colors.white, fontWeight: '800', fontSize: 15 },
 });

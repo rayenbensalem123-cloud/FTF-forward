@@ -4,10 +4,8 @@ import { colors, radius, space } from '@/constants/theme';
 
 /**
  * The model's pill tab row: a horizontally scrollable strip where the active
- * pill is filled with the accent and the rest are dark. It switches between the
- * age categories (Seniors / U20 / U17) without a second navigation level, and
- * it is the one element in the model that is itself a control rather than a
- * label, so it gets the accent rather than white.
+ * pill is filled red and the rest are dark. It switches between the age
+ * categories (Seniors / U20 / U17) without a second navigation level.
  */
 export function PillTabs<T extends string>({
   tabs,

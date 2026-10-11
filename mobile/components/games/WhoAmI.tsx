@@ -130,7 +130,7 @@ export function WhoAmI({ players, username, lang }: Props) {
         <Text style={s.lead}>{T.waDesc}</Text>
         <Text style={s.range}>{BASE} → {MIN_PTS} {T.waPts}</Text>
         {eligible.length < ROUND_SIZE ? (
-          <View style={{ marginTop: space.lg }}><Notice tone="gold" text={T.waNoData} /></View>
+          <View style={{ marginTop: space.lg }}><Notice tone="light" text={T.waNoData} /></View>
         ) : (
           <TouchableOpacity style={[gameButton.primary, { marginTop: space.lg }]} onPress={start} accessibilityRole="button">
             <Text style={gameButton.primaryText}>{T.waStart}</Text>
@@ -147,7 +147,7 @@ export function WhoAmI({ players, username, lang }: Props) {
       <View>
         <View style={{ alignItems: 'center' }}>
           <Text style={s.dimCaps}>{T.waDone}</Text>
-          <Text style={[s.bigScore, won && { color: colors.gold }]}>{totalScore}</Text>
+          <Text style={[s.bigScore, won && { color: colors.white }]}>{totalScore}</Text>
           <Text style={s.dim}>{fmt(T.waOutOf, { n: ROUND_SIZE * BASE })}</Text>
         </View>
         <View style={{ marginTop: space.lg, gap: 6 }}>
@@ -218,7 +218,7 @@ export function WhoAmI({ players, username, lang }: Props) {
         <View style={[s.feedback,
           status === 'correct' ? s.fbOk : status === 'failed' ? s.fbBad : s.fbWarn]}>
           {status === 'correct' ? <Check size={14} color="#7FD6A8" strokeWidth={3} /> : status === 'failed' ? <X size={14} color="#FF5F72" strokeWidth={3} /> : null}
-          <Text style={[s.fbText, { color: status === 'correct' ? '#7FD6A8' : status === 'failed' ? '#FF5F72' : colors.gold }]}>{feedback}</Text>
+          <Text style={[s.fbText, { color: status === 'correct' ? '#7FD6A8' : status === 'failed' ? '#FF5F72' : colors.white }]}>{feedback}</Text>
         </View>
       )}
 
@@ -265,7 +265,7 @@ export function WhoAmI({ players, username, lang }: Props) {
 
 const s = StyleSheet.create({
   lead: { color: colors.muted, fontSize: 13, fontWeight: '600', lineHeight: 19 },
-  range: { color: colors.gold, fontSize: 14, fontWeight: '800', marginTop: space.md, fontVariant: ['tabular-nums'] },
+  range: { color: colors.white, fontSize: 14, fontWeight: '800', marginTop: space.md, fontVariant: ['tabular-nums'] },
   dim: { color: colors.muted, fontSize: 11, fontWeight: '600', lineHeight: 16 },
   dimCaps: { color: colors.muted, fontSize: 12, fontWeight: '800' },
   boardWrap: { marginTop: space.xl, paddingTop: space.lg, borderTopWidth: 1, borderTopColor: colors.line },
@@ -274,16 +274,16 @@ const s = StyleSheet.create({
   resultRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.cardRaised, borderRadius: radius.sm, paddingVertical: 9, paddingHorizontal: space.md },
   dot: { width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
   resultName: { flex: 1, color: colors.white, fontSize: 12, fontWeight: '800', textTransform: 'uppercase' },
-  resultPts: { color: colors.gold, fontSize: 16, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  resultPts: { color: colors.white, fontSize: 16, fontWeight: '800', fontVariant: ['tabular-nums'] },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  runScore: { color: colors.gold, fontSize: 22, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  runScore: { color: colors.white, fontSize: 22, fontWeight: '800', fontVariant: ['tabular-nums'] },
   unit: { color: colors.muted, fontSize: 10, fontWeight: '700' },
   segments: { flexDirection: 'row', gap: 4, marginBottom: space.lg },
   segment: { flex: 1, height: 6, borderRadius: 3 },
   ptsRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 6 },
-  ptsNow: { color: colors.gold, fontSize: 32, fontWeight: '900', fontVariant: ['tabular-nums'], lineHeight: 36 },
+  ptsNow: { color: colors.white, fontSize: 32, fontWeight: '900', fontVariant: ['tabular-nums'], lineHeight: 36 },
   track: { height: 8, borderRadius: 4, backgroundColor: colors.cardRaised, overflow: 'hidden', marginBottom: space.md },
-  fill: { height: 8, borderRadius: 4, backgroundColor: colors.gold },
+  fill: { height: 8, borderRadius: 4, backgroundColor: colors.white },
   clueGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   clue: { width: '48.5%', backgroundColor: colors.cardRaised, borderRadius: radius.sm, paddingVertical: 10, paddingLeft: 14, paddingRight: 10, overflow: 'hidden' },
   clueEdge: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, backgroundColor: colors.red },
@@ -294,11 +294,11 @@ const s = StyleSheet.create({
   feedback: { marginTop: space.md, flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: radius.md, borderWidth: 1, paddingHorizontal: space.md, paddingVertical: 10 },
   fbOk: { backgroundColor: 'rgba(127,214,168,0.12)', borderColor: 'rgba(127,214,168,0.3)' },
   fbBad: { backgroundColor: 'rgba(227,6,19,0.1)', borderColor: 'rgba(227,6,19,0.3)' },
-  fbWarn: { backgroundColor: colors.goldSoft, borderColor: 'rgba(246,199,68,0.3)' },
+  fbWarn: { backgroundColor: colors.whiteSoft, borderColor: 'rgba(255,255,255,0.3)' },
   fbText: { fontSize: 13, fontWeight: '800', flex: 1 },
-  inputWrap: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: colors.cardRaised, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder, paddingHorizontal: space.md },
+  inputWrap: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: colors.cardRaised, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: space.md },
   input: { flex: 1, color: colors.white, fontSize: 14, fontWeight: '700', paddingVertical: 13, textTransform: 'uppercase' },
-  suggestions: { marginTop: 6, backgroundColor: colors.cardRaised, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder, overflow: 'hidden' },
+  suggestions: { marginTop: 6, backgroundColor: colors.cardRaised, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, overflow: 'hidden' },
   suggestion: { paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
   suggestionText: { color: colors.white, fontSize: 13, fontWeight: '700', textTransform: 'uppercase' },
   giveUp: { color: colors.muted, fontSize: 12, fontWeight: '700' },

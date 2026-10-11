@@ -193,7 +193,7 @@ export default function CampScheduleScreen() {
         {/* Upload zone */}
         {file ? (
           <View style={styles.fileRow}>
-            <FileText color={colors.gold} size={20} />
+            <FileText color={colors.white} size={20} />
             <Text style={styles.fileName} numberOfLines={1}>{file.name}</Text>
             <TouchableOpacity onPress={() => { setFile(null); setActivities(null); setApproved(false); }} hitSlop={10}>
               <X color={colors.muted} size={18} />
@@ -201,7 +201,7 @@ export default function CampScheduleScreen() {
           </View>
         ) : (
           <TouchableOpacity style={styles.uploadZone} activeOpacity={0.8} onPress={pickFile}>
-            <Upload color={colors.gold} size={32} />
+            <Upload color={colors.white} size={32} />
             <Text style={styles.uploadTitle}>{t('uploadProgram')}</Text>
             <Text style={styles.uploadDesc}>{t('uploadProgramDesc')}</Text>
             <View style={styles.formatRow}>
@@ -293,7 +293,7 @@ export default function CampScheduleScreen() {
                       style={[styles.activityItem, act.playerLabel && styles.activityItemPersonal]}
                     >
                       <View style={styles.activityTime}>
-                        <Clock color={colors.gold} size={14} />
+                        <Clock color={colors.white} size={14} />
                         <Text style={styles.activityTimeText}>{act.time}</Text>
                       </View>
                       <View style={styles.activityInfo}>
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 2,
     borderStyle: 'dashed',
-    borderColor: colors.goldBorder,
+    borderColor: colors.hairline,
     padding: 32,
     alignItems: 'center',
     gap: 8,
@@ -386,18 +386,18 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: colors.hairline,
     padding: 16,
   },
   fileName: { color: colors.white, fontSize: 14, fontWeight: '700', flex: 1 },
 
   inputSection: { gap: 8 },
-  inputLabel: { color: colors.gold, fontSize: 13, fontWeight: '800', letterSpacing: 0.05, textTransform: 'uppercase' },
+  inputLabel: { color: colors.white, fontSize: 13, fontWeight: '800', letterSpacing: 0.05, textTransform: 'uppercase' },
   textarea: {
     backgroundColor: colors.card,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: colors.hairline,
     padding: 16,
     color: colors.white,
     fontSize: 13,
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
   },
 
   parseBtn: {
-    backgroundColor: colors.gold,
+    backgroundColor: colors.white,
     borderRadius: radius.lg,
     padding: 16,
     alignItems: 'center',
@@ -424,11 +424,11 @@ const styles = StyleSheet.create({
   errorBoxText: { color: colors.red, fontSize: 13, fontWeight: '600' },
 
   sentBox: {
-    backgroundColor: colors.goldSoft,
+    backgroundColor: colors.whiteSoft,
     borderRadius: radius.md,
     padding: 14,
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: colors.hairline,
   },
   sentBoxText: { color: colors.white, fontSize: 13, fontWeight: '700' },
 
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     padding: 14,
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: colors.hairline,
   },
   warnBoxText: { color: colors.muted, fontSize: 12, fontWeight: '600' },
 
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: colors.hairline,
     padding: 16,
     alignItems: 'center',
   },
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: colors.hairline,
     padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
@@ -475,13 +475,13 @@ const styles = StyleSheet.create({
   },
   activityItemPersonal: { borderColor: colors.red },
   activityTime: { flexDirection: 'row', alignItems: 'center', gap: 4, width: 56 },
-  activityTimeText: { color: colors.gold, fontSize: 14, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  activityTimeText: { color: colors.white, fontSize: 14, fontWeight: '800', fontVariant: ['tabular-nums'] },
   activityInfo: { flex: 1 },
   activityName: { color: colors.white, fontSize: 14, fontWeight: '700' },
   activityPlayer: { color: colors.muted, fontSize: 12, marginTop: 2 },
 
   sendBtn: {
-    backgroundColor: colors.gold,
+    backgroundColor: colors.white,
     borderRadius: radius.lg,
     padding: 16,
     flexDirection: 'row',
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   sendBtnText: { color: colors.navy, fontSize: 14, fontWeight: '800', letterSpacing: 0.05, textTransform: 'uppercase' },
 
   approveBtn: {
-    backgroundColor: colors.gold,
+    backgroundColor: colors.white,
     borderRadius: radius.lg,
     padding: 16,
     flexDirection: 'row',
@@ -501,11 +501,11 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   approvedBox: {
-    backgroundColor: colors.goldSoft,
+    backgroundColor: colors.whiteSoft,
     borderRadius: radius.md,
     padding: 14,
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: colors.hairline,
     alignItems: 'center',
   },
   approvedBoxText: { color: colors.white, fontSize: 13, fontWeight: '700' },
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     padding: 14,
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: colors.hairline,
   },
   reviewBoxText: { color: colors.white, fontSize: 12, fontWeight: '600' },
 });

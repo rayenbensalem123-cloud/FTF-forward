@@ -52,7 +52,7 @@ export function MatchHero({ match }: { match: Match | null }) {
 
         <View style={styles.teams}>
           <View style={styles.team}>
-            <View style={styles.crest}><Flag name="Tunisia" width={34} /></View>
+            <View style={styles.crest}><Flag name="Tunisia" width={46} /></View>
             <Text style={styles.teamName} numberOfLines={1}>Tunisie</Text>
           </View>
 
@@ -66,9 +66,9 @@ export function MatchHero({ match }: { match: Match | null }) {
             </Text>
             <View style={styles.crest}>
               {opponentCode ? (
-                <Flag name={opponentCode} width={34} />
+                <Flag name={opponentCode} width={46} />
               ) : (
-                <Text style={styles.crestText}>{match ? '?' : '—'}</Text>
+                <Text style={styles.crestText}>?</Text>
               )}
             </View>
           </View>
@@ -86,7 +86,7 @@ export function MatchHero({ match }: { match: Match | null }) {
         <View style={styles.footer}>
           {!!match?.venue && (
             <View style={styles.venue}>
-              <MapPin color={colors.gold} size={12} />
+              <MapPin color={colors.white} size={12} />
               <Text style={styles.venueText} numberOfLines={1}>{match.venue}</Text>
             </View>
           )}
@@ -109,13 +109,16 @@ const styles = StyleSheet.create({
   team: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 },
   teamRight: { justifyContent: 'flex-end' },
   center: { flex: 1.15, alignItems: 'center' },
-  // A faint translucent backing rather than a solid disc: the crest reads as
-  // itself, not as an icon inside a coloured badge.
+  // Proper circular crests: a white ring, the flag cropped to fill the disc
+  // (4:3 flags centered and overflow-hidden, so no distortion and no
+  // letterbox floating in a translucent circle), and a plain "?" when there
+  // is no opponent rather than a dash.
   crest: {
-    width: 42, height: 42, borderRadius: 21, overflow: 'hidden',
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    width: 46, height: 46, borderRadius: 23, overflow: 'hidden',
+    backgroundColor: colors.cardRaised, borderWidth: 2, borderColor: 'rgba(255,255,255,0.35)',
+    alignItems: 'center', justifyContent: 'center',
   },
-  crestText: { color: colors.white, fontWeight: '800', fontSize: 11 },
+  crestText: { fontFamily: fonts.display, color: 'rgba(255,255,255,0.7)', fontWeight: '700', fontSize: 20 },
   teamName: { fontFamily: fonts.display, fontSize: 15, fontWeight: '700', letterSpacing: 0.5, color: colors.white, flexShrink: 1 },
   teamNameRight: { textAlign: 'right' },
   bigDate: {

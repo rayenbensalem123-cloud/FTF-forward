@@ -48,10 +48,10 @@ function CardGrid({ card, lang, locked, states, lines, onToggle }: {
               <View style={[g.edge, { backgroundColor: st === 'yes' ? '#7FD6A8' : isLocked ? colors.red : 'transparent' }]} />
               <View style={g.tileTop}>
                 <Text style={[g.label, st === 'yes' && { color: '#7FD6A8' }]}>{sq.label[lang]}</Text>
-                {sq.kind === 'minute' && <Timer size={11} color={colors.gold} accessibilityLabel={T.bgMinuteHint} />}
+                {sq.kind === 'minute' && <Timer size={11} color={colors.white} accessibilityLabel={T.bgMinuteHint} />}
               </View>
               <View style={g.tileBottom}>
-                <Text style={[g.pts, isLocked && { color: colors.gold }]}>+{POINTS_SQUARE}</Text>
+                <Text style={[g.pts, isLocked && { color: colors.white }]}>+{POINTS_SQUARE}</Text>
                 {st === 'yes' && isLocked && <Check size={18} color="#7FD6A8" strokeWidth={3} />}
                 {st === 'no' && isLocked && <X size={16} color="#FF5F72" strokeWidth={3} />}
                 {st === 'void' && <Text style={g.na}>n/a</Text>}
@@ -89,11 +89,11 @@ function LockPips({ used, lang }: { used: number; lang: Language }) {
   );
 }
 
-function FixtureChip({ opponent, date, active, tone, onPress }: { opponent: string; date: string; active: boolean; tone: 'red' | 'gold'; onPress: () => void }) {
-  const accent = tone === 'red' ? colors.red : colors.gold;
+function FixtureChip({ opponent, date, active, tone, onPress }: { opponent: string; date: string; active: boolean; tone: 'red' | 'light'; onPress: () => void }) {
+  const accent = tone === 'red' ? colors.red : colors.white;
   return (
     <TouchableOpacity
-      style={[g.chip, active && { backgroundColor: tone === 'red' ? colors.redSoft : colors.goldSoft, borderBottomColor: accent }]}
+      style={[g.chip, active && { backgroundColor: tone === 'red' ? colors.redSoft : colors.whiteSoft, borderBottomColor: accent }]}
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={{ selected: active }}
@@ -258,7 +258,7 @@ export function MatchBingo({ matches, username, lang }: Props) {
               <Text style={g.sectionTitle}>{T.bgPractice}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={g.chips}>
                 {playedList.slice(0, 8).map((m) => (
-                  <FixtureChip key={matchKey(m)} opponent={m.opponent || '?'} date={m.date || ''} active={practiceKey === matchKey(m)} tone="gold" onPress={() => choosePractice(matchKey(m))} />
+                  <FixtureChip key={matchKey(m)} opponent={m.opponent || '?'} date={m.date || ''} active={practiceKey === matchKey(m)} tone="light" onPress={() => choosePractice(matchKey(m))} />
                 ))}
               </ScrollView>
               {practiceMatch && (
@@ -354,38 +354,38 @@ const g = StyleSheet.create({
   chipTitle: { color: colors.white, fontSize: 12, fontWeight: '800', textTransform: 'uppercase' },
   chipDate: { color: colors.muted, fontSize: 10, fontWeight: '700', marginTop: 1 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  tile: { width: '31.6%', minHeight: 104, borderRadius: 10, borderWidth: 1, borderColor: colors.goldBorder, backgroundColor: colors.cardRaised, padding: 10, paddingLeft: 13, justifyContent: 'space-between', overflow: 'hidden' },
+  tile: { width: '31.6%', minHeight: 104, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.cardRaised, padding: 10, paddingLeft: 13, justifyContent: 'space-between', overflow: 'hidden' },
   tileLocked: { backgroundColor: colors.redSoft, borderColor: colors.red },
   tileYes: { backgroundColor: 'rgba(127,214,168,0.14)', borderColor: 'rgba(127,214,168,0.55)' },
   tileNo: { borderColor: colors.line },
   tileMuted: { borderColor: colors.line, opacity: 0.45 },
   tileVoid: { borderStyle: 'dashed', opacity: 0.7 },
-  tileLine: { borderColor: colors.gold, borderWidth: 2 },
+  tileLine: { borderColor: colors.white, borderWidth: 2 },
   edge: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 3 },
   tileTop: { flexDirection: 'row', justifyContent: 'space-between', gap: 4 },
   tileBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 8, minHeight: 20 },
   label: { flex: 1, color: colors.white, fontSize: 10, fontWeight: '700', lineHeight: 13 },
   pts: { color: colors.muted, fontSize: 11, fontWeight: '800', fontVariant: ['tabular-nums'] },
   na: { color: colors.muted, fontSize: 9, fontWeight: '800' },
-  lineDone: { marginTop: 8, color: colors.gold, fontSize: 12, fontWeight: '800', textTransform: 'uppercase' },
+  lineDone: { marginTop: 8, color: colors.white, fontSize: 12, fontWeight: '800', textTransform: 'uppercase' },
   legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: 8 },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   legendText: { color: colors.muted, fontSize: 10, fontWeight: '700' },
   pip: { width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: colors.muted },
-  pipOn: { backgroundColor: colors.gold, borderColor: colors.gold },
+  pipOn: { backgroundColor: colors.white, borderColor: colors.white },
   lockText: { color: colors.white, fontSize: 12, fontWeight: '800', fontVariant: ['tabular-nums'] },
   footRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md, marginTop: space.md },
-  upTo: { color: colors.gold, fontSize: 11, fontWeight: '800', marginTop: 4 },
+  upTo: { color: colors.white, fontSize: 11, fontWeight: '800', marginTop: 4 },
   section: { marginTop: space.xl, paddingTop: space.lg, borderTopWidth: 1, borderTopColor: colors.line },
   sectionTitle: { color: colors.white, fontSize: 13, fontWeight: '800' },
-  practicePts: { color: colors.gold, fontSize: 26, fontWeight: '900', fontVariant: ['tabular-nums'] },
+  practicePts: { color: colors.white, fontSize: 26, fontWeight: '900', fontVariant: ['tabular-nums'] },
   unit: { color: colors.muted, fontSize: 10, fontWeight: '700' },
   dim: { color: colors.muted, fontSize: 11, fontWeight: '600', lineHeight: 16 },
   dimCaps: { color: colors.muted, fontSize: 12, fontWeight: '800' },
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', paddingBottom: space.md, marginBottom: space.md, borderBottomWidth: 1, borderBottomColor: colors.line },
   total: { color: colors.red, fontSize: 40, fontWeight: '900', fontVariant: ['tabular-nums'] },
-  resultCard: { backgroundColor: colors.cardRaised, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder, overflow: 'hidden' },
+  resultCard: { backgroundColor: colors.cardRaised, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, overflow: 'hidden' },
   resultHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.md },
   resultTitle: { color: colors.white, fontSize: 13, fontWeight: '800', textTransform: 'uppercase' },
-  resultPts: { color: colors.gold, fontSize: 22, fontWeight: '900', fontVariant: ['tabular-nums'] },
+  resultPts: { color: colors.white, fontSize: 22, fontWeight: '900', fontVariant: ['tabular-nums'] },
 });

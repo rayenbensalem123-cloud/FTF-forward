@@ -4,9 +4,9 @@ import { colors, radius, space } from '@/constants/theme';
 
 export interface BoardRow { key: string; name: string; value: string; sub?: string }
 
-/** Ranked list used by both games' leaderboards. Gold/silver/bronze for the top three, "you" highlighted. */
+/** Ranked list used by both games' leaderboards. White for the leader, "you" highlighted. */
 export function Board({ rows, you, youLabel, unit }: { rows: BoardRow[]; you: string; youLabel: string; unit: string }) {
-  const medal = ['#F6C744', '#C9D3E6', '#D18A4F'];
+  const medal = ['#EDEFF4', '#C9D3E6', '#D18A4F'];
   return (
     <View style={{ gap: 6 }}>
       {rows.map((r, i) => {
@@ -26,10 +26,10 @@ export function Board({ rows, you, youLabel, unit }: { rows: BoardRow[]; you: st
   );
 }
 
-export function Notice({ text, tone = 'muted' }: { text: string; tone?: 'muted' | 'gold' }) {
+export function Notice({ text, tone = 'muted' }: { text: string; tone?: 'muted' | 'light' }) {
   return (
-    <View style={[s.notice, tone === 'gold' && { borderColor: 'rgba(246,199,68,0.35)', backgroundColor: colors.goldSoft }]}>
-      <Text style={[s.noticeText, tone === 'gold' && { color: colors.gold }]}>{text}</Text>
+    <View style={[s.notice, tone === 'light' && { borderColor: 'rgba(255,255,255,0.35)', backgroundColor: colors.whiteSoft }]}>
+      <Text style={[s.noticeText, tone === 'light' && { color: colors.white }]}>{text}</Text>
     </View>
   );
 }
@@ -48,8 +48,8 @@ const s = StyleSheet.create({
   rank: { width: 22, fontSize: 18, fontWeight: '800', textAlign: 'center' },
   name: { color: colors.white, fontSize: 13, fontWeight: '800', textTransform: 'uppercase' },
   sub: { color: colors.muted, fontSize: 10, fontWeight: '600', marginTop: 1 },
-  value: { color: colors.gold, fontSize: 20, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  value: { color: colors.white, fontSize: 20, fontWeight: '800', fontVariant: ['tabular-nums'] },
   unit: { color: colors.muted, fontSize: 10, fontWeight: '700' },
-  notice: { borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', borderColor: colors.goldBorder, padding: space.lg },
+  notice: { borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', borderColor: colors.hairline, padding: space.lg },
   noticeText: { color: colors.muted, fontSize: 12, fontWeight: '700', lineHeight: 18 },
 });

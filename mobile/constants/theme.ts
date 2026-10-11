@@ -1,7 +1,11 @@
 /**
  * Dark theme taken from the website (app/globals.css, the FTF palette):
- * --c-bg, --c-panel3, --c-panel, --line-rgb, --c-text, --c-textFaint, --acc-gold.
+ * --c-bg, --c-panel3, --c-panel, --line-rgb, --c-text, --c-textFaint.
  * Keep these in step with the platform so both look like one product.
+ *
+ * There is deliberately no gold in this theme: every accent that used to be
+ * gold is white now, and actions are federation red. Do not reintroduce a
+ * gold token without checking with the design owner first.
  *
  * The redesign prototype (docs/mobile-redesign-interactive.html) adds `line`
  * at .18 alpha, a 20px card radius and one card shadow -- see `radius.card`
@@ -13,8 +17,6 @@ export const colors = {
   navyDeep: '#0B111E', // --c-deep
   card: '#101B33', // --c-panel3: cards, tab bar
   cardRaised: '#112950', // --c-panel: avatars, icon tiles, crests
-  gold: '#F6C744', // --acc-gold: primary accent (titles, CTAs, active state)
-  goldBorder: 'rgba(148, 170, 210, 0.18)', // platform card border: rgba(var(--line-rgb), .18)
   white: '#EDEFF4', // --c-text (never pure white)
   muted: '#8FA0BD', // --c-textFaint
   green: '#22C55E',
@@ -22,9 +24,9 @@ export const colors = {
   redSoft: 'rgba(227, 6, 19, 0.18)',
   greenSoft: 'rgba(34, 197, 94, 0.16)',
   amberSoft: 'rgba(245, 158, 11, 0.16)',
-  goldSoft: 'rgba(246, 199, 68, 0.14)',
+  whiteSoft: 'rgba(255, 255, 255, 0.10)',
   line: 'rgba(148, 170, 210, 0.14)',
-  // The prototype draws every divider at .18 -- same value as goldBorder.
+  // The prototype draws every divider at .18.
   hairline: 'rgba(148, 170, 210, 0.18)',
   scrim: 'rgba(3, 8, 20, 0.7)',
 } as const;
@@ -95,9 +97,8 @@ export const typeScale = {
  * section, set in the display face. Screens reuse this so the eyebrow looks
  * identical everywhere.
  *
- * White, not gold: that is how the model heads every section (its "CALENDRIER"
- * is white Oswald over a near-black page), and it is what makes the gold read
- * as an accent on the few things that are actually gold.
+ * White: that is how the model heads every section (its "CALENDRIER" is white
+ * Oswald over a near-black page).
  */
 export const sectionTitle = {
   fontFamily: fonts.display,
@@ -110,10 +111,9 @@ export const sectionTitle = {
 } as const;
 
 /**
- * The interactive accent. In the dashboard design this is gold: it carries the
- * competition pill, the primary button, the section-header dot and the active
- * tab. Red is reserved for the hero's dark gradient and the staff badge dot,
- * so it stays a status colour rather than the thing that says "tappable".
+ * The interactive accent. White: it carries the see-all links, the tile
+ * icons and the active tab. Red is reserved for primary actions and the
+ * staff badge dot.
  */
-export const accent = colors.gold;
+export const accent = colors.white;
 

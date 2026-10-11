@@ -74,7 +74,7 @@ export function ProgramTeaser() {
   if (!day) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="small" color={colors.gold} />
+        <ActivityIndicator size="small" color={colors.white} />
       </View>
     );
   }
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
   center: { minHeight: 72, alignItems: 'center', justifyContent: 'center' },
   empty: { color: colors.muted, fontSize: 11, textAlign: 'center' },
   list: { gap: 7, justifyContent: 'center' },
-  dayLabel: { color: colors.gold, fontSize: 10, fontWeight: '800', letterSpacing: 0.8, textTransform: 'uppercase' },
+  dayLabel: { color: colors.white, fontSize: 10, fontWeight: '800', letterSpacing: 0.8, textTransform: 'uppercase' },
   row: { flexDirection: 'row', alignItems: 'baseline', gap: 7 },
-  time: { color: colors.gold, fontSize: 11, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  time: { color: colors.white, fontSize: 11, fontWeight: '800', fontVariant: ['tabular-nums'] },
   activity: { color: colors.white, fontSize: 11, fontWeight: '600', flex: 1, lineHeight: 15 },
 });

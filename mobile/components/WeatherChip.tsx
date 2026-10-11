@@ -46,7 +46,7 @@ export function WeatherChip({ venue, date }: { venue: string; date: string }) {
   }, [venue, date]);
 
   if (loading) {
-    return <ActivityIndicator size="small" color={colors.gold} style={styles.spinner} />;
+    return <ActivityIndicator size="small" color={colors.white} style={styles.spinner} />;
   }
   if (!text || !kind) return null;
 
@@ -54,7 +54,7 @@ export function WeatherChip({ venue, date }: { venue: string; date: string }) {
 
   return (
     <View style={styles.chip}>
-      <Icon color={colors.gold} size={13} strokeWidth={2.4} />
+      <Icon color={colors.white} size={13} strokeWidth={2.4} />
       <Text style={styles.text}>{text}</Text>
     </View>
   );
@@ -65,5 +65,5 @@ const styles = StyleSheet.create({
   // flexShrink 0: the chip never wraps under the venue, whatever the venue
   // name length. The venue truncates instead (numberOfLines 1 + minWidth 0).
   chip: { flexDirection: 'row', alignItems: 'center', gap: 4, flexShrink: 0 },
-  text: { color: colors.gold, fontSize: 11, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  text: { color: colors.white, fontSize: 11, fontWeight: '800', fontVariant: ['tabular-nums'] },
 });

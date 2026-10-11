@@ -20,5 +20,5 @@ export function Flag({ name, width = 24 }: { name?: string | null; width?: numbe
 }
 
 const styles = StyleSheet.create({
-  flag: { borderWidth: StyleSheet.hairlineWidth, borderColor: colors.goldBorder },
+  flag: { borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairline },
 });

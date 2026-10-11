@@ -66,7 +66,7 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <AppHeader title={t('tabProfile')} subtitle={user?.name ?? ''} />
 
-        {/* Prototype profile card: a 100px portrait ringed in gold, name, role. */}
+        {/* Prototype profile card: a 100px portrait with a light ring, name, role. */}
         <Card style={styles.profile}>
           <Avatar name={user?.name ?? 'Staff'} size={100} number={me?.number} photoUrl={me?.photoUrl} />
           <View style={styles.profileText}>
@@ -82,7 +82,7 @@ export default function ProfileScreen() {
           <Card style={{ paddingVertical: space.xs }}>
             {can('addPlayer') && (
               <TouchableOpacity style={styles.action} onPress={() => router.push('/add-player')} accessibilityRole="button">
-                <View style={styles.actionIcon}><UserPlus color={colors.gold} size={18} /></View>
+                <View style={styles.actionIcon}><UserPlus color={colors.white} size={18} /></View>
                 <Text style={styles.actionText}>{t('addPlayer')}</Text>
                 <ForwardChevron />
               </TouchableOpacity>
@@ -93,9 +93,9 @@ export default function ProfileScreen() {
               disabled={exporting}
               accessibilityRole="button"
             >
-              <View style={styles.actionIcon}><FileDown color={colors.gold} size={18} /></View>
+              <View style={styles.actionIcon}><FileDown color={colors.white} size={18} /></View>
               <Text style={styles.actionText}>{t('exportRoster')}</Text>
-              {exporting ? <ActivityIndicator color={colors.gold} /> : <ForwardChevron />}
+              {exporting ? <ActivityIndicator color={colors.white} /> : <ForwardChevron />}
             </TouchableOpacity>
           </Card>
         </View>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   profileText: { alignItems: 'center', gap: 4 },
   name: { color: colors.white, fontSize: 22, fontWeight: '900', textAlign: 'center' },
   role: {
-    color: colors.gold, fontSize: 13, fontWeight: '700', letterSpacing: 1.3,
+    color: colors.white, fontSize: 13, fontWeight: '700', letterSpacing: 1.3,
     textTransform: 'uppercase',
   },
   heading: sectionTitle,

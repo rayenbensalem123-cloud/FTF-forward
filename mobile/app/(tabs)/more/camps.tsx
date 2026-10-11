@@ -11,7 +11,7 @@ import { CP } from '@/i18n/campStrings';
 import { campState, dmy, fetchCamps, groupByDay, type Camp, type CampState } from '@/lib/camps';
 import { fetchStaff } from '@/lib/staff';
 
-const STATE_COLOR: Record<CampState, string> = { upcoming: colors.gold, live: colors.green, done: colors.muted };
+const STATE_COLOR: Record<CampState, string> = { upcoming: colors.white, live: colors.green, done: colors.muted };
 
 /** The platform's national camps: dates, venue, program by day, call-ups, staff, report and photos. */
 export default function CampsScreen() {
@@ -47,14 +47,14 @@ export default function CampsScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.gold} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.white} />}
       >
         <AppHeader back showBell={false} />
         <View>
           <Text style={styles.title}>{T.title}</Text>
           <Text style={styles.sub}>{T.sub}</Text>
         </View>
-        {loading ? <ActivityIndicator color={colors.gold} style={{ marginTop: space.xl }} />
+        {loading ? <ActivityIndicator color={colors.white} style={{ marginTop: space.xl }} />
           : camps.length === 0 ? <Text style={styles.empty}>{T.none}</Text>
           : camps.map((c) => {
             const st = campState(c);
@@ -150,10 +150,10 @@ const styles = StyleSheet.create({
   loc: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
   badge: { borderWidth: 1, borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 },
   badgeText: { fontSize: 11, fontWeight: '800' },
-  section: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 },
+  section: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 },
   day: { color: colors.white, fontSize: 13, fontWeight: '800', marginBottom: 4 },
   session: { flexDirection: 'row', gap: 10, paddingVertical: 3 },
-  time: { color: colors.gold, fontSize: 12, fontWeight: '800', width: 62 },
+  time: { color: colors.white, fontSize: 12, fontWeight: '800', width: 62 },
   activity: { color: colors.white, fontSize: 13 },
   names: { color: colors.white, fontSize: 13, lineHeight: 20 },
   report: { flexDirection: 'row', alignItems: 'center', gap: 8 },

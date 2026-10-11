@@ -46,7 +46,7 @@ export default function MatchesScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.gold} colors={[colors.gold]} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.white} colors={[colors.white]} />}
       >
         <AppHeader back title={t('tabMatches')} subtitle={t('statsSubtitle')} />
         <SyncBanner />
@@ -95,12 +95,12 @@ const styles = StyleSheet.create({
   heading: { ...sectionTitle, marginTop: space.sm },
   empty: { color: colors.muted, fontSize: 13 },
   meta: { flexDirection: 'row', justifyContent: 'space-between', gap: 8 },
-  date: { color: colors.gold, fontSize: 12, fontWeight: '800' },
+  date: { color: colors.white, fontSize: 12, fontWeight: '800' },
   comp: { color: colors.muted, fontSize: 12, flexShrink: 1 },
   teams: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   team: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 },
   name: { color: colors.white, fontSize: 14, fontWeight: '700', flexShrink: 1 },
-  vs: { color: colors.gold, fontSize: 12, fontWeight: '800' },
+  vs: { color: colors.white, fontSize: 12, fontWeight: '800' },
   score: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 },
   scoreText: { color: colors.white, fontSize: 15, fontWeight: '800', fontVariant: ['tabular-nums'] },
   venue: { color: colors.muted, fontSize: 11 },

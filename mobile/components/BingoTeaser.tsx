@@ -47,7 +47,7 @@ export function BingoTeaser({ matches, players }: { matches: Match[]; players: P
   if (rows === null) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="small" color={colors.gold} />
+        <ActivityIndicator size="small" color={colors.white} />
       </View>
     );
   }
@@ -89,5 +89,5 @@ const styles = StyleSheet.create({
   stat: { alignItems: 'flex-end', width: 44 },
   points: { color: colors.white, fontSize: 14, fontWeight: '800', fontVariant: ['tabular-nums'] },
   track: { height: 3, width: '100%', borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.1)', marginTop: 3, overflow: 'hidden' },
-  fill: { height: '100%', borderRadius: 2, backgroundColor: colors.gold },
+  fill: { height: '100%', borderRadius: 2, backgroundColor: colors.white },
 });

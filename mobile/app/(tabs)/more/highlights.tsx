@@ -44,13 +44,13 @@ export default function HighlightsScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.gold} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.white} />}
       >
         <AppHeader back showBell={false} />
         <Text style={styles.title}>{T.highlights}</Text>
 
         {loading ? (
-          <ActivityIndicator color={colors.gold} style={{ marginTop: space.xl }} />
+          <ActivityIndicator color={colors.white} style={{ marginTop: space.xl }} />
         ) : clips.length === 0 ? (
           <Text style={styles.empty}>{T.noHighlights}</Text>
         ) : (
@@ -62,7 +62,7 @@ export default function HighlightsScreen() {
               accessibilityRole="link"
             >
               <Card style={styles.clip}>
-                <View style={styles.clipThumb}><Film size={22} color={colors.gold} /></View>
+                <View style={styles.clipThumb}><Film size={22} color={colors.white} /></View>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={styles.clipOpp} numberOfLines={1}>{r.opponent || '—'}</Text>
                   <Text style={styles.clipMeta}>{[r.date ? formatDate(r.date) : '', r.competition].filter(Boolean).join(' · ')}</Text>

@@ -58,7 +58,7 @@ export default function ScheduleScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.gold} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.white} />}
       >
         <AppHeader title={t('tabSchedule')} subtitle={schedule?.title || t('tabCampSchedule')} />
         <SyncLine version={schedule?.version} />
@@ -76,7 +76,7 @@ export default function ScheduleScreen() {
                 <Text style={styles.section}>{day.dayLabel}</Text>
                 <Card style={styles.dayCard}>
                   <View style={styles.dayHeader}>
-                    {/* The prototype's date block: a heavy gold number over an uppercase meta line. */}
+                    {/* The prototype's date block: a heavy number over an uppercase meta line. */}
                     <View style={styles.dateBlock}>
                       <Text style={styles.dateNum} numberOfLines={1}>{num}</Text>
                       {!!rest && <Text style={styles.dateRest} numberOfLines={1}>{rest}</Text>}
@@ -89,7 +89,7 @@ export default function ScheduleScreen() {
                     return (
                       <View key={String(act.id)} style={[styles.row, i > 0 && styles.divider, mine && styles.rowMine]}>
                         <View style={styles.timeCol}>
-                          <Clock color={colors.gold} size={13} />
+                          <Clock color={colors.white} size={13} />
                           <Text style={styles.timeText}>{act.time || '—'}</Text>
                         </View>
                         <View style={styles.rowInfo}>
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   dayCard: { padding: space.lg, gap: 0 },
   dayHeader: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginBottom: space.md },
   dateBlock: { minWidth: 56, alignItems: 'center' },
-  dateNum: { color: colors.gold, fontSize: 26, fontWeight: '900', fontVariant: ['tabular-nums'], lineHeight: 28 },
+  dateNum: { color: colors.white, fontSize: 26, fontWeight: '900', fontVariant: ['tabular-nums'], lineHeight: 28 },
   dateRest: {
     color: colors.muted, fontSize: 10, fontWeight: '700', letterSpacing: 0.8,
     textTransform: 'uppercase', marginTop: 2,
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   timeCol: { flexDirection: 'row', alignItems: 'center', gap: 5, width: 74, paddingTop: 1 },
-  timeText: { color: colors.gold, fontSize: 15, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  timeText: { color: colors.white, fontSize: 15, fontWeight: '800', fontVariant: ['tabular-nums'] },
   rowInfo: { flex: 1, minWidth: 0 },
   rowTitle: { color: colors.white, fontSize: 14, fontWeight: '700', lineHeight: 19 },
   rowPlayer: { color: colors.muted, fontSize: 12, marginTop: 3 },

@@ -7,14 +7,14 @@ import { colors, space } from '@/constants/theme';
 
 export interface ToolItem { href: Href; icon: LucideIcon; title: string; desc: string }
 
-/** One row of a tools card: gold icon, title, one-line description, chevron. */
+/** One row of a tools card: icon, title, one-line description, chevron. */
 export function ToolRow({ item, first }: { item: ToolItem; first: boolean }) {
   const router = useRouter();
   const Icon = item.icon;
   return (
     <TouchableOpacity style={[styles.row, !first && styles.divider]} onPress={() => router.push(item.href)}
       activeOpacity={0.75} accessibilityRole="button" accessibilityLabel={item.title}>
-      <View style={styles.iconWrap}><Icon color={colors.gold} size={18} /></View>
+      <View style={styles.iconWrap}><Icon color={colors.white} size={18} /></View>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.desc} numberOfLines={1}>{item.desc}</Text>

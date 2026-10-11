@@ -97,9 +97,9 @@ export function CheckInSummary() {
 
 const styles = StyleSheet.create({
   ask: { color: colors.white, fontSize: 15, fontWeight: '800' },
-  title: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
+  title: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
   row: { flexDirection: 'row', gap: space.sm },
-  chip: { flex: 1, height: 42, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder, backgroundColor: colors.cardRaised, alignItems: 'center', justifyContent: 'center' },
+  chip: { flex: 1, height: 42, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.cardRaised, alignItems: 'center', justifyContent: 'center' },
   chipText: { color: colors.white, fontWeight: '800', fontSize: 12 },
   note: { color: colors.muted, fontSize: 12 },
   count: { flex: 1, alignItems: 'center' },

@@ -126,9 +126,9 @@ const styles = StyleSheet.create({
   close: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
   twoCol: { flexDirection: 'row', gap: space.md },
-  label: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
+  label: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
   input: {
-    backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder,
+    backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline,
     color: colors.white, paddingHorizontal: 14, height: 50, fontSize: 15,
   },
   save: { height: 52, borderRadius: radius.md, backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center', marginTop: space.sm },

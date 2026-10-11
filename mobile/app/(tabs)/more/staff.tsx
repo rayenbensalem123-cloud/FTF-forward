@@ -27,14 +27,14 @@ export default function StaffScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.gold} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.white} />}
       >
         <AppHeader back showBell={false} />
         <View>
           <Text style={styles.title}>{T.title}</Text>
           <Text style={styles.sub}>{T.sub}</Text>
         </View>
-        {loading ? <ActivityIndicator color={colors.gold} style={{ marginTop: space.xl }} />
+        {loading ? <ActivityIndicator color={colors.white} style={{ marginTop: space.xl }} />
           : items.length === 0 ? <Text style={styles.empty}>{T.none}</Text>
           : items.map((s) => <StaffCard key={s.id} staff={s} ageLabel={T.age} badge={T.badge} />)}
       </ScrollView>

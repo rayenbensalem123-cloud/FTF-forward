@@ -7,7 +7,7 @@ import type { Player } from '@/types';
 /** The website's squad card tokens (app/globals.css), so the opened card reads the same. */
 const P = {
   panel: '#112950', panel4: '#0e2345', body: '#0a1c38', blueDk: '#1b3a66', hover: '#2a4568',
-  cream: '#f7f1e6', warm: '#a89c8a', warm2: '#c2b7a6', red: '#e3062c', gold: '#f6c744',
+  cream: '#f7f1e6', warm: '#a89c8a', warm2: '#c2b7a6', red: '#e3062c', white: '#EDEFF4',
 } as const;
 
 const titleCase = (s: string) => s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
@@ -106,9 +106,9 @@ const styles = StyleSheet.create({
   stat: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 8, paddingHorizontal: 2 },
   statLabel: { color: P.warm, fontSize: 7, fontWeight: '900', letterSpacing: 1, textTransform: 'uppercase' },
   statValue: { color: P.cream, fontSize: 18, fontWeight: '800' },
-  role: { color: P.gold, fontSize: 16, lineHeight: 18, fontWeight: '900', fontStyle: 'italic', textTransform: 'uppercase' },
-  license: { color: P.gold, fontSize: 9, fontWeight: '900', letterSpacing: 1, borderWidth: 1, borderColor: 'rgba(246,199,68,0.3)', backgroundColor: 'rgba(246,199,68,0.1)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 2, overflow: 'hidden' },
-  staffMark: { position: 'absolute', right: 8, bottom: 56, color: 'rgba(246,199,68,0.07)', fontSize: 130, fontWeight: '900', fontStyle: 'italic' },
+  role: { color: P.white, fontSize: 16, lineHeight: 18, fontWeight: '900', fontStyle: 'italic', textTransform: 'uppercase' },
+  license: { color: P.white, fontSize: 9, fontWeight: '900', letterSpacing: 1, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)', backgroundColor: 'rgba(255,255,255,0.1)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 2, overflow: 'hidden' },
+  staffMark: { position: 'absolute', right: 8, bottom: 56, color: 'rgba(255,255,255,0.07)', fontSize: 130, fontWeight: '900', fontStyle: 'italic' },
   bar: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 3, backgroundColor: P.red },
 });
 
@@ -136,7 +136,7 @@ export function StaffCard({ staff: s, ageLabel, badge }: { staff: import('@/lib/
         <Text style={styles.name}>{titleCase(s.name)}</Text>
         <Text style={[styles.tag, { marginTop: 6 }]}>{badge.toUpperCase()}</Text>
         <View style={{ marginTop: 14, gap: 8 }}>
-          <View style={{ height: 1, width: 32, backgroundColor: 'rgba(246,199,68,0.6)' }} />
+          <View style={{ height: 1, width: 32, backgroundColor: 'rgba(255,255,255,0.6)' }} />
           <Text style={styles.role}>{s.role || '—'}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Text style={styles.meta}>{(s.nationality || 'TUN').slice(0, 3).toUpperCase()}</Text>

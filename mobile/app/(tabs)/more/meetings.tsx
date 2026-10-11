@@ -45,7 +45,7 @@ export default function MeetingsScreen() {
   const card = (m: Meeting, isPast: boolean) => (
     <Card key={m.id} style={{ gap: space.sm }}>
       <View style={styles.top}>
-        <Video size={18} color={colors.gold} />
+        <Video size={18} color={colors.white} />
         <View style={{ flex: 1 }}>
           <Text style={styles.name}>{m.title}</Text>
           <Text style={styles.meta}>{[when(m.at), m.team].filter(Boolean).join('  ·  ')}</Text>
@@ -71,7 +71,7 @@ export default function MeetingsScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.gold} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.white} />}
       >
         <AppHeader back showBell={false} />
         <View>
@@ -79,7 +79,7 @@ export default function MeetingsScreen() {
           <Text style={styles.sub}>{T.sub}</Text>
         </View>
         {loading ? (
-          <ActivityIndicator color={colors.gold} style={{ marginTop: space.xl }} />
+          <ActivityIndicator color={colors.white} style={{ marginTop: space.xl }} />
         ) : (
           <>
             <Text style={styles.section}>{T.upcoming}</Text>
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   content: { padding: space.lg, gap: space.md, paddingBottom: space.xl * 2 },
   title: { color: colors.white, fontSize: 28, fontWeight: '800' },
   sub: { color: colors.muted, fontSize: 13, marginTop: 2 },
-  section: { color: colors.gold, fontSize: 14, fontWeight: '800', marginTop: space.sm },
+  section: { color: colors.white, fontSize: 14, fontWeight: '800', marginTop: space.sm },
   empty: { color: colors.muted, fontSize: 13, paddingVertical: space.md },
   top: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },
   name: { color: colors.white, fontSize: 16, fontWeight: '800' },

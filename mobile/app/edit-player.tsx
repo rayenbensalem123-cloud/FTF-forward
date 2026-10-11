@@ -174,9 +174,9 @@ const styles = StyleSheet.create({
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
   viewOnly: { color: colors.amber, fontSize: 13, backgroundColor: colors.amberSoft, borderRadius: radius.sm + 2, padding: 10 },
   twoCol: { flexDirection: 'row', gap: space.md },
-  label: { color: colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
+  label: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' },
   input: {
-    backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.goldBorder,
+    backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline,
     color: colors.white, paddingHorizontal: 14, height: 50, fontSize: 15,
   },
   note: { height: undefined, minHeight: 96, paddingTop: 14, textAlignVertical: 'top' },
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   toggle: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   toggleText: { color: colors.white, fontSize: 15, fontWeight: '600' },
   check: { width: 24, height: 24, borderRadius: 8, borderWidth: 2, borderColor: colors.muted, alignItems: 'center', justifyContent: 'center' },
-  checkOn: { backgroundColor: colors.gold, borderColor: colors.gold },
+  checkOn: { backgroundColor: colors.white, borderColor: colors.white },
   save: { height: 52, borderRadius: radius.md, backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center', marginTop: space.sm },
   saveText: { color: colors.white, fontWeight: '800', fontSize: 16 },
 });

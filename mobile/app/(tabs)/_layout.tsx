@@ -30,10 +30,10 @@ export default function TabsLayout() {
   const isStaff = user.role === 'staff' || user.role === 'admin';
 
   // Prototype tab bar: card background, hairline top border, 10px uppercase
-  // labels in the display face, gold when active and muted otherwise.
+  // labels, white when active and muted otherwise.
   const options = {
     headerShown: false,
-    tabBarActiveTintColor: colors.gold,
+    tabBarActiveTintColor: colors.white,
     tabBarInactiveTintColor: colors.muted,
     tabBarLabelStyle: { fontFamily: fonts.display, fontSize: 10, fontWeight: '700' as const, letterSpacing: 0.5, textTransform: 'uppercase' as const },
     tabBarStyle: {
