@@ -259,6 +259,34 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 .fbtnrow{display:flex;gap:8px;margin-top:16px}
 .fbtnrow .ghost{background:var(--card);border:1px solid var(--hairline);color:var(--muted)}
 
+/* Player sheet (mirrors the app's PlayerSheet) */
+.psheet-top{display:flex;gap:12px;align-items:center}
+.psheet-photo{width:84px;height:84px;border-radius:14px;background:var(--card-raised);
+  display:grid;place-items:center;font-family:Oswald;font-size:26px;font-weight:700;flex:none;
+  border:1px solid var(--hairline)}
+.psheet-top h3{font-size:22px}
+.psheet-num{font-size:12px;color:var(--muted);margin-top:2px}
+.pstatrow{display:flex;gap:8px;margin-top:12px}
+.pstattile{flex:1;background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-sm);
+  padding:10px 4px;text-align:center}
+.pstattile b{display:block;font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.pstattile span{font-size:10px;color:var(--muted)}
+.medpanel{background:var(--card);border-radius:var(--r-md);border:1px solid var(--green);
+  padding:14px;margin-top:12px}
+.medpanel h5{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.mednote{font-size:13px;line-height:19px}
+.medcards{font-size:12px;color:var(--muted);margin-top:8px}
+.medlog{margin-top:10px;border-top:1px solid var(--hairline);padding-top:10px;font-size:12px}
+.medlog div{margin-top:6px}
+.medlog b{font-size:11px}
+.sheetbtn{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;width:100%;
+  border-radius:var(--r-md);font-size:15px;font-weight:800;cursor:pointer;font-family:Inter;border:0;margin-top:10px}
+.sheetbtn.red{background:var(--red);color:#fff}
+.sheetbtn.dark{background:var(--card);border:1px solid var(--hairline);color:#fff}
+.sheetinput{width:100%;background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-md);
+  color:#fff;padding:14px;min-height:84px;font-size:15px;font-family:Inter;margin-top:10px;outline:none}
+.demonote{font-size:11px;color:var(--muted);margin-top:8px;text-align:center}
+
 /* Sheet modal */
 .sheet-veil{position:absolute;inset:0;background:rgba(3,8,20,.7);display:none;z-index:5}
 .sheet-veil.on{display:block}
@@ -319,13 +347,13 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
 <script>
 /* Shared mock data, shaped like the app's. */
 const PLAYERS = [
-  { name: 'Y. Ben Amor', pos: 'MID', num: 12, club: 'ASF Sousse', cat: 'Seniors', status: 'fit', caps: 48, goals: 9 },
-  { name: 'S. Gharbi', pos: 'FWD', num: 7, club: 'Espérance Tunis', cat: 'Seniors', status: 'fit', caps: 36, goals: 14 },
-  { name: 'M. Hamdi', pos: 'DEF', num: 10, club: 'Club Africain', cat: 'Seniors', status: 'recovery', caps: 29, goals: 2 },
-  { name: 'A. Mansour', pos: 'GK', num: 1, club: 'ASF Sousse', cat: 'Seniors', status: 'fit', caps: 52, goals: 0 },
-  { name: 'N. Karoui', pos: 'MID', num: 8, club: 'ASF Sfax', cat: 'U-20', status: 'fit', caps: 11, goals: 3 },
-  { name: 'R. Saidi', pos: 'FWD', num: 9, club: 'Espérance Tunis', cat: 'U-20', status: 'fit', caps: 9, goals: 5 },
-  { name: 'L. Amri', pos: 'DEF', num: 4, club: 'Club Africain', cat: 'U-17', status: 'fit', caps: 4, goals: 0 },
+  { name: 'Y. Ben Amor', pos: 'MID', num: 12, club: 'ASF Sousse', cat: 'Seniors', status: 'fit', caps: 48, goals: 9, yc: 2, rc: 0, note: 'Cleared — no issues.', log: 'Routine check, no complaints.' },
+  { name: 'S. Gharbi', pos: 'FWD', num: 7, club: 'Espérance Tunis', cat: 'Seniors', status: 'fit', caps: 36, goals: 14, yc: 1, rc: 0, note: 'Cleared — no issues.', log: 'Ankle knock — rested 3 days.' },
+  { name: 'M. Hamdi', pos: 'DEF', num: 10, club: 'Club Africain', cat: 'Seniors', status: 'recovery', caps: 29, goals: 2, yc: 3, rc: 0, note: 'Hamstring — individual program.', log: 'Hamstring strain — physio twice weekly.' },
+  { name: 'A. Mansour', pos: 'GK', num: 1, club: 'ASF Sousse', cat: 'Seniors', status: 'fit', caps: 52, goals: 0, yc: 0, rc: 0, note: 'Cleared — no issues.', log: 'Wrist check — all clear.' },
+  { name: 'N. Karoui', pos: 'MID', num: 8, club: 'ASF Sfax', cat: 'U-20', status: 'fit', caps: 11, goals: 3, yc: 1, rc: 0, note: 'Cleared — no issues.', log: 'Growth check — all clear.' },
+  { name: 'R. Saidi', pos: 'FWD', num: 9, club: 'Espérance Tunis', cat: 'U-20', status: 'fit', caps: 9, goals: 5, yc: 0, rc: 0, note: 'Cleared — no issues.', log: 'Routine check, no complaints.' },
+  { name: 'L. Amri', pos: 'DEF', num: 4, club: 'Club Africain', cat: 'U-17', status: 'fit', caps: 4, goals: 0, yc: 0, rc: 0, note: 'Cleared — no issues.', log: 'Routine check, no complaints.' },
 ];
 const BINGO = [
   { user: 'Amira', games: 4, pts: 86 },
@@ -656,10 +684,7 @@ function initPhone(role) {
       <div class="status"><span>9:41</span><span class="dots"><i></i><i style="width:22px"></i></span></div>
       <div class="pbody">${Object.keys(spec.views).map(v => `<section class="view" data-view="${v}">${spec.views[v]}</section>`).join('')}</div>
       <div class="sheet-veil" data-veil></div>
-      <div class="sheet" data-sheet><div class="grab"></div><h3 data-shname>—</h3><div class="sub2" data-shmeta>—</div>
-        <div class="statgrid"><div class="statcell"><b data-shcaps>0</b><span>Caps</span></div>
-        <div class="statcell"><b data-shgoals>0</b><span>Goals</span></div>
-        <div class="statcell"><b data-shstatus>—</b><span>Status</span></div></div>
+      <div class="sheet" data-sheet><div class="grab"></div><div data-sheetbody></div>
         <button class="btn close" data-close>Close ›</button></div>
       ${role === 'player' ? `
       <div class="sheet-veil" data-fveil></div>
@@ -757,17 +782,57 @@ function initPhone(role) {
     const p = e.target && e.target.closest ? e.target.closest('[data-pos]') : null;
     if (p) { pos = p.dataset.pos; renderSquad(); return; }
     const pl = e.target && e.target.closest ? e.target.closest('[data-player]') : null;
-    if (pl) {
-      const p = PLAYERS.find(x => x.name === pl.dataset.player);
-      q('[data-shname]').textContent = p.name;
-      q('[data-shmeta]').textContent = `${p.pos} · #${p.num} · ${p.club}`;
-      q('[data-shcaps]').textContent = p.caps;
-      q('[data-shgoals]').textContent = p.goals;
-      q('[data-shstatus]').textContent = p.status === 'fit' ? 'Fit' : 'Recovery';
-      q('[data-veil]').classList.add('on');
-      q('[data-sheet]').classList.add('on');
+    if (pl) { openSheet(PLAYERS.find(x => x.name === pl.dataset.player)); return; }
+    const sh = e.target && e.target.closest ? e.target.closest('[data-sh]') : null;
+    if (sh) {
+      if (sh.dataset.sh === 'log') {
+        const log = rootEl.querySelector('[data-shlog]');
+        log.style.display = log.style.display === 'none' ? 'block' : 'none';
+      } else if (sh.dataset.sh === 'msg') {
+        rootEl.querySelector('[data-shcompose]').style.display = 'block';
+      } else if (sh.dataset.sh === 'send') {
+        rootEl.querySelector('[data-shcompose]').style.display = 'none';
+        rootEl.querySelector('[data-shdraft]').value = '';
+        const n = rootEl.querySelector('[data-shsent]');
+        n.style.display = 'block'; n.textContent = 'Demo only, no message was sent.';
+      } else if (sh.dataset.sh === 'edit') {
+        const n = rootEl.querySelector('[data-shsent]');
+        n.style.display = 'block'; n.textContent = 'Edit opens in the app.';
+      }
     }
   });
+  function openSheet(p) {
+    if (!p) return;
+    const fit = p.status === 'fit';
+    rootEl.querySelector('[data-sheetbody]').innerHTML = `
+      <div class="psheet-top">
+        <span class="psheet-photo">${String(p.num).padStart(2, '0')}</span>
+        <span><h3>${p.name}</h3><div class="psheet-num">${p.pos} · #${p.num} · ${p.club}</div></span>
+      </div>
+      <div class="pstatrow">
+        <div class="pstattile"><b>${p.caps}</b><span>Caps</span></div>
+        <div class="pstattile"><b>${p.goals}</b><span>Goals</span></div>
+        <div class="pstattile"><b>${p.status === 'fit' ? 'Fit' : 'Recovery'}</b><span>Status</span></div>
+      </div>
+      <div class="medpanel" style="border-color:${fit ? 'var(--green)' : 'var(--amber)'}">
+        <h5>Medical</h5>
+        <div class="mednote">${p.note}</div>
+        <div class="medcards">Yellow cards: ${p.yc} · Red cards: ${p.rc}</div>
+        <div class="medlog" data-shlog style="display:none">
+          <div><b>2026-09-12</b><br>${p.log}</div>
+        </div>
+      </div>
+      <div data-shcompose style="display:none">
+        <textarea class="sheetinput" data-shdraft placeholder="Write to ${p.name}…"></textarea>
+        <button class="sheetbtn red" data-sh="send">Send</button>
+      </div>
+      <button class="sheetbtn red" data-sh="msg">Message player</button>
+      <button class="sheetbtn dark" data-sh="log">Medical log</button>
+      <button class="sheetbtn dark" data-sh="edit">Edit player</button>
+      <div class="demonote" data-shsent style="display:none"></div>`;
+    rootEl.querySelector('[data-veil]').classList.add('on');
+    rootEl.querySelector('[data-sheet]').classList.add('on');
+  }
   q('[data-veil]').addEventListener('click', closeSheet);
   q('[data-close]').addEventListener('click', closeSheet);
   function closeSheet() { q('[data-veil]').classList.remove('on'); q('[data-sheet]').classList.remove('on'); }
