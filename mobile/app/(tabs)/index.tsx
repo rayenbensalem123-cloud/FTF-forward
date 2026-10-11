@@ -1,62 +1,58 @@
 import React from 'react';
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { ForwardChevron } from '@/components/ForwardChevron';
+import { Check } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
+import { FeatureCard } from '@/components/FeatureCard';
 import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchHero } from '@/components/MatchHero';
-import { ReadinessCard } from '@/components/ReadinessCard';
-import { PlayerStatRow } from '@/components/PlayerStatRow';
-import { InsightCard } from '@/components/InsightCard';
-import { BarChart, RadarChart } from '@/components/Charts';
+import { PitchDiagram } from '@/components/PitchDiagram';
+import { RadarChart } from '@/components/Charts';
 import { SectionHeader } from '@/components/SectionHeader';
 import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
-import type { Match } from '@/types';
 
 /**
- * The dashboard home, following the staff-portal reference: a dark header, a
- * maroon hero for the next match, squad readiness, a scannable list of player
- * stats, and a row of insight cards with charts.
+ * The dashboard home: a dark header, a maroon hero for the next match, and a
+ * grid of feature cards that open the parts of the app otherwise buried
+ * behind the staff-only "More" tab.
  *
- * Staff get the full dashboard. Players get the hero and their own form --
- * the readiness and insight sections are staff concerns, so they are not
- * shown to them.
+ * The squad-readiness block was removed -- the fit count and progress bar
+ * filled the screen with a single number that was not the point of landing
+ * here. The feature cards are what the dashboard should be about.
+ *
+ * Staff get the hero and the grid. Players get the hero and their own form;
+ * the feature cards are staff tools, so they are not shown to them.
  */
 
-/** The three insight cards. Values are 0..1 for the radars, raw for the bars. */
-const SQUAD_FORM = { data: [0.8, 0.65, 0.7, 0.55, 0.6], labels: ['ST', 'RW', 'CM', 'CB', 'LB'] };
-const OPPONENT_FORM = { data: [0.6, 0.5, 0.75, 0.45], labels: ['ATK', 'MID', 'DEF', 'SET'] };
-const OPPONENT_MET = [
-  { label: 'W', value: 6 },
-  { label: 'D', value: 2 },
-  { label: 'L', value: 3 },
+const TACTIC_PITCH = [
+  { x: 50, y: 88 },
+  { x: 22, y: 66 }, { x: 50, y: 70 }, { x: 78, y: 66 },
+  { x: 30, y: 40 }, { x: 70, y: 40 },
+  { x: 42, y: 16, label: 'YA' }, { x: 62, y: 14, label: 'SG' },
 ];
+
+const ANALYSIS_PITCH = [
+  { x: 50, y: 90 },
+  { x: 20, y: 68 }, { x: 50, y: 72 }, { x: 80, y: 68 },
+  { x: 28, y: 44 }, { x: 50, y: 48 }, { x: 72, y: 44 },
+  { x: 36, y: 20 }, { x: 58, y: 18 },
+];
+
+const SCOUT_RADAR = { data: [0.8, 0.6, 0.7, 0.5, 0.65], labels: ['PAC', 'SHO', 'PAS', 'DRI', 'DEF'] };
 
 export default function HomeScreen() {
   const { t } = useLanguage();
-  const router = useRouter();
-  const { players, matches, nextMatch, refresh, refreshing } = usePlayers();
+  const { players, nextMatch, refresh, refreshing } = usePlayers();
   const { user } = useAuth();
   const isStaff = user?.role === 'staff' || user?.role === 'admin';
 
-  const known = players.filter((p) => p.status !== 'unknown');
-  const total = known.length;
-  const fitCount = known.filter((p) => p.status === 'fit').length;
-  const recoveryCount = total - fitCount;
-
   // A player account owns a members row: player.id is String(member_id).
   const me = user?.memberId != null ? players.find((p) => p.id === String(user.memberId)) ?? null : null;
-
-  const topPlayers = [...players]
-    .sort((a, b) => b.goals - a.goals || b.caps - a.caps)
-    .slice(0, 4);
-  const maxGoals = topPlayers.reduce((m, p) => Math.max(m, p.goals), 0);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -72,50 +68,51 @@ export default function HomeScreen() {
         <MatchHero match={nextMatch} />
 
         {isStaff ? (
-          <>
-            <ReadinessCard fitCount={fitCount} total={total} recoveryCount={recoveryCount} />
+          <View style={styles.group}>
+            <SectionHeader title={t('availableFeatures')} />
+            <View style={styles.grid}>
+              <FeatureCard
+                title={t('interactiveTacticBoard')}
+                cta={t('designPlays')}
+                href="/lineup"
+              >
+                <PitchDiagram players={TACTIC_PITCH} />
+              </FeatureCard>
 
-            <View style={styles.group}>
-              <SectionHeader title={t('topPlayers')} />
-              <Card style={{ paddingVertical: space.xs }}>
-                {topPlayers.map((p, i) => (
-                  <View key={p.id}>
-                    {i > 0 && <View style={styles.divider} />}
-                    <PlayerStatRow
-                      name={p.name}
-                      number={p.number}
-                      position={p.position}
-                      photoUrl={p.photoUrl}
-                      stat={p.goals}
-                      statLabel={t('goals')}
-                      max={maxGoals}
-                    />
-                  </View>
-                ))}
-              </Card>
-            </View>
+              <FeatureCard
+                title={t('scoutingNetwork')}
+                description={t('profileCards')}
+                cta={t('viewDetails')}
+                href="/more/staff"
+              >
+                <RadarChart data={SCOUT_RADAR.data} labels={SCOUT_RADAR.labels} size={88} />
+              </FeatureCard>
 
-            <View style={styles.group}>
-              <View style={styles.insightsHeader}>
-                <Text style={styles.insightsTitle}>{t('teamInsights')}</Text>
-                <ForwardChevron color={colors.gold} size={16} />
-              </View>
-              <View style={styles.insightsRow}>
-                <InsightCard title={t('squadForm')}>
-                  <RadarChart data={SQUAD_FORM.data} labels={SQUAD_FORM.labels} />
-                </InsightCard>
-                <InsightCard title={t('opponentAnalysis')}>
-                  <RadarChart data={OPPONENT_FORM.data} labels={OPPONENT_FORM.labels} color={colors.red} />
-                </InsightCard>
-                <InsightCard title={t('opponentMet')}>
-                  <BarChart data={OPPONENT_MET} />
-                </InsightCard>
-              </View>
+              <FeatureCard
+                title={t('injuryPreventionHub')}
+                cta={t('accessRecoveryPlans')}
+                href="/more/reports"
+              >
+                <View style={styles.checklist}>
+                  <CheckRow icon={<View style={styles.tick} />} label={t('playerRecovery')} done />
+                  <CheckRow icon={<View style={styles.tick} />} label={t('personalizedExercise')} done />
+                  <CheckRow icon={<View style={styles.tick} />} label={t('mealPlanning')} />
+                  <CheckRow icon={<View style={styles.tick} />} label={t('medicalCheckup')} />
+                </View>
+              </FeatureCard>
+
+              <FeatureCard
+                title={t('liveMatchAnalysis')}
+                cta={t('compareOpponents')}
+                href="/match-details"
+              >
+                <PitchDiagram players={ANALYSIS_PITCH} showLabels={false} />
+              </FeatureCard>
             </View>
-          </>
+          </View>
         ) : (
-          <>
-            {user?.memberId != null && <Card>
+          user?.memberId != null && (
+            <Card>
               <SectionHeader title={t('myForm')} />
               <View style={styles.formHeader}>
                 <Avatar name={me?.name ?? user?.name ?? '?'} number={me?.number} photoUrl={me?.photoUrl} size={48} />
@@ -132,11 +129,20 @@ export default function HomeScreen() {
                 <StatCell value={me?.goals ?? 0} label={t('goals')} />
                 <StatCell value={me?.assists ?? 0} label={t('assists')} />
               </View>
-            </Card>}
-          </>
+            </Card>
+          )
         )}
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function CheckRow({ icon, label, done }: { icon: React.ReactNode; label: string; done?: boolean }) {
+  return (
+    <View style={styles.checkRow}>
+      <View style={[styles.checkBox, done && styles.checkBoxDone]}>{icon}</View>
+      <Text style={[styles.checkLabel, done && styles.checkLabelDone]} numberOfLines={1}>{label}</Text>
+    </View>
   );
 }
 
@@ -154,11 +160,18 @@ const styles = StyleSheet.create({
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
 
   group: { gap: space.sm },
-  divider: { height: 1, backgroundColor: colors.hairline },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md },
 
-  insightsHeader: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  insightsTitle: { color: colors.white, fontSize: 15, fontWeight: '700' },
-  insightsRow: { flexDirection: 'row', gap: space.sm },
+  checklist: { gap: 6, justifyContent: 'center' },
+  checkRow: { flexDirection: 'row', alignItems: 'center', gap: 7 },
+  checkBox: {
+    width: 14, height: 14, borderRadius: 4, borderWidth: 1,
+    borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center',
+  },
+  checkBoxDone: { backgroundColor: colors.greenSoft, borderColor: colors.green },
+  tick: { width: 8, height: 5, borderLeftWidth: 2, borderBottomWidth: 2, borderColor: colors.green, transform: [{ rotate: '-45deg' }] },
+  checkLabel: { color: colors.muted, fontSize: 10, fontWeight: '600' },
+  checkLabelDone: { color: colors.white },
 
   formHeader: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginBottom: space.md },
   formName: { color: colors.white, fontSize: 15, fontWeight: '800' },

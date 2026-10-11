@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FTF Forward — Dashboard home</title>
+<title>FTF Forward — Dashboard home with feature grid</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -27,7 +27,6 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .dots{display:flex;gap:5px;align-items:center}
 .dots i{display:block;width:16px;height:9px;border:1.4px solid var(--white);border-radius:2.5px;opacity:.9}
 
-/* Header -- dark navy, badge, bell */
 .hdr{display:flex;align-items:center;gap:12px;padding:8px 16px}
 .logo-tile{width:42px;height:42px;border-radius:21px;background:var(--card-raised);
   border:1px solid var(--hairline);display:grid;place-items:center;overflow:hidden;flex:none}
@@ -49,7 +48,6 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 
 .body{padding:6px 16px 26px;display:flex;flex-direction:column;gap:16px}
 
-/* Hero -- maroon gradient */
 .hero{border-radius:var(--r-card);padding:16px;
   background:linear-gradient(135deg,#3A0A16 0%,#1C060D 100%)}
 .top-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -80,57 +78,48 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   border:1px solid rgba(246,199,68,.4);border-radius:var(--r-pill);padding:6px 10px;
   color:var(--gold);font-size:9px;font-weight:800;text-transform:uppercase}
 
-/* Readiness */
-.tabs{display:flex;align-items:center;gap:16px;margin-bottom:10px}
-.tab{display:flex;align-items:center;gap:6px}
-.tab i{width:6px;height:6px;border-radius:3px;background:var(--gold);display:block}
-.tab span{font-size:15px;font-weight:700;color:var(--white)}
-.tab.idle span{color:var(--muted);font-weight:600}
-.panel{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);padding:16px}
-.count-row{display:flex;align-items:baseline;gap:10px}
-.count-big{font-size:34px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
-.count-slash{font-size:20px;font-weight:700;color:var(--muted)}
-.count-label{font-size:13px;font-weight:600;color:var(--muted)}
-.track{height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin:12px 0;overflow:hidden}
-.track i{display:block;height:100%;border-radius:3px;background:var(--green)}
-.chip{display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,.16);
-  border-radius:var(--r-pill);padding:7px 12px;color:var(--amber);font-size:12px;font-weight:700}
-.chip i{width:7px;height:7px;border-radius:4px;background:var(--amber);display:block}
-
 /* Section header */
 .sec{display:flex;align-items:center;justify-content:space-between}
 .sec h2{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
   text-transform:uppercase;color:var(--white)}
-.sec a{color:var(--gold);font-size:12px;font-weight:600;text-decoration:none}
 
-/* Player rows */
-.list{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);padding:4px 16px}
-.prow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--hairline)}
-.prow:first-child{border-top:0}
-.av{width:40px;height:40px;border-radius:20px;background:var(--card-raised);
-  display:grid;place-items:center;font-family:Oswald;font-size:15px;font-weight:700;color:var(--gold);
-  border:1px solid var(--hairline);overflow:hidden}
-.av img{width:100%;height:100%;object-fit:cover}
-.who{flex:1;min-width:0}
-.who .n{font-size:14px;font-weight:700}
-.who .m{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;margin-top:2px}
-.pstat{text-align:right;margin-right:10px}
-.pstat b{display:block;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
-.pstat span{font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
-.pbar{width:4px;height:34px;border-radius:2px;background:rgba(255,255,255,.08);
-  display:flex;align-items:flex-end;overflow:hidden}
-.pbar i{display:block;width:100%;border-radius:2px;background:var(--green)}
-
-/* Insights */
-.insights-head{display:flex;align-items:center;gap:6px}
-.insights-head span{font-size:15px;font-weight:700;color:var(--white)}
-.insights{display:flex;gap:8px}
-.icard{flex:1;background:var(--card);border:1px solid var(--hairline);
+/* Feature grid */
+.grid{display:flex;flex-wrap:wrap;gap:12px}
+.fcard{flex:1 1 47%;background:var(--card);border:1px solid var(--hairline);
   border-radius:var(--r-card);padding:12px}
-.icard h3{font-size:13px;font-weight:700;margin-bottom:6px}
-.icard .body{display:flex;align-items:center;justify-content:center;min-height:96px}
+.fcard h3{font-size:14px;font-weight:800}
+.fcard .desc{font-size:11px;font-weight:600;color:var(--muted);margin-top:3px;line-height:15px}
+.fcard .visual{margin:8px 0;min-height:72px;display:flex;align-items:center;justify-content:center}
+.cta{display:flex;align-items:center;justify-content:center;gap:3px;height:32px;
+  border-radius:var(--r-pill);background:var(--gold);color:var(--navy);
+  font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.cta span{font-size:15px;font-weight:700;line-height:15px}
 
-/* Bottom nav */
+/* Pitch */
+.pitch{position:relative;height:76px;border-radius:8px;background:#1E7A3C;
+  border:1px solid rgba(255,255,255,.25);overflow:hidden}
+.pitch .hw{position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.3)}
+.pitch .cc{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;
+  border-radius:17px;border:1px solid rgba(255,255,255,.3)}
+.pitch .bt{position:absolute;left:50%;top:0;width:34%;height:16%;margin-left:-17%;
+  border:1px solid rgba(255,255,255,.3);border-top:0}
+.pitch .bb{position:absolute;left:50%;bottom:0;width:34%;height:16%;margin-left:-17%;
+  border:1px solid rgba(255,255,255,.3);border-bottom:0}
+.pitch .dot{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:8px;
+  background:var(--gold);border:1px solid rgba(0,0,0,.3);display:grid;place-items:center;
+  font-size:7px;font-weight:800;color:#06210F}
+
+/* Checklist */
+.checklist{display:flex;flex-direction:column;gap:6px;justify-content:center}
+.checkrow{display:flex;align-items:center;gap:7px}
+.checkbox{width:14px;height:14px;border-radius:4px;border:1px solid var(--hairline);
+  display:grid;place-items:center}
+.checkbox.done{background:rgba(34,197,94,.16);border-color:var(--green)}
+.tick{width:8px;height:5px;border-left:2px solid var(--green);border-bottom:2px solid var(--green);
+  transform:rotate(-45deg)}
+.checklabel{font-size:10px;font-weight:600;color:var(--muted)}
+.checklabel.done{color:var(--white)}
+
 .tabbar{display:flex;border-top:1px solid var(--hairline);background:var(--card);padding:10px 0 18px}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);opacity:.55}
 .tab.on{color:var(--gold);opacity:1}
@@ -147,11 +136,11 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 </head>
 <body>
 <div class="page">
-  <h1>Dashboard home — staff portal</h1>
+  <h1>Dashboard home — feature grid</h1>
   <p class="sub">
-    Following the reference you sent. Rendered from the real tokens in
-    <code>mobile/constants/theme.ts</code> and the real component layouts. Oswald loads from Google
-    Fonts here and is bundled on the phone, so the device is a hair narrower than this.
+    Squad readiness is gone. The home is now the hero plus an "Available Features &amp; Services"
+    grid, following your reference. Rendered from the real tokens in
+    <code>mobile/constants/theme.ts</code> and the real component layouts.
   </p>
 
   <div class="phone">
@@ -194,32 +183,34 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
         </div>
       </div>
 
-      <div class="tabs">
-        <div class="tab"><i></i><span>Squad Readiness</span></div>
-        <div class="tab idle"><span>Injury Report</span></div>
-      </div>
-      <div class="panel">
-        <div class="count-row"><span class="count-big">21</span><span class="count-slash">/ 24</span><span class="count-label">players fit</span></div>
-        <div class="track"><i style="width:87.5%"></i></div>
-        <span class="chip"><i></i>3 in recovery</span>
-      </div>
+      <div class="sec"><h2>Available Features &amp; Services</h2></div>
+      <div class="grid">
 
-      <div class="sec"><h2>Top players</h2></div>
-      <div class="list">
-        <div class="prow"><div class="av"><img src="../mobile/assets/ftf-logo.png" alt=""></div><div class="who"><div class="n">Y. Ben Amor</div><div class="m">MID · #12</div></div><div class="pstat"><b>48</b><span>Goals</span></div><div class="pbar"><i style="height:100%"></i></div></div>
-        <div class="prow"><div class="av"><img src="../mobile/assets/ftf-logo.png" alt=""></div><div class="who"><div class="n">S. Gharbi</div><div class="m">FWD · #07</div></div><div class="pstat"><b>36</b><span>Goals</span></div><div class="pbar"><i style="height:75%"></i></div></div>
-        <div class="prow"><div class="av">10</div><div class="who"><div class="n">M. Hamdi</div><div class="m">DEF · #10</div></div><div class="pstat"><b>29</b><span>Goals</span></div><div class="pbar"><i style="height:60%"></i></div></div>
-      </div>
+        <div class="fcard">
+          <h3>Interactive Tactic Board</h3>
+          <div class="visual">
+            <div class="pitch" style="width:100%">
+              <div class="hw"></div><div class="cc"></div><div class="bt"></div><div class="bb"></div>
+              <div class="dot" style="left:50%;top:88%"></div>
+              <div class="dot" style="left:22%;top:66%"></div>
+              <div class="dot" style="left:50%;top:70%"></div>
+              <div class="dot" style="left:78%;top:66%"></div>
+              <div class="dot" style="left:30%;top:40%"></div>
+              <div class="dot" style="left:70%;top:40%"></div>
+              <div class="dot" style="left:42%;top:16%">YA</div>
+              <div class="dot" style="left:62%;top:14%">SG</div>
+            </div>
+          </div>
+          <div class="cta">Design Plays <span>›</span></div>
+        </div>
 
-      <div class="insights-head"><span>Team Insights &amp; Upcoming Fixtures</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></div>
-      <div class="insights">
-        <div class="icard">
-          <h3>Squad Form</h3>
-          <div class="body">
-            <svg width="116" height="116" viewBox="0 0 116 116">
+        <div class="fcard">
+          <h3>Scouting Network</h3>
+          <div class="desc">Profile cards for young talents</div>
+          <div class="visual">
+            <svg width="88" height="88" viewBox="0 0 116 116">
               <polygon points="58,22 92,42 80,82 36,82 24,42" fill="none" stroke="rgba(148,170,210,.18)"/>
               <polygon points="58,34 80,47 72,74 44,74 36,47" fill="none" stroke="rgba(148,170,210,.18)"/>
-              <polygon points="58,46 68,52 64,66 52,66 48,52" fill="none" stroke="rgba(148,170,210,.18)"/>
               <line x1="58" y1="58" x2="58" y2="22" stroke="rgba(148,170,210,.18)"/>
               <line x1="58" y1="58" x2="92" y2="42" stroke="rgba(148,170,210,.18)"/>
               <line x1="58" y1="58" x2="80" y2="82" stroke="rgba(148,170,210,.18)"/>
@@ -231,33 +222,41 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
               <circle cx="30" cy="45" r="2" fill="#F6C744"/>
             </svg>
           </div>
+          <div class="cta">View Details <span>›</span></div>
         </div>
-        <div class="icard">
-          <h3>Opponent Analysis</h3>
-          <div class="body">
-            <svg width="116" height="116" viewBox="0 0 116 116">
-              <polygon points="58,22 96,58 58,94 20,58" fill="none" stroke="rgba(148,170,210,.18)"/>
-              <polygon points="58,36 82,58 58,80 34,58" fill="none" stroke="rgba(148,170,210,.18)"/>
-              <line x1="58" y1="58" x2="58" y2="22" stroke="rgba(148,170,210,.18)"/>
-              <line x1="58" y1="58" x2="96" y2="58" stroke="rgba(148,170,210,.18)"/>
-              <line x1="58" y1="58" x2="58" y2="94" stroke="rgba(148,170,210,.18)"/>
-              <line x1="58" y1="58" x2="20" y2="58" stroke="rgba(148,170,210,.18)"/>
-              <polygon points="58,34 78,58 58,84 30,58" fill="rgba(227,6,19,.22)" stroke="#E30613" stroke-width="1.5"/>
-              <circle cx="58" cy="34" r="2" fill="#E30613"/><circle cx="78" cy="58" r="2" fill="#E30613"/>
-              <circle cx="58" cy="84" r="2" fill="#E30613"/><circle cx="30" cy="58" r="2" fill="#E30613"/>
-            </svg>
-          </div>
-        </div>
-        <div class="icard">
-          <h3>Opponent Met</h3>
-          <div class="body">
-            <div style="display:flex;align-items:flex-end;gap:8px;height:76px;width:100%">
-              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="width:68%;height:100%;background:#F6C744;border-radius:3px"></div><span style="font-size:8px;font-weight:700;color:var(--muted)">W</span></div>
-              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="width:68%;height:33%;background:#F6C744;opacity:.55;border-radius:3px"></div><span style="font-size:8px;font-weight:700;color:var(--muted)">D</span></div>
-              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="width:68%;height:50%;background:#F6C744;opacity:.55;border-radius:3px"></div><span style="font-size:8px;font-weight:700;color:var(--muted)">L</span></div>
+
+        <div class="fcard">
+          <h3>Injury Prevention Hub</h3>
+          <div class="visual">
+            <div class="checklist">
+              <div class="checkrow"><div class="checkbox done"><div class="tick"></div></div><span class="checklabel done">Player recovery timeline</span></div>
+              <div class="checkrow"><div class="checkbox done"><div class="tick"></div></div><span class="checklabel done">Personalized Exercise programs</span></div>
+              <div class="checkrow"><div class="checkbox"></div><span class="checklabel">Meal Planning</span></div>
+              <div class="checkrow"><div class="checkbox"></div><span class="checklabel">Medical Check-up</span></div>
             </div>
           </div>
+          <div class="cta">Access Recovery Plans <span>›</span></div>
         </div>
+
+        <div class="fcard">
+          <h3>Live Match Analysis</h3>
+          <div class="visual">
+            <div class="pitch" style="width:100%">
+              <div class="hw"></div><div class="cc"></div><div class="bt"></div><div class="bb"></div>
+              <div class="dot" style="left:50%;top:90%"></div>
+              <div class="dot" style="left:20%;top:68%"></div>
+              <div class="dot" style="left:50%;top:72%"></div>
+              <div class="dot" style="left:80%;top:68%"></div>
+              <div class="dot" style="left:28%;top:44%"></div>
+              <div class="dot" style="left:50%;top:48%"></div>
+              <div class="dot" style="left:72%;top:44%"></div>
+              <div class="dot" style="left:36%;top:20%"></div>
+              <div class="dot" style="left:58%;top:18%"></div>
+            </div>
+          </div>
+          <div class="cta">Compare Opponents <span>›</span></div>
+        </div>
+
       </div>
     </div>
 
@@ -273,13 +272,11 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The header is dark navy, not a red bar.</b> Crest, "FTF Forward" in Oswald, a red-dot "Staff Portal" badge, and the notifications bell. The red bar read heavier than the content below it; this lets the hero card carry the colour.</li>
-      <li><b>The hero is a dark maroon gradient card.</b> Gold competition pill, "Next match · SAM 24 OCT", Tunisia vs Morocco, a three-box countdown, a gold "Match details" button, and a gold-outlined "Add to calendar". One primary action instead of three competing ones.</li>
-      <li><b>Squad readiness</b> with a gold-dot active tab, "21 / 24 players fit" over a green bar, and a recovery chip.</li>
-      <li><b>Player stat rows</b> — crest, name, position, and a stat with a vertical bar whose height is the value relative to the row max. The bar is what makes a list of numbers scannable.</li>
-      <li><b>Team insights</b> — three cards with charts drawn on react-native-svg: two radars (Squad Form, Opponent Analysis) and a bar chart (Opponent Met). No chart library installed; hand-rolled is lighter at this size.</li>
-      <li><b>Bottom nav</b> — Dashboard · Calendar · Reports · Metrics · Profile, gold on the active tab.</li>
-      <li><b>Gold is the accent again.</b> It carries the pill, buttons, section dot and active tab. Red is reserved for the hero gradient and the badge dot.</li>
+      <li><b>Squad readiness is gone.</b> The fit count and progress bar filled the screen with one number that was not the point of landing here. Removed, along with the player stat rows and the insight cards.</li>
+      <li><b>The home is now the hero plus an "Available Features &amp; Services" grid</b> -- four cards in a 2x2 layout, matching your reference.</li>
+      <li><b>Each card opens a real screen</b>, so none of them is a dead button: Interactive Tactic Board to the lineup, Scouting Network to the staff list, Injury Prevention Hub to reports, Live Match Analysis to match details.</li>
+      <li><b>The cards carry their own visuals</b> -- two pitch diagrams, a radar for scouting, and a recovery checklist -- so the grid reads as tools rather than a list of links.</li>
+      <li><b>Gold is the accent</b> for the CTAs, and the hero keeps the maroon gradient and gold primary button.</li>
     </ul>
   </div>
 </div>
