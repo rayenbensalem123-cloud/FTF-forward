@@ -1,18 +1,21 @@
 import React from 'react';
-import { ActivityIndicator, Alert, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ExternalLink } from 'lucide-react-native';
-import { colors } from '@/constants/theme';
+import { colors, radius } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { NW } from '@/i18n/newsStrings';
 import { ago, fetchNews, type NewsItem } from '@/lib/news';
 
 /**
- * The body of the News card: the top live headline with its source and age,
- * opening the article on tap. It reads the same Google News feed as the news
- * screen (cached), so the card always agrees with the screen it opens.
+ * The body of the News card: the team photo as the visual anchor, then the
+ * top live headline with its source and age. The feed carries no thumbnails,
+ * so the photo is the squad itself rather than a grey box -- tapping the card
+ * opens the article.
  *
- * While the feed loads a spinner shows; when it fails the card renders the
- * same empty line as the news screen rather than a stale or invented story.
+ * It reads the same Google News feed as the news screen (cached), so the card
+ * always agrees with the screen it opens. While the feed loads a spinner
+ * shows; when it fails the card renders the same empty line as the news
+ * screen rather than a stale or invented story.
  */
 export function NewsTeaser() {
   const { language } = useLanguage();
@@ -51,6 +54,7 @@ export function NewsTeaser() {
       accessibilityRole="link"
       accessibilityLabel={item.title}
     >
+      <Image source={require('../assets/home-bg.jpg')} style={styles.photo} accessibilityLabel={T.title} />
       <Text style={styles.headline} numberOfLines={3}>{item.title}</Text>
       <View style={styles.meta}>
         <Text style={styles.source} numberOfLines={1}>{item.source}</Text>
@@ -64,6 +68,7 @@ export function NewsTeaser() {
 const styles = StyleSheet.create({
   center: { minHeight: 72, alignItems: 'center', justifyContent: 'center' },
   empty: { color: colors.muted, fontSize: 11 },
+  photo: { width: '100%', height: 64, borderRadius: radius.sm, marginBottom: 8 },
   headline: { color: colors.white, fontSize: 13, fontWeight: '700', lineHeight: 18 },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 },
   source: { color: colors.gold, fontSize: 11, fontWeight: '800', flexShrink: 1 },

@@ -65,15 +65,6 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   color:rgba(255,255,255,.92)}
 .competition{font-size:11px;font-weight:600;color:rgba(255,255,255,.72);text-align:right}
 .teams{display:flex;align-items:center;gap:8px;margin-top:12px}
-/* Timer cells on the photo: dark translucent tiles */
-.timer{display:flex;gap:6px;margin-top:12px}
-.timer div{background:rgba(0,0,0,.42);border-radius:10px;padding:6px 8px;
-  text-align:center;min-width:46px}
-.timer b{display:block;font-family:Oswald;font-size:19px;font-weight:700;
-  font-variant-numeric:tabular-nums;line-height:1}
-.timer span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
-  color:rgba(255,255,255,.65)}
-.teams{display:flex;align-items:center;gap:8px;margin-top:12px}
 .team{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
 .team.r{justify-content:flex-end}
 .crest{width:42px;height:42px;border-radius:21px;overflow:hidden;flex:none;
@@ -82,6 +73,14 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .center{flex:1.15;text-align:center}
 .big{font-family:Oswald;font-size:26px;font-weight:700;letter-spacing:.5px;color:#fff;
   font-variant-numeric:tabular-nums;line-height:28px}
+/* Center timer: 2x2 compact cells under the date */
+.center-timer{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}
+.center-timer div{background:rgba(0,0,0,.42);border-radius:8px;padding:4px 6px;
+  text-align:center;min-width:48px}
+.center-timer b{display:block;font-family:Oswald;font-size:15px;font-weight:700;
+  font-variant-numeric:tabular-nums;line-height:17px}
+.center-timer span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(255,255,255,.65)}
 .tname{font-family:Oswald;font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;flex:1;min-width:0}
 .tname.r{text-align:right}
 .venue-row{display:flex;align-items:center;gap:8px;margin-top:10px}
@@ -190,14 +189,16 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
           </div>
           <div class="teams">
             <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisie</span></div>
-            <div class="center"><div class="big">SAM 24<br>OCT</div></div>
+            <div class="center">
+              <div class="big">SAM 24<br>OCT</div>
+              <div class="center-timer">
+                <div><b>04</b><span>Days</span></div>
+                <div><b>11</b><span>Hrs</span></div>
+                <div><b>26</b><span>Min</span></div>
+                <div><b>09</b><span>Sec</span></div>
+              </div>
+            </div>
             <div class="team r"><span class="tname r">Maroc</span><span class="crest">🇲🇦</span></div>
-          </div>
-          <div class="timer">
-            <div><b>04</b><span>Days</span></div>
-            <div><b>11</b><span>Hrs</span></div>
-            <div><b>26</b><span>Min</span></div>
-            <div><b>09</b><span>Sec</span></div>
           </div>
           <div class="venue-row">
             <div class="venue">📍 Stade de Radès</div>
@@ -252,27 +253,39 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
         </div>
 
         <div class="fcard">
-          <h3>Injury Prevention Hub</h3>
-          <div class="visual">
-            <div class="checklist">
-              <div class="checkrow"><div class="checkbox done"><div class="tick"></div></div><span class="checklabel done">Player recovery timeline</span></div>
-              <div class="checkrow"><div class="checkbox done"><div class="tick"></div></div><span class="checklabel done">Personalized Exercise programs</span></div>
-              <div class="checkrow"><div class="checkbox"></div><span class="checklabel">Meal Planning</span></div>
-              <div class="checkrow"><div class="checkbox"></div><span class="checklabel">Medical Check-up</span></div>
-            </div>
-          </div>
-          <div class="btn primary">Access Recovery Plans <span class="chev">›</span></div>
-        </div>
-
-        <div class="fcard">
           <h3>News</h3>
           <div class="visual">
-            <div>
+            <div style="width:100%">
+              <img src="../mobile/assets/home-bg.jpg" alt="" style="width:100%;height:64px;object-fit:cover;border-radius:10px;margin-bottom:8px">
               <div style="font-size:13px;font-weight:700;line-height:18px">Tunisia name squad for WAFCON qualifying double-header</div>
               <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
                 <span style="font-size:11px;font-weight:800;color:var(--gold)">CAF Online</span>
                 <span style="font-size:11px;color:var(--muted)">2h ago</span>
                 <span style="font-size:11px;color:var(--muted)">↗</span>
+              </div>
+            </div>
+          </div>
+          <div class="btn primary">See all <span class="chev">›</span></div>
+        </div>
+
+        <div class="fcard">
+          <h3>Match-day Bingo</h3>
+          <div class="visual">
+            <div style="display:flex;flex-direction:column;gap:10px;justify-content:center;width:100%">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">1</span>
+                <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Amira</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">4 games</span></span>
+                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">86</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:100%;background:var(--gold);border-radius:2px"></span></span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">2</span>
+                <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Syrine</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">4 games</span></span>
+                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">71</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:82%;background:var(--gold);border-radius:2px"></span></span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">3</span>
+                <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Nour</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">3 games</span></span>
+                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">58</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:67%;background:var(--gold);border-radius:2px"></span></span></span>
               </div>
             </div>
           </div>
@@ -294,9 +307,9 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The banner is reorganized into four rows with one job each.</b> The eyebrow and the competition share one top line, then the teams, then the timer strip, then a footer with the venue on the left and a compact weather line on the right. Nothing shares a row with something unrelated anymore.</li>
-      <li><b>The weather is one compact line.</b> Icon plus high/low at the end of the footer row -- the badge with its disc and label was a fifth block competing with the rest.</li>
-      <li><b>Players Report reads as a list.</b> Small photo avatar and name on the left, a done-or-not mark on the right -- green filled check when fit, hollow muted mark otherwise. No rank numerals, no bars.</li>
+      <li><b>The timer sits in the middle, under the date.</b> A compact 2x2 grid in the banner's center column, on the same dark tiles -- the strip below the teams is gone, so the banner is back to four tight rows.</li>
+      <li><b>News carries the team photo.</b> The feed has no thumbnails, so the squad photo anchors the card above the live headline, source and age. Tapping opens the article; "See all" opens the news screen.</li>
+      <li><b>Injury Prevention is replaced by the Bingo score list.</b> The card shows the season leaderboard's top three from the real prediction entries and played matches -- rank, name, games and points with bars -- opening the games screen. It agrees with the leaderboard tab because it is the same computation.</li>
     </ul>
   </div>
 </div>

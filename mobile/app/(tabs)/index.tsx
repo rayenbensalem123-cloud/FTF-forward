@@ -3,6 +3,7 @@ import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppHeader } from '@/components/AppHeader';
 import { Avatar } from '@/components/Avatar';
+import { BingoTeaser } from '@/components/BingoTeaser';
 import { Card } from '@/components/Card';
 import { FeatureCard } from '@/components/FeatureCard';
 import { FitnessBadge } from '@/components/FitnessBadge';
@@ -15,6 +16,7 @@ import { SectionHeader } from '@/components/SectionHeader';
 import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { GS } from '@/i18n/gameStrings';
 import { usePlayers } from '@/context/PlayersContext';
 import type { Category, Match } from '@/types';
 
@@ -39,8 +41,9 @@ const TACTIC_PITCH = [
 ];
 
 export default function HomeScreen() {
-  const { t } = useLanguage();
-  const { players, nextMatch, refresh, refreshing } = usePlayers();
+  const { t, language } = useLanguage();
+  const GT = GS[language];
+  const { players, matches, nextMatch, refresh, refreshing } = usePlayers();
   const { user } = useAuth();
   const isStaff = user?.role === 'staff' || user?.role === 'admin';
 
@@ -96,16 +99,11 @@ export default function HomeScreen() {
               </FeatureCard>
 
               <FeatureCard
-                title={t('injuryPreventionHub')}
-                cta={t('accessRecoveryPlans')}
-                href="/more/reports"
+                title={GT.bgTitle}
+                cta={t('seeAll')}
+                href="/more/games"
               >
-                <View style={styles.checklist}>
-                  <CheckRow icon={<View style={styles.tick} />} label={t('playerRecovery')} done />
-                  <CheckRow icon={<View style={styles.tick} />} label={t('personalizedExercise')} done />
-                  <CheckRow icon={<View style={styles.tick} />} label={t('mealPlanning')} />
-                  <CheckRow icon={<View style={styles.tick} />} label={t('medicalCheckup')} />
-                </View>
+                <BingoTeaser matches={matches} />
               </FeatureCard>
 
               <FeatureCard
@@ -144,15 +142,6 @@ export default function HomeScreen() {
   );
 }
 
-function CheckRow({ icon, label, done }: { icon: React.ReactNode; label: string; done?: boolean }) {
-  return (
-    <View style={styles.checkRow}>
-      <View style={[styles.checkBox, done && styles.checkBoxDone]}>{icon}</View>
-      <Text style={[styles.checkLabel, done && styles.checkLabelDone]} numberOfLines={1}>{label}</Text>
-    </View>
-  );
-}
-
 function StatCell({ value, label }: { value: number; label: string }) {
   return (
     <View style={styles.statCell}>
@@ -168,17 +157,6 @@ const styles = StyleSheet.create({
 
   group: { gap: space.sm },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md },
-
-  checklist: { gap: 6, justifyContent: 'center' },
-  checkRow: { flexDirection: 'row', alignItems: 'center', gap: 7 },
-  checkBox: {
-    width: 14, height: 14, borderRadius: 4, borderWidth: 1,
-    borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center',
-  },
-  checkBoxDone: { backgroundColor: colors.greenSoft, borderColor: colors.green },
-  tick: { width: 8, height: 5, borderLeftWidth: 2, borderBottomWidth: 2, borderColor: colors.green, transform: [{ rotate: '-45deg' }] },
-  checkLabel: { color: colors.muted, fontSize: 10, fontWeight: '600' },
-  checkLabelDone: { color: colors.white },
 
   formHeader: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginBottom: space.md },
   formName: { color: colors.white, fontSize: 15, fontWeight: '800' },

@@ -58,6 +58,14 @@ export function MatchHero({ match }: { match: Match | null }) {
 
           <View style={styles.center}>
             <Text style={styles.bigDate} numberOfLines={2}>{dateLabel}</Text>
+            <View style={styles.centerTimer}>
+              <Countdown
+                boxed
+                compact
+                target={match ? `${match.date}T00:00:00` : ''}
+                labels={{ days: t('days'), hrs: t('hrs'), min: t('min'), sec: t('sec') }}
+              />
+            </View>
           </View>
 
           <View style={[styles.team, styles.teamRight]}>
@@ -72,14 +80,6 @@ export function MatchHero({ match }: { match: Match | null }) {
               )}
             </View>
           </View>
-        </View>
-
-        <View style={styles.countRow}>
-          <Countdown
-            boxed
-            target={match ? `${match.date}T00:00:00` : ''}
-            labels={{ days: t('days'), hrs: t('hrs'), min: t('min'), sec: t('sec') }}
-          />
         </View>
 
         <View style={styles.footer}>
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.display, fontSize: 26, fontWeight: '700', letterSpacing: 0.5,
     color: colors.white, fontVariant: ['tabular-nums'], textAlign: 'center', lineHeight: 28,
   },
-  countRow: { marginTop: 12 },
+  centerTimer: { marginTop: 8, alignItems: 'center' },
   // One footer line: the venue on the left, the weather on the right.
   footer: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
   venue: { flexDirection: 'row', alignItems: 'center', gap: 5, flex: 1, minWidth: 0 },
