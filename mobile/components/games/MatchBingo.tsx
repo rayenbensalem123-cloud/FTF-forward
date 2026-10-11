@@ -15,7 +15,7 @@ import { Board, Notice, gameButton } from './ui';
 const pad = (n: number) => String(n).padStart(2, '0');
 const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
 
-type Tab = 'next' | 'results' | 'board';
+type Tab = 'next' | 'results';
 
 /** A full recorded match bundled with the app, so practice is playable before
  * any real match is recorded. Judged and scored exactly like a real one, but
@@ -249,14 +249,13 @@ export function MatchBingo({ matches, username, lang }: Props) {
     })
     .sort((a, b) => b.e.matchKey.localeCompare(a.e.matchKey)), [mine, approved, username]);
   const totalPts = results.reduce((a, r) => a + (r.sc?.points ?? 0), 0);
-  const board = useMemo(() => buildLeaderboard(entries, approved), [entries, approved]);
 
   const deviceNote = mode === 'device' ? <Text style={[g.dim, { marginTop: space.md }]}>{T.bgDeviceOnly}</Text> : null;
 
   return (
     <View>
       <View style={g.tabs}>
-        {([['next', T.bgTabNext], ['results', T.bgTabResults], ['board', T.bgTabBoard]] as [Tab, string][]).map(([k, label]) => (
+        {([['next', T.bgTabNext], ['results', T.bgTabResults]] as [Tab, string][]).map(([k, label]) => (
           <TouchableOpacity key={k} style={[g.tab, tab === k && g.tabOn]} onPress={() => setTab(k)} accessibilityRole="button" accessibilityState={{ selected: tab === k }}>
             <Text style={[g.tabText, tab === k && { color: colors.white }]} numberOfLines={1}>{label}</Text>
           </TouchableOpacity>
@@ -367,19 +366,34 @@ export function MatchBingo({ matches, username, lang }: Props) {
           {deviceNote}
         </View>
       )}
-
-      {tab === 'board' && (
-        <View>
-          {board.length === 0 ? <Notice text={T.bgBoardEmpty} /> : (
-            <Board
-              rows={board.map((r) => ({ key: r.username, name: r.username, value: String(r.points), sub: `${r.correct} ${T.bgCorrect.toLowerCase()} · ${r.games} ${T.bgGames.toLowerCase()}` }))}
-              you={username} youLabel={T.bgYou} unit={T.waPts}
-            />
-          )}
-          {deviceNote}
-        </View>
-      )}
     </View>
+  );
+}
+
+/**
+ * The season leaderboard as a standalone section: the saved entries judged
+ * against the approved played matches. It fetches its own entries so any
+ * screen can drop it at the bottom without lifting state.
+ */
+export function SeasonBoard({ matches, username, lang }: Props) {
+  const T = GS[lang];
+  const [entries, setEntries] = useState<PickEntry[]>([]);
+  useEffect(() => {
+    let alive = true;
+    fetchPicks().then((r) => { if (alive) setEntries(r.entries); }).catch(() => {});
+    return () => { alive = false; };
+  }, []);
+  const approved = useMemo(
+    () => matches.filter((m) => m.bingo).map((m) => m.bingo as BingoMatch).filter((m) => m.status !== 'pending'),
+    [matches],
+  );
+  const board = useMemo(() => buildLeaderboard(entries, approved), [entries, approved]);
+  if (board.length === 0) return <Notice text={T.bgBoardEmpty} />;
+  return (
+    <Board
+      rows={board.map((r) => ({ key: r.username, name: r.username, value: String(r.points), sub: `${r.correct} ${T.bgCorrect.toLowerCase()} · ${r.games} ${T.bgGames.toLowerCase()}` }))}
+      you={username} youLabel={T.bgYou} unit={T.waPts}
+    />
   );
 }
 

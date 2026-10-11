@@ -235,6 +235,14 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 .statcell span{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
 .sheet .close{margin-top:16px}
 
+/* Game buttons */
+.gamebtn{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);
+  padding:16px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  font-family:Inter;color:var(--muted)}
+.gamebtn.on{border-color:var(--red);background:rgba(227,6,19,.18);color:var(--white)}
+.gamebtn b{font-size:14px;font-weight:800}
+.gamebtn span{font-size:11px;text-align:center;line-height:15px;color:var(--muted)}
+
 /* Bottom nav */
 .tabbar{display:flex;border-top:1px solid var(--hairline);background:var(--card);
   padding:10px 0 18px;flex:none;position:relative}
@@ -465,10 +473,20 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
       <!-- ════════ GAMES ════════ -->
       <section class="view" id="v-games">
         <div class="hdr">
-          <button class="backbtn" data-back>‹</button>
           <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
-          <div class="hdr-txt"><div class="hdr-title">Match-day Bingo</div><div class="hdr-sub">Season board</div></div>
+          <div class="hdr-txt"><div class="hdr-title">Games</div><div class="hdr-sub">Play · season board below</div></div>
         </div>
+        <div style="display:flex;gap:12px" id="gameBtns">
+          <button class="gamebtn on" data-game="bingo" style="flex:1">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <b>Match-day Bingo</b><span>Lock 5 squares, score on truth</span>
+          </button>
+          <button class="gamebtn" data-game="whoami" style="flex:1">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <b>Who Am I?</b><span>Guess the player from clues</span>
+          </button>
+        </div>
+        <div id="gameBody"></div>
         <div class="sec"><h2>Leaderboard</h2></div>
         <div id="bingoList" style="display:flex;flex-direction:column;gap:10px"></div>
       </section>
@@ -650,6 +668,76 @@ document.getElementById('newsList').innerHTML = NEWS.map(n =>
 
 /* Switches */
 document.querySelectorAll('[data-sw]').forEach(s => s.addEventListener('click', () => s.classList.toggle('on')));
+
+/* Games: two buttons up, board down */
+const SQUARES = [
+  { id: 's1', label: 'Tunisia scores first', yes: true },
+  { id: 's2', label: 'Goal after 75 min', yes: true },
+  { id: 's3', label: 'Clean sheet', yes: false },
+  { id: 's4', label: 'Penalty awarded', yes: false },
+  { id: 's5', label: 'Gharbi scores', yes: true },
+  { id: 's6', label: 'Opponent scores', yes: true },
+  { id: 's7', label: 'Red card', yes: false },
+  { id: 's8', label: '5+ corners', yes: true },
+  { id: 's9', label: '0-0 at half time', yes: false },
+];
+let locked = [], revealed = false, game = 'bingo';
+const CLUES = ['Plays as a forward', 'Wears number 7', 'Top scorer last camp'];
+const NAMES = ['S. Gharbi', 'Y. Ben Amor', 'M. Hamdi'];
+let clue = 0;
+function renderGame() {
+  document.querySelectorAll('[data-game]').forEach(b => b.classList.toggle('on', b.dataset.game === game));
+  const el = document.getElementById('gameBody');
+  if (game === 'bingo') {
+    const pts = revealed ? locked.filter(id => SQUARES.find(s => s.id === id).yes).length * 10 : 0;
+    el.innerHTML = `<div style="font-size:12px;color:var(--muted);margin-bottom:10px">Lock 5 squares you think will happen. Demo match.</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="bgrid"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
+        <span style="font-size:12px;color:var(--muted)">${pts} pts</span>
+        <button class="btn" style="width:auto;height:38px" id="breveal">Reveal ›</button>
+      </div>`;
+    const grid = document.getElementById('bgrid');
+    grid.innerHTML = SQUARES.map(s => {
+      const isL = locked.includes(s.id);
+      const st = revealed ? (s.yes ? (isL ? 'yes' : '') : (isL ? 'no' : '')) : (isL ? 'locked' : '');
+      const bg = st === 'yes' ? 'rgba(34,197,94,.2)' : st === 'no' ? 'rgba(227,6,19,.2)' : st === 'locked' ? 'rgba(227,6,19,.35)' : 'var(--card)';
+      const bd = st ? (st === 'yes' ? 'var(--green)' : st === 'no' ? 'var(--red)' : 'var(--red)') : 'var(--hairline)';
+      return `<button data-sq="${s.id}" style="background:${bg};border:1px solid ${bd};border-radius:10px;min-height:64px;
+        color:var(--white);font-size:10px;font-weight:700;font-family:Inter;cursor:pointer;padding:6px">${s.label}<br>
+        <span style="color:${st === 'yes' ? 'var(--green)' : st === 'no' ? 'var(--red)' : 'var(--muted)'}">${
+        st === 'yes' ? '✓ +10' : st === 'no' ? '✗' : isL ? '🔒' : '+10'}</span></button>`;
+    }).join('');
+    grid.querySelectorAll('[data-sq]').forEach(b => b.addEventListener('click', () => {
+      if (revealed) return;
+      const id = b.dataset.sq;
+      locked = locked.includes(id) ? locked.filter(x => x !== id) : (locked.length < 5 ? [...locked, id] : locked);
+      renderGame();
+    }));
+    document.getElementById('breveal').addEventListener('click', () => {
+      if (!locked.length || revealed) return;
+      revealed = true;
+      renderGame();
+    });
+  } else {
+    el.innerHTML = `<div style="font-size:12px;color:var(--muted);margin-bottom:10px">Clue ${clue + 1} of ${CLUES.length}</div>
+      <div style="font-size:15px;font-weight:800;margin-bottom:12px">${CLUES.slice(0, clue + 1).join(' · ')}</div>
+      <div style="display:flex;gap:8px" id="guesses"></div>
+      <div style="font-size:13px;font-weight:800;margin-top:12px" id="wamsg"></div>`;
+    document.getElementById('guesses').innerHTML =
+      `<button class="btn" style="height:38px" data-g="more">More clues ›</button>` +
+      NAMES.map(n => `<button class="btn" style="height:38px;background:var(--card);border:1px solid var(--hairline)" data-g="${n}">${n}</button>`).join('');
+    el.querySelectorAll('[data-g]').forEach(b => b.addEventListener('click', () => {
+      if (b.dataset.g === 'more') { clue = Math.min(clue + 1, CLUES.length - 1); renderGame(); return; }
+      document.getElementById('wamsg').textContent =
+        b.dataset.g === 'S. Gharbi' ? `Correct! +${(3 - clue) * 10} points` : 'Not quite — try another clue.';
+      document.getElementById('wamsg').style.color = b.dataset.g === 'S. Gharbi' ? 'var(--green)' : 'var(--amber)';
+    }));
+  }
+}
+document.querySelectorAll('[data-game]').forEach(b => b.addEventListener('click', () => {
+  game = b.dataset.game; locked = []; revealed = false; clue = 0; renderGame();
+}));
+renderGame();
 
 /* Live timer */
 let rem = 4 * 86400 + 11 * 3600 + 26 * 60 + 9;
