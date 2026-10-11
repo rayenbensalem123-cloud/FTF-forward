@@ -75,17 +75,24 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .tname.r{text-align:right}
 .venue-row{display:flex;align-items:center;gap:8px;margin-top:12px}
 .venue{display:flex;align-items:center;gap:5px;flex:1;font-size:12px;color:rgba(255,255,255,.75)}
-.weather{display:flex;align-items:center;gap:5px;background:rgba(246,199,68,.12);
-  border:1px solid rgba(246,199,68,.25);border-radius:var(--r-pill);padding:5px 10px;
-  color:var(--gold);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+/* Weather badge: icon in a tinted disc, temperature over a condition label */
+.weather{display:flex;align-items:center;gap:8px;background:rgba(6,12,24,.55);
+  border:1px solid rgba(255,255,255,.16);border-radius:var(--r-md);
+  padding:7px 10px 7px 7px}
+.weather .wico{width:30px;height:30px;border-radius:15px;background:rgba(246,199,68,.14);
+  display:grid;place-items:center}
+.weather .wtemp{font-size:13px;font-weight:800;color:var(--white);
+  font-variant-numeric:tabular-nums;line-height:16px}
+.weather .wlabel{font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  color:rgba(255,255,255,.7);margin-top:1px}
 
 /* Buttons */
 .btn{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;
   border-radius:var(--r-pill);padding:0 16px;
   font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
-.btn.danger{background:var(--red);color:#fff}
+.btn.primary{background:var(--gold);color:var(--navy)}
 .btn .chev{font-size:16px;font-weight:700;line-height:16px}
-.cta-wrap{margin-top:14px}
+.btn .plus{font-size:14px;font-weight:700;line-height:14px}
 
 /* Section header */
 .sec{display:flex;align-items:center;justify-content:space-between}
@@ -182,9 +189,11 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
           </div>
           <div class="venue-row">
             <div class="venue">📍 Stade de Radès</div>
-            <div class="weather">☀ 24° / 18°</div>
+            <div class="weather">
+              <span class="wico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
+              <span><span class="wtemp">24° / 18°</span><br><span class="wlabel">Overcast</span></span>
+            </div>
           </div>
-          <div class="cta-wrap"><div class="btn danger">Voir la convocation <span class="chev">›</span></div></div>
         </div>
       </div>
 
@@ -210,7 +219,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
         </div>
 
         <div class="fcard">
-          <h3>Scouting Network</h3>
+          <h3>Players Report</h3>
           <div class="desc">Profile cards for young talents</div>
           <div class="visual">
             <svg width="88" height="88" viewBox="0 0 116 116">
@@ -277,10 +286,9 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The hero is the photo banner.</b> The next match sits on <code>assets/home-bg.jpg</code> with a dark gradient so the type reads, and carries one full-width red "Voir la convocation" action. The maroon gradient card is gone -- a photo reads as a broadcast banner in a way a flat gradient does not.</li>
-      <li><b>The pill row is back above the banner.</b> Seniors / U-20 / U-17, the active one filled red. It switches the age category.</li>
-      <li><b>The banner CTA is red.</b> A fourth button variant, danger, for the one action that should feel urgent. Gold stays on the feature-card CTAs.</li>
-      <li><b>Weather stays in the banner</b>, under the teams, and the crests sit directly on the photo with a faint translucent backing.</li>
+      <li><b>The banner carries no button now.</b> The red "Voir la convocation" is removed -- match details are one tap from the fixtures section, not from the hero.</li>
+      <li><b>The weather is a real widget.</b> The badge's icon reflects the actual WMO condition rather than a static glyph, with the temperature over a short label. It still renders nothing on failure rather than a wrong number.</li>
+      <li><b>Scouting Network is now Players Report.</b> Same card shape, same visual, opens the reports screen.</li>
     </ul>
   </div>
 </div>

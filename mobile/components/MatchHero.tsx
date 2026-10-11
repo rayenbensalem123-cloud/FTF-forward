@@ -1,11 +1,9 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
 import { MapPin } from 'lucide-react-native';
 import { colors, fonts, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
-import { Button } from '@/components/Button';
 import { Flag } from '@/components/Flag';
 import { flagCodeFor } from '@/lib/countryFlags';
 import { formatDate } from '@/lib/format';
@@ -23,7 +21,6 @@ import type { Match } from '@/types';
  */
 export function MatchHero({ match }: { match: Match | null }) {
   const { t } = useLanguage();
-  const router = useRouter();
 
   const opponentCode = match && flagCodeFor(match.opponent) ? match.opponent : null;
   const dateLabel = match ? formatDate(match.date) : '';
@@ -79,15 +76,6 @@ export function MatchHero({ match }: { match: Match | null }) {
           )}
           {match?.venue ? <WeatherChip venue={match.venue} date={match.date} /> : null}
         </View>
-
-        <View style={styles.ctaWrap}>
-          <Button
-            title={t('tabConvocation')}
-            onPress={() => router.push('/match-details')}
-            variant="danger"
-            icon={<Text style={styles.chevron}>›</Text>}
-          />
-        </View>
       </LinearGradient>
     </ImageBackground>
   );
@@ -119,6 +107,4 @@ const styles = StyleSheet.create({
   venueRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12 },
   venue: { flexDirection: 'row', alignItems: 'center', gap: 5, flexShrink: 1 },
   venueText: { color: 'rgba(255,255,255,0.75)', fontSize: 12 },
-  ctaWrap: { marginTop: 14 },
-  chevron: { color: colors.white, fontSize: 16, fontWeight: '700', lineHeight: 16 },
 });

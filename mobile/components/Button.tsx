@@ -22,19 +22,13 @@ export function Button({
 }: {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'ghost';
   icon?: React.ReactNode;
   accessibilityLabel?: string;
 }) {
   return (
     <TouchableOpacity
-      style={[
-        styles.base,
-        variant === 'primary' && styles.primary,
-        variant === 'secondary' && styles.secondary,
-        variant === 'ghost' && styles.ghost,
-        variant === 'danger' && styles.danger,
-      ]}
+      style={[styles.base, variant === 'primary' && styles.primary, variant === 'secondary' && styles.secondary, variant === 'ghost' && styles.ghost]}
       onPress={onPress}
       activeOpacity={0.85}
       accessibilityRole="button"
@@ -59,7 +53,6 @@ const styles = StyleSheet.create({
   primary: { backgroundColor: colors.gold },
   secondary: { backgroundColor: 'transparent', borderWidth: 1, borderColor: 'rgba(246,199,68,0.45)' },
   ghost: { backgroundColor: 'transparent' },
-  danger: { backgroundColor: colors.red },
   text: { fontSize: 12, fontWeight: '800', letterSpacing: 0.6, textTransform: 'uppercase' },
   textOnGold: { color: colors.navy },
   textOnDark: { color: colors.gold },

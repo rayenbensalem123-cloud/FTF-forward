@@ -1,7 +1,6 @@
 import React from 'react';
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Check } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
@@ -97,10 +96,10 @@ export default function HomeScreen() {
               </FeatureCard>
 
               <FeatureCard
-                title={t('scoutingNetwork')}
+                title={t('playersReport')}
                 description={t('profileCards')}
                 cta={t('viewDetails')}
-                href="/more/staff"
+                href="/more/reports"
               >
                 <RadarChart data={SCOUT_RADAR.data} labels={SCOUT_RADAR.labels} size={88} />
               </FeatureCard>
