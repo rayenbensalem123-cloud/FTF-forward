@@ -321,7 +321,17 @@ const ALL_PRIVATE = [...PRIVATE_INDICATORS, ...AR_PRIVATE];
  * [A-Za-z0-9_] as word characters, so a \b next to Arabic letters never
  * matches and the pattern would silently find nothing.
  */
-function detectDayHeader(line: string): string | null {
+interface DayHeaderMatch {
+  label: string;
+  /** Where the matched date/weekday text sits in the line, so the caller can
+   *  tell a bare header ("Day 3" alone) from a table row that opens with a
+   *  date and then carries its own activity text on the same line
+   *  ("24 November   Radès – Annex, grass   Training"). */
+  index: number;
+  length: number;
+}
+
+function detectDayHeader(line: string): DayHeaderMatch | null {
   if (line.length > 80) return null; // a paragraph that merely mentions a date
   // A full date such as "21.10.2026" must still count as a header even though
   // its first two components look exactly like a European time, so that test
@@ -345,7 +355,100 @@ function detectDayHeader(line: string): string | null {
       'i',
     ),
   );
-  return m ? m[0] : null;
+  return m ? { label: m[0], index: m.index ?? 0, length: m[0].length } : null;
+}
+
+/**
+ * Builds one activity from a line plus the activity-bearing text already
+ * carved out of it (the side of a time match that reads like an activity, or
+ * the remainder of a table row after its leading date column). Shared by both
+ * branches below so a dated table row without a clock time gets exactly the
+ * same private/player-name handling as one that has one.
+ *
+ * Returns null when the text has no activity keyword and no private marker -
+ * the caller's signal to skip the line rather than invent an entry for it.
+ */
+function buildActivity(
+  line: string,
+  time: string,
+  candidateText: string,
+  playersMentioned: Set<string>,
+): Omit<CampActivity, 'id' | 'day'> | null {
+  // Check for private indicators. Diacritics removed first so a vocalised
+  // Arabic line still matches its keyword.
+  const haystack = stripArabicDiacritics(line.toLowerCase());
+  let isPrivate = ALL_PRIVATE.some(ind => haystack.includes(ind));
+
+  // A name in front of a colon is the coach singling one player out,
+  // whatever the activity itself says. Until now only a private keyword
+  // could make a line personal, so "Meeting with Coach" reached the player
+  // as hers while "S. Gharbi: Recovery session" did not - the clearest
+  // signal in the document was the one being ignored.
+  const colonMatch = line.match(/([A-Z][a-z]*\.?\s+[A-Z][a-z]+)\s*:/);
+  const arabicColonMatch = !colonMatch
+    ? line.match(/([ء-ي][ء-ي\s]{2,30}?)\s*:/)
+    : null;
+  if (colonMatch || arabicColonMatch) isPrivate = true;
+
+  // Extract player name for private activities
+  let playerName: string | undefined;
+  if (isPrivate) {
+    // Format 1: "S. Gharbi: Meeting with Coach" or "Y. Ben Amor: Physio"
+    if (colonMatch) {
+      playerName = colonMatch[1];
+    } else if (arabicColonMatch) {
+      // Format 4: Arabic. Arabic has no capitalisation to key off, so the
+      // Latin patterns find nothing. It only resolves to a card if that
+      // card carries the same spelling - otherwise it surfaces as unlinked
+      // for the coach to settle, which is the safe failure.
+      playerName = arabicColonMatch[1].trim();
+    } else {
+      // Format 2: "Meeting with Coach — S. Gharbi"
+      const dashMatch = line.match(/[—–-]\s*([A-Z][a-z]*\.?\s+[A-Z][a-z]+)/);
+      if (dashMatch) {
+        playerName = dashMatch[1];
+      } else {
+        // Format 3: just a capitalized name
+        const nameMatch = line.match(/([A-Z][a-z]*\.?\s+[A-Z][a-z]+)/);
+        if (nameMatch) {
+          playerName = nameMatch[1];
+        }
+      }
+    }
+    if (!playerName) {
+      // Format 5: Arabic with no colon - take what follows an indicator
+      // ("اجتماع مع ياسمين"). The Latin patterns above find nothing here.
+      for (const ind of AR_PRIVATE) {
+        const i = haystack.indexOf(ind);
+        if (i === -1) continue;
+        const after = line.substring(i + ind.length).trim();
+        const nm = after.match(/[ء-ي]{2,}(?:\s+[ء-ي]{2,}){0,3}/);
+        if (nm) playerName = nm[0];
+        break;
+      }
+    }
+    if (playerName && AR_ROLE_WORDS.has(stripArabicDiacritics(playerName))) {
+      playerName = undefined; // a role, not a person - leave the line collective
+    }
+    if (playerName) playersMentioned.add(playerName);
+  }
+
+  let activity = candidateText.replace(/^[-–—]\s*/, '').trim();
+
+  // "S. Gharbi: Recovery session" - the name is the player, not part of
+  // what she is doing. Left in place the name showed up twice: once as her
+  // card and again inside the activity text.
+  if (playerName && activity.toLowerCase().startsWith(playerName.toLowerCase())) {
+    activity = activity.slice(playerName.length).replace(/^[\s:：-]+/, '').trim();
+  }
+  if (!activity) activity = 'Activity';
+
+  // Check if activity contains keywords
+  const activityHay = stripArabicDiacritics(activity.toLowerCase());
+  const hasKeyword = ALL_KEYWORDS.some(kw => activityHay.includes(kw));
+  if (!hasKeyword && !isPrivate) return null; // doesn't look like an activity
+
+  return { time, activity, type: isPrivate ? 'private' : 'collective', playerName };
 }
 
 function parseSchedule(text: string): ParsedSchedule {
@@ -359,81 +462,40 @@ function parseSchedule(text: string): ParsedSchedule {
 
   for (const line of lines) {
     // Detect day headers: "Day ONE", "Day 1", "21 October", "21 Oct", "Lundi 21"
-    const dayLabel = detectDayHeader(line);
-    if (dayLabel) currentDay = dayLabel;
+    const dayMatch = detectDayHeader(line);
+    if (dayMatch) currentDay = dayMatch.label;
 
-    // A header that also carries a time ("21 Oct  09:00  Training") still opens
-    // the day, but the line is an activity too - `continue`-ing here threw the
-    // activity away. Only a bare header is consumed as a header.
-    if (dayLabel && !line.match(TIME_REGEX)) continue;
-
-    // Detect time
     const timeMatch = line.match(TIME_REGEX);
+
+    if (dayMatch && !timeMatch) {
+      // A table row (date | venue | programme, one line per day, the shape
+      // every "Training" camp row in a federation document actually uses)
+      // has no clock time at all - just a date followed by what's happening.
+      // Treating every header-looking line as a bare "Day 3" header and
+      // `continue`-ing past it, as before, threw that day's only activity
+      // away entirely: an 11-day programme like this one came back as "1 day,
+      // 2 activities" because only the two lines that happened to carry a
+      // literal time (the match kick-offs) survived.
+      const remainder = line.slice(dayMatch.index + dayMatch.length).trim();
+      if (!remainder) continue; // genuinely bare header, e.g. just "Day 3"
+      const built = buildActivity(line, '', remainder, playersMentioned);
+      if (!built) continue; // date-led line with no recognizable activity on it
+      activities.push({ id: `act-${activities.length}`, day: currentDay || 'Day 1', ...built });
+      continue;
+    }
+
     if (!timeMatch) continue;
 
     const time = timeMatch[0];
     const timeIndex = line.indexOf(time);
-    const beforeTime = line.substring(0, timeIndex).trim();
+    // A table row's date column sits before the time ("30 November Radès
+    // Stadium MATCH: Tunisia – Russia at 19:00") and used to be kept as part
+    // of the activity text verbatim. Strip the line's own day-header match
+    // off the front so the activity reads as "Radès Stadium MATCH..." rather
+    // than repeating the date that already became `currentDay`.
+    const beforeStart = dayMatch && dayMatch.index === 0 ? dayMatch.index + dayMatch.length : 0;
+    const beforeTime = line.substring(beforeStart, timeIndex).trim();
     const afterTime = line.substring(timeIndex + time.length).trim();
-
-    // Check for private indicators. Diacritics removed first so a vocalised
-    // Arabic line still matches its keyword.
-    const haystack = stripArabicDiacritics(line.toLowerCase());
-    let isPrivate = ALL_PRIVATE.some(ind => haystack.includes(ind));
-
-    // A name in front of a colon is the coach singling one player out,
-    // whatever the activity itself says. Until now only a private keyword
-    // could make a line personal, so "Meeting with Coach" reached the player
-    // as hers while "S. Gharbi: Recovery session" did not - the clearest
-    // signal in the document was the one being ignored.
-    const colonMatch = line.match(/([A-Z][a-z]*\.?\s+[A-Z][a-z]+)\s*:/);
-    const arabicColonMatch = !colonMatch
-      ? line.match(/([ء-ي][ء-ي\s]{2,30}?)\s*:/)
-      : null;
-    if (colonMatch || arabicColonMatch) isPrivate = true;
-    
-    // Extract player name for private activities
-    let playerName: string | undefined;
-    if (isPrivate) {
-      // Format 1: "S. Gharbi: Meeting with Coach" or "Y. Ben Amor: Physio"
-      if (colonMatch) {
-        playerName = colonMatch[1];
-      } else if (arabicColonMatch) {
-        // Format 4: Arabic. Arabic has no capitalisation to key off, so the
-        // Latin patterns find nothing. It only resolves to a card if that
-        // card carries the same spelling - otherwise it surfaces as unlinked
-        // for the coach to settle, which is the safe failure.
-        playerName = arabicColonMatch[1].trim();
-      } else {
-        // Format 2: "Meeting with Coach — S. Gharbi"
-        const dashMatch = line.match(/[—–-]\s*([A-Z][a-z]*\.?\s+[A-Z][a-z]+)/);
-        if (dashMatch) {
-          playerName = dashMatch[1];
-        } else {
-          // Format 3: just a capitalized name
-          const nameMatch = line.match(/([A-Z][a-z]*\.?\s+[A-Z][a-z]+)/);
-          if (nameMatch) {
-            playerName = nameMatch[1];
-          }
-        }
-      }
-      if (!playerName) {
-        // Format 5: Arabic with no colon - take what follows an indicator
-        // ("اجتماع مع ياسمين"). The Latin patterns above find nothing here.
-        for (const ind of AR_PRIVATE) {
-          const i = haystack.indexOf(ind);
-          if (i === -1) continue;
-          const after = line.substring(i + ind.length).trim();
-          const nm = after.match(/[ء-ي]{2,}(?:\s+[ء-ي]{2,}){0,3}/);
-          if (nm) playerName = nm[0];
-          break;
-        }
-      }
-      if (playerName && AR_ROLE_WORDS.has(stripArabicDiacritics(playerName))) {
-        playerName = undefined; // a role, not a person - leave the line collective
-      }
-      if (playerName) playersMentioned.add(playerName);
-    }
 
     // Determine activity type. Prefer whichever side of the time actually
     // reads like an activity: "21 Oct  09:00  Training" has the date before
@@ -442,36 +504,16 @@ function parseSchedule(text: string): ParsedSchedule {
     const sides = [beforeTime, afterTime].filter(Boolean);
     // ALL_KEYWORDS, not ACTIVITY_KEYWORDS: without the Arabic list an Arabic
     // line with the date before the time picked the date as its activity.
+    const haystackForSides = (s: string) => stripArabicDiacritics(s.toLowerCase());
     const keywordSide = sides.find(s =>
-      ALL_KEYWORDS.some(kw => stripArabicDiacritics(s.toLowerCase()).includes(kw)),
+      ALL_KEYWORDS.some(kw => haystackForSides(s).includes(kw)),
     );
-    let activity = keywordSide || sides[0] || 'Activity';
-    activity = activity.replace(/^[-–—]\s*/, '').trim();
+    const candidateText = keywordSide || sides[0] || 'Activity';
 
-    // "S. Gharbi: Recovery session" - the name is the player, not part of
-    // what she is doing. Left in place the name showed up twice: once as her
-    // card and again inside the activity text.
-    if (playerName && activity.toLowerCase().startsWith(playerName.toLowerCase())) {
-      activity = activity.slice(playerName.length).replace(/^[\s:：-]+/, '').trim();
-    }
-    if (!activity) activity = 'Activity';
+    const built = buildActivity(line, time, candidateText, playersMentioned);
+    if (!built) continue; // skip lines that don't look like activities
 
-    // Check if activity contains keywords
-    const activityHay = stripArabicDiacritics(activity.toLowerCase());
-    const hasKeyword = ALL_KEYWORDS.some(kw => activityHay.includes(kw));
-    if (!hasKeyword && !isPrivate) {
-      // Skip lines that don't look like activities
-      continue;
-    }
-
-    activities.push({
-      id: `act-${activities.length}`,
-      day: currentDay || 'Day 1',
-      time,
-      activity,
-      type: isPrivate ? 'private' : 'collective',
-      playerName,
-    });
+    activities.push({ id: `act-${activities.length}`, day: currentDay || 'Day 1', ...built });
   }
 
   const collectiveCount = activities.filter(a => a.type === 'collective').length;
