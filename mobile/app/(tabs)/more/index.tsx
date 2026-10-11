@@ -24,7 +24,7 @@ const TOOLS: { href: Href; icon: typeof Video; title: StringKey; desc: StringKey
   { href: '/more/meetings', icon: Video, title: 'tabMeetings', desc: 'moreMeetingsDesc' },
   { href: '/more/career', icon: Trophy, title: 'tabCareer', desc: 'moreCareerDesc' },
   { href: '/id-card', icon: IdCard, title: 'tabIdCard', desc: 'moreIdCardDesc' },
-  { href: '/more/games', icon: Gamepad2, title: 'tabGames', desc: 'moreGamesDesc' },
+  { href: '/games', icon: Gamepad2, title: 'tabGames', desc: 'moreGamesDesc' },
 ];
 
 export default function MoreScreen() {

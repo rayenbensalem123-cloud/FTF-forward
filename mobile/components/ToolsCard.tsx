@@ -20,7 +20,7 @@ export function ToolsCard() {
     { href: '/more/meetings', icon: Video, title: t('tabMeetings'), desc: t('moreMeetingsDesc') },
     { href: '/more/news', icon: Newspaper, title: N.news, desc: N.newsDesc },
     { href: '/more/staff', icon: Users, title: N.staff, desc: N.staffDesc },
-    { href: '/more/games', icon: Gamepad2, title: t('tabGames'), desc: t('moreGamesDesc') },
+    { href: '/games', icon: Gamepad2, title: t('tabGames'), desc: t('moreGamesDesc') },
   ];
   return (
     <View>

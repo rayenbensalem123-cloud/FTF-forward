@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BarChart3, Calendar, ClipboardList, Home, User } from 'lucide-react-native';
+import { Calendar, ClipboardList, Gamepad2, Home, User } from 'lucide-react-native';
 import { colors, fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -9,15 +9,15 @@ import { useLanguage } from '@/context/LanguageContext';
 /**
  * Two navigators, chosen by the signed-in role:
  *
- *   staff  : Dashboard · Calendar · Reports · Metrics · Profile
- *   player : Home · Schedule · Stats · Profile
+ *   staff  : Dashboard · Calendar · Reports · Games · Profile
+ *   player : Home · Schedule · Games · Profile
  *
- * The staff set follows the dashboard reference. Calendar is the camp-program
- * screen, which the database already filters per role, so it is the same
- * route for both. Reports was promoted from the More stack to a tab.
+ * Calendar is the camp-program screen, which the database already filters per
+ * role, so it is the same route for both. Reports and Games were promoted
+ * from the More stack to tabs.
  *
- * Squad and More stay mounted but hidden: their contents get placed on real
- * pages next, and nothing links to them today except the tab bar itself.
+ * Stats, Squad and More stay mounted but hidden: their contents get placed on
+ * real pages next, and nothing links to them today except the tab bar itself.
  */
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
@@ -75,10 +75,10 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="stats"
+        name="games"
         options={{
-          title: isStaff ? t('tabMetrics') : t('tabStats'),
-          tabBarIcon: ({ color, size }) => <BarChart3 color={color} size={size} />,
+          title: t('tabGames'),
+          tabBarIcon: ({ color, size }) => <Gamepad2 color={color} size={size} />,
         }}
       />
       <Tabs.Screen
@@ -89,6 +89,7 @@ export default function TabsLayout() {
         }}
       />
       {/* ── Mounted but hidden until their contents are placed ────────── */}
+      <Tabs.Screen name="stats" options={{ href: null }} />
       <Tabs.Screen name="squad" options={{ href: null }} />
       <Tabs.Screen name="more" options={{ href: null }} />
     </Tabs>

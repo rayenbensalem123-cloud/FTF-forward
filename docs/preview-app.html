@@ -361,16 +361,6 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
         <div id="reportList"></div>
       </section>
 
-      <!-- ════════ METRICS ════════ -->
-      <section class="view" id="v-stats">
-        <div class="hdr">
-          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
-          <div class="hdr-txt"><div class="hdr-title">Metrics</div><div class="hdr-sub">Season 2026</div></div>
-        </div>
-        <div class="sec"><h2>Top scorers</h2></div>
-        <div id="metricList"></div>
-      </section>
-
       <!-- ════════ PROFILE ════════ -->
       <section class="view" id="v-profile">
         <div class="hdr">
@@ -503,7 +493,7 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
       <button class="tab on" data-tab="v-dashboard"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Dashboard</span></button>
       <button class="tab" data-tab="v-calendar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendar</span></button>
       <button class="tab" data-tab="v-reports"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 10h6"/></svg><span>Reports</span></button>
-      <button class="tab" data-tab="v-stats"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg><span>Metrics</span></button>
+      <button class="tab" data-tab="v-games"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.01.2-.01.4-.01.6v5.8a4 4 0 0 0 3.98 3.59c.2.01.4.01.6.01h10.64c.2 0 .4 0 .6-.01A4 4 0 0 0 21.3 15V9.2c0-.2 0-.4-.01-.6A4 4 0 0 0 17.32 5Z"/></svg><span>Games</span></button>
       <button class="tab" data-tab="v-profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/></svg><span>Profile</span></button>
     </div>
   </div>
@@ -622,14 +612,12 @@ function renderReports() {
 }
 renderReports();
 
-/* Metrics + home teasers + bingo */
+/* Home teasers + bingo */
 function barRow(name, sub, val, max) {
   return `<div class="mrow"><div class="mn"><b>${name}</b><span>${sub}</span></div>
     <div class="mv"><b>${val}</b><div class="pbar" style="width:64px;margin-top:6px"><i style="width:${Math.max(val / max * 100, 8)}%"></i></div></div></div>`;
 }
 const byGoals = [...PLAYERS].sort((a, b) => b.goals - a.goals);
-document.getElementById('metricList').innerHTML =
-  byGoals.slice(0, 4).map(p => barRow(p.name, `${p.pos} · #${p.num}`, p.goals, byGoals[0].goals)).join('');
 document.getElementById('homeReport').innerHTML =
   byGoals.slice(0, 3).map((p, i) => `<div class="prow3"><span class="rankn">${i + 1}</span>
     <span class="who"><span class="n" style="font-size:12px">${p.name}</span>

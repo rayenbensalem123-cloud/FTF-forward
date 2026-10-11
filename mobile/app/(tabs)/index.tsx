@@ -96,7 +96,7 @@ export default function HomeScreen() {
               <FeatureCard
                 title={GT.bgTitle}
                 cta={t('seeAll')}
-                href="/more/games"
+                href="/games"
               >
                 <BingoTeaser matches={matches} players={players} />
               </FeatureCard>

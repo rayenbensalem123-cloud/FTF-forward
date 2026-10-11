@@ -30,7 +30,7 @@ export default function GamesScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-        <AppHeader back showBell={false} />
+        <AppHeader showBell={false} />
         <View>
           <Text style={styles.title}>{T.gamesTitle}</Text>
           <Text style={styles.sub}>{T.gamesSub}</Text>
