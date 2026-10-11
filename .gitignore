@@ -45,3 +45,8 @@ __pycache__/
 extracted.json
 inserted.json
 squad_token.txt
+
+# tesseract.js drops the language data it downloads into the working
+# directory the first time the photo upload path runs. Derived cache, and
+# 1.2MB per language - never commit it.
+*.traineddata

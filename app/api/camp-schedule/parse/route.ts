@@ -27,6 +27,19 @@ const PDFJS_ASSETS = path.join(process.cwd(), 'node_modules', 'pdfjs-dist');
 const STANDARD_FONTS_URL = path.join(PDFJS_ASSETS, 'standard_fonts') + '/';
 const CMAP_URL = path.join(PDFJS_ASSETS, 'cmaps') + '/';
 
+// tesseract.js has the same problem: its node worker path is built from
+// __dirname, which points somewhere else once Turbopack has bundled this
+// route. The worker never starts, recognize() never settles, and the request
+// hung forever with no error to show - the phone just spun. Resolved from the
+// app's own node_modules, which also lets the worker's require() of
+// tesseract.js-core resolve through pnpm's symlinked layout.
+const TESSERACT_WORKER = path.join(
+  process.cwd(), 'node_modules', 'tesseract.js', 'src', 'worker-script', 'node', 'index.js',
+);
+// Backstop: even with the path right, a stall must surface as an error the
+// coach can read rather than an endless spinner.
+const OCR_TIMEOUT_MS = 45_000;
+
 // ═══════════════════════════════════════════════════════════════
 // TYPES
 // ═══════════════════════════════════════════════════════════════
@@ -167,10 +180,27 @@ async function extractTextFromDocx(buffer: ArrayBuffer): Promise<string> {
 }
 
 async function extractTextFromImage(buffer: ArrayBuffer): Promise<string> {
-  const result = await Tesseract.recognize(Buffer.from(buffer), 'eng+fra', {
-    logger: () => {}, // suppress logs
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      reject(new Error(
+        `The photo could not be read (OCR timed out after ${OCR_TIMEOUT_MS / 1000}s). ` +
+        'Paste the programme as text instead, or upload the PDF.',
+      ));
+    }, OCR_TIMEOUT_MS);
   });
-  return result.data.text;
+  try {
+    const result = await Promise.race([
+      Tesseract.recognize(Buffer.from(buffer), 'eng+fra', {
+        logger: () => {}, // suppress logs
+        workerPath: TESSERACT_WORKER,
+      }),
+      timeout,
+    ]);
+    return result.data.text;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 }
 
 /** Dispatch on the file extension. `name` drives the branch, not the bytes. */
