@@ -73,13 +73,13 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .center{flex:1.15;text-align:center}
 .big{font-family:Oswald;font-size:26px;font-weight:700;letter-spacing:.5px;color:#fff;
   font-variant-numeric:tabular-nums;line-height:28px}
-/* Center timer: 2x2 compact cells under the date */
-.center-timer{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}
-.center-timer div{background:rgba(0,0,0,.42);border-radius:8px;padding:4px 6px;
-  text-align:center;min-width:48px}
-.center-timer b{display:block;font-family:Oswald;font-size:15px;font-weight:700;
-  font-variant-numeric:tabular-nums;line-height:17px}
-.center-timer span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+/* One timer line under the teams, centered on the date */
+.count-row{display:flex;gap:6px;margin-top:12px;justify-content:center}
+.count-row div{background:rgba(0,0,0,.42);border-radius:10px;padding:6px 8px;
+  text-align:center;min-width:46px}
+.count-row b{display:block;font-family:Oswald;font-size:19px;font-weight:700;
+  font-variant-numeric:tabular-nums;line-height:1}
+.count-row span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
   color:rgba(255,255,255,.65)}
 .tname{font-family:Oswald;font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;flex:1;min-width:0}
 .tname.r{text-align:right}
@@ -189,16 +189,14 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
           </div>
           <div class="teams">
             <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisie</span></div>
-            <div class="center">
-              <div class="big">SAM 24<br>OCT</div>
-              <div class="center-timer">
-                <div><b>04</b><span>Days</span></div>
-                <div><b>11</b><span>Hrs</span></div>
-                <div><b>26</b><span>Min</span></div>
-                <div><b>09</b><span>Sec</span></div>
-              </div>
-            </div>
+            <div class="center"><div class="big">SAM 24<br>OCT</div></div>
             <div class="team r"><span class="tname r">Maroc</span><span class="crest">🇲🇦</span></div>
+          </div>
+          <div class="count-row">
+            <div><b>04</b><span>Days</span></div>
+            <div><b>11</b><span>Hrs</span></div>
+            <div><b>26</b><span>Min</span></div>
+            <div><b>09</b><span>Sec</span></div>
           </div>
           <div class="venue-row">
             <div class="venue">📍 Stade de Radès</div>
@@ -307,7 +305,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The timer sits in the middle, under the date.</b> A compact 2x2 grid in the banner's center column, on the same dark tiles -- the strip below the teams is gone, so the banner is back to four tight rows.</li>
+      <li><b>The timer is one line under the teams, centered on the date.</b> Four boxes in a row on the same dark tiles -- the 2x2 grid inside the center column is gone.</li>
       <li><b>News carries the team photo.</b> The feed has no thumbnails, so the squad photo anchors the card above the live headline, source and age. Tapping opens the article; "See all" opens the news screen.</li>
       <li><b>Injury Prevention is replaced by the Bingo score list.</b> The card shows the season leaderboard's top three from the real prediction entries and played matches -- rank, name, games and points with bars -- opening the games screen. It agrees with the leaderboard tab because it is the same computation.</li>
     </ul>
