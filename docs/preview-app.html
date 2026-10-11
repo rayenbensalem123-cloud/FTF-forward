@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FTF Forward — clickable prototype (staff)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0C1F3D; --navy-deep:#0B111E;
+  --card:#101B33; --card-raised:#112950;
+  --red:#E30613; --white:#EDEFF4; --muted:#8FA0BD;
+  --green:#22C55E; --amber:#F59E0B;
+  --hairline:rgba(148,170,210,.18);
+  --r-sm:10px; --r-md:16px; --r-card:20px; --r-pill:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#070d18;color:var(--white);
+  font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;padding:40px 24px 72px}
+.page{max-width:1180px;margin:0 auto}
+h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.sub{color:var(--muted);font-size:13px;margin-top:6px;max-width:80ch;line-height:1.6}
+.sub b{color:var(--white)}
+.wrap{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start;margin-top:28px}
+
+/* Phone */
+.phone{width:390px;height:844px;background:var(--navy);border-radius:34px;overflow:hidden;position:relative;
+  border:1px solid rgba(148,170,210,.14);box-shadow:0 24px 60px rgba(0,0,0,.6);display:flex;flex-direction:column}
+.phone-bg{position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(227,6,19,.18) 0%,rgba(227,6,19,0) 320px),
+    linear-gradient(180deg,rgba(12,31,61,.55) 0%,rgba(11,17,30,.92) 100%),
+    url('../mobile/assets/home-bg.jpg') center top/cover no-repeat}
+.status{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;
+  font-size:12px;font-weight:700;position:relative;flex:none}
+.dots{display:flex;gap:5px;align-items:center}
+.dots i{display:block;width:16px;height:9px;border:1.4px solid var(--white);border-radius:2.5px;opacity:.9}
+#phoneBody{flex:1;overflow-y:auto;position:relative;scrollbar-width:none}
+#phoneBody::-webkit-scrollbar{display:none}
+
+/* Views */
+.view{display:none;flex-direction:column;gap:16px;padding:6px 16px 26px}
+.view.on{display:flex}
+
+/* Header */
+.hdr{display:flex;align-items:center;gap:12px;padding:8px 0}
+.hdr img.logo{width:38px;height:38px;object-fit:contain;flex:none}
+.hdr-txt{flex:1;min-width:0}
+.hdr-title{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
+  text-transform:uppercase;line-height:21px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-sub{font-size:11px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;
+  color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.backbtn{width:38px;height:38px;border-radius:19px;background:var(--card);
+  border:1px solid var(--hairline);display:grid;place-items:center;flex:none;cursor:pointer;color:var(--white)}
+.round{width:38px;height:38px;border-radius:19px;background:var(--card);
+  border:1px solid var(--hairline);display:grid;place-items:center;position:relative;flex:none}
+.round b{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;
+  background:var(--red);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+
+/* Pills + chips */
+.pills{display:flex;gap:8px;padding:2px 0}
+.pill{border-radius:var(--r-pill);padding:6px 16px;font-size:12px;font-weight:700;border:0;cursor:pointer;
+  text-transform:uppercase;border:1px solid var(--hairline);background:var(--card);color:var(--muted);font-family:Inter}
+.pill.on{background:var(--red);border-color:var(--red);color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border-radius:var(--r-pill);padding:7px 14px;font-size:13px;font-weight:700;border:1px solid var(--hairline);
+  background:var(--card);color:var(--muted);white-space:nowrap;cursor:pointer;font-family:Inter}
+.chip.on{background:#fff;border-color:#fff;color:var(--navy)}
+
+/* Section titles */
+.sec h2{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
+  text-transform:uppercase;color:var(--white)}
+
+/* Banner */
+.hero{border-radius:var(--r-card);overflow:hidden;position:relative;min-height:220px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  background:linear-gradient(180deg,rgba(6,12,24,.78) 0%,rgba(6,12,24,.32) 45%,rgba(6,12,24,.55) 100%),
+             url('../mobile/assets/home-bg.jpg') center/cover no-repeat}
+.hero-in{padding:16px}
+.top-line{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.92)}
+.competition{font-size:11px;font-weight:600;color:rgba(255,255,255,.72);text-align:right}
+.teams{display:flex;align-items:center;gap:6px;margin-top:12px}
+.team{flex:1.2;display:flex;align-items:center;gap:8px;min-width:0}
+.team.r{justify-content:flex-end}
+.crest{width:46px;height:46px;border-radius:23px;overflow:hidden;flex:none;
+  background:var(--card-raised);border:2px solid rgba(255,255,255,.35);
+  display:grid;place-items:center;font-family:Oswald;font-size:20px;font-weight:700;color:rgba(255,255,255,.7)}
+.crest img{width:32px;height:32px;object-fit:contain}
+.center{flex:.8;text-align:center}
+.big{font-family:Oswald;font-size:24px;font-weight:700;letter-spacing:.5px;color:#fff;
+  font-variant-numeric:tabular-nums;line-height:26px}
+.tname{font-family:Oswald;font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tname.r{text-align:right}
+.count-row{display:flex;gap:6px;margin-top:12px;justify-content:center}
+.count-row div{background:rgba(0,0,0,.42);border-radius:10px;padding:6px 8px;text-align:center;min-width:46px}
+.count-row b{display:block;font-family:Oswald;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.count-row span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.65)}
+.venue-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+.venue{display:flex;align-items:center;gap:5px;flex:1;min-width:0;font-size:12px;color:rgba(255,255,255,.75);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.weather{display:flex;align-items:center;gap:4px;color:var(--white);flex:none;
+  font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* Feature grid */
+.grid{display:flex;flex-wrap:wrap;gap:12px}
+.fcard{flex:1 1 47%;background:var(--card);border:1px solid var(--hairline);
+  border-radius:var(--r-card);padding:12px;display:flex;flex-direction:column}
+.fcard h3{font-size:14px;font-weight:800}
+.fcard .visual{margin:8px 0;min-height:72px;display:flex;align-items:center;justify-content:center;flex:1}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;height:44px;width:100%;
+  border-radius:14px;padding:0 16px;font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  border:0;cursor:pointer;font-family:Inter;background:var(--red);color:#fff}
+.prow3{display:flex;align-items:center;gap:8px;width:100%}
+.prow3 + .prow3{margin-top:10px}
+.mini-av{width:30px;height:30px;border-radius:15px;background:var(--card-raised);
+  display:grid;place-items:center;font-size:11px;font-weight:800;flex:none;
+  border:1px solid var(--hairline);overflow:hidden}
+.mini-av img{width:100%;height:100%;object-fit:cover}
+.mark{width:22px;height:22px;border-radius:11px;display:grid;place-items:center;flex:none;
+  font-size:12px;font-weight:800}
+.mark.done{background:var(--green);color:#fff}
+.mark.idle{border:1.5px solid var(--hairline);color:var(--muted)}
+.rankn{font-family:Oswald;font-size:20px;font-weight:700;color:var(--white);width:20px;text-align:center;flex:none}
+.pbar{height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--white);border-radius:2px}
+.newsimg{width:100%;height:64px;object-fit:cover;border-radius:10px;margin-bottom:8px}
+.headline{font-size:13px;font-weight:700;line-height:18px}
+.nmeta{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:11px}
+.nmeta .src{font-weight:800;color:var(--white)}
+.nmeta .ago{color:var(--muted)}
+
+/* Generic rows */
+.prow{display:flex;align-items:center;gap:12px;background:var(--card);
+  border:1px solid var(--hairline);border-radius:var(--r-md);padding:12px;cursor:pointer;width:100%;
+  font-family:Inter;color:var(--white);text-align:left}
+.av{width:50px;height:50px;border-radius:25px;background:var(--card-raised);
+  display:grid;place-items:center;font-family:Oswald;font-size:17px;font-weight:700;
+  border:2px solid rgba(255,255,255,.35);flex:none;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.who{flex:1;min-width:0}
+.who .n{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{display:flex;align-items:center;gap:8px;margin-top:5px}
+.pospill{background:rgba(255,255,255,.1);border-radius:var(--r-pill);
+  padding:2px 8px;font-size:10px;font-weight:800;letter-spacing:.6px}
+.club{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fit{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  padding:4px 10px;border-radius:var(--r-pill);flex:none}
+.fit.ok{background:rgba(34,197,94,.16);color:var(--green)}
+.fit.rec{background:rgba(245,158,11,.16);color:var(--amber)}
+.chev{color:var(--muted);font-size:18px;font-weight:700;flex:none}
+
+/* Tool rows */
+.tool-card{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);padding:4px 16px}
+.trow{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid var(--hairline);
+  cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-bottom:0;
+  font-family:Inter;color:var(--white);text-align:left}
+.trow:first-child{border-top:0}
+.tico{width:36px;height:36px;border-radius:10px;background:var(--card-raised);
+  display:grid;place-items:center;flex:none}
+.trow .t{flex:1;min-width:0}
+.trow .t b{display:block;font-size:14px;font-weight:700}
+.trow .t span{display:block;font-size:12px;color:var(--muted);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.count-pill{background:var(--red);color:#fff;font-size:11px;font-weight:800;
+  border-radius:10px;min-width:20px;height:20px;display:grid;place-items:center;padding:0 5px;flex:none}
+
+/* Day cards (calendar) */
+.daycard{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);padding:16px}
+.daycard h4{font-family:Oswald;font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;margin-bottom:10px}
+.sess{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-top:1px solid var(--hairline);font-size:13px}
+.sess:first-of-type{border-top:0}
+.sess .tm{color:var(--white);font-weight:800;font-variant-numeric:tabular-nums;flex:none;min-width:44px}
+.sess .ac{font-weight:600;flex:1}
+
+/* Report rows */
+.rep{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-md);padding:12px}
+.rep + .rep{margin-top:10px}
+.rep .rh{display:flex;align-items:center;gap:8px}
+.rep .rh b{flex:1;font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vpill{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  padding:4px 10px;border-radius:var(--r-pill);flex:none;cursor:pointer;border:0;font-family:Inter}
+.vpill.no{background:rgba(245,158,11,.16);color:var(--amber)}
+.vpill.yes{background:rgba(34,197,94,.16);color:var(--green)}
+.rep .rd{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* Metrics */
+.mrow{display:flex;align-items:center;gap:10px;background:var(--card);
+  border:1px solid var(--hairline);border-radius:var(--r-md);padding:12px}
+.mrow + .mrow{margin-top:10px}
+.mrow .mn{flex:1;min-width:0}
+.mrow .mn b{display:block;font-size:14px;font-weight:800}
+.mrow .mn span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.mrow .mv{text-align:right}
+.mrow .mv b{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums}
+
+/* Profile hero */
+.hero-card{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);
+  padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.hero-av{width:100px;height:100px;border-radius:50px;background:var(--card-raised);
+  display:grid;place-items:center;font-family:Oswald;font-size:34px;font-weight:700;
+  border:2px solid rgba(255,255,255,.35)}
+.hero-name{font-size:22px;font-weight:900;text-align:center}
+.role-badge{display:inline-flex;align-items:center;gap:6px;background:var(--card);
+  border:1px solid var(--hairline);border-radius:var(--r-pill);padding:4px 12px;
+  font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.role-badge i{width:6px;height:6px;border-radius:3px;background:var(--red);display:block}
+.signout{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;cursor:pointer;
+  border-radius:var(--r-card);border:1px solid var(--red);background:rgba(227,6,19,.18);
+  color:var(--red);font-size:15px;font-weight:800;font-family:Inter;width:100%}
+.switchrow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;
+  border-top:1px solid var(--hairline);font-size:14px;font-weight:700}
+.switchrow:first-child{border-top:0}
+.sw{width:46px;height:27px;border-radius:14px;background:rgba(148,170,210,.25);position:relative;cursor:pointer;flex:none}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:23px;height:23px;border-radius:12px;background:#fff}
+.sw.on{background:var(--red)}
+.sw.on::after{left:21px}
+
+/* Sheet modal */
+.sheet-veil{position:absolute;inset:0;background:rgba(3,8,20,.7);display:none;z-index:5}
+.sheet-veil.on{display:block}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--navy-deep);z-index:6;
+  border-top-left-radius:22px;border-top-right-radius:22px;border:1px solid var(--hairline);
+  padding:20px 16px 34px;display:none;max-height:80%}
+.sheet.on{display:block}
+.sheet .grab{width:44px;height:4px;border-radius:2px;background:rgba(255,255,255,.25);margin:0 auto 16px}
+.sheet h3{font-family:Oswald;font-size:22px;font-weight:700;text-transform:uppercase}
+.sheet .sub2{font-size:12px;color:var(--muted);margin:4px 0 14px}
+.statgrid{display:flex;gap:10px}
+.statcell{flex:1;background:rgba(255,255,255,.05);border-radius:var(--r-sm);padding:12px 8px;text-align:center}
+.statcell b{display:block;font-size:24px;font-weight:900;font-variant-numeric:tabular-nums}
+.statcell span{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.sheet .close{margin-top:16px}
+
+/* Bottom nav */
+.tabbar{display:flex;border-top:1px solid var(--hairline);background:var(--card);
+  padding:10px 0 18px;flex:none;position:relative}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);
+  opacity:.55;border:0;background:none;cursor:pointer;font-family:Inter}
+.tab.on{color:var(--white);opacity:1}
+.tab span{font-family:Oswald;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+.notes{margin-top:46px;max-width:920px}
+.notes h3{font-family:Oswald;font-size:16px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--white);margin-bottom:12px}
+.notes ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.notes li{color:var(--muted);font-size:13px;line-height:1.6;padding-left:18px;position:relative}
+.notes li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;
+  border-radius:3px;background:var(--red)}
+.notes li b{color:var(--white);font-weight:700}
+kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;padding:1px 7px;
+  font-family:Inter;font-size:12px;color:var(--white)}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>FTF Forward — clickable prototype</h1>
+  <p class="sub">
+    Everything below is tappable: the <b>5 tabs</b>, the <b>home cards</b>, the <b>Squad filters and player rows</b>
+    (a sheet opens), the <b>tool rows</b>, the <b>report verify pills</b>, the <b>switches</b>. The timer ticks live.
+    Data is mock but shaped exactly like the app's. Click around — then tell me what to change.
+  </p>
+
+  <div class="wrap">
+  <div class="phone">
+    <div class="phone-bg"></div>
+    <div class="status"><span>9:41</span><span class="dots"><i></i><i style="width:22px"></i></span></div>
+
+    <div id="phoneBody">
+
+      <!-- ════════ DASHBOARD ════════ -->
+      <section class="view on" id="v-dashboard">
+        <div class="hdr">
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">FTF Forward</div><div class="hdr-sub">Staff</div></div>
+          <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
+        </div>
+
+        <div class="pills">
+          <button class="pill on">Seniors</button><button class="pill">U-20</button><button class="pill">U-17</button>
+        </div>
+
+        <div class="hero"><div class="hero-in">
+          <div class="top-line"><div class="eyebrow">Prochain match</div><div class="competition">CAN Féminine · Qualif.</div></div>
+          <div class="teams">
+            <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisie</span></div>
+            <div class="center"><div class="big">SAM 24<br>OCT</div></div>
+            <div class="team r"><span class="tname r">Maroc</span><span class="crest">🇲🇦</span></div>
+          </div>
+          <div class="count-row" id="timer">
+            <div><b id="t-d">04</b><span>Days</span></div><div><b id="t-h">11</b><span>Hrs</span></div>
+            <div><b id="t-m">26</b><span>Min</span></div><div><b id="t-s">09</b><span>Sec</span></div>
+          </div>
+          <div class="venue-row">
+            <div class="venue">📍 Stade de Radès</div>
+            <div class="weather"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg> 24°/18°</div>
+          </div>
+        </div></div>
+
+        <div class="sec"><h2>Available Features &amp; Services</h2></div>
+        <div class="grid">
+          <div class="fcard"><h3>Today's Program</h3>
+            <div class="visual"><div style="width:100%;display:flex;flex-direction:column;gap:7px;justify-content:center">
+              <div style="font-size:10px;font-weight:800;letter-spacing:.8px;color:var(--white)">24 NOVEMBER</div>
+              <div style="display:flex;gap:7px;font-size:11px"><b>09:00</b><span>Training – Annex, grass</span></div>
+              <div style="display:flex;gap:7px;font-size:11px"><b>12:00</b><span>Lunch &amp; rest</span></div>
+              <div style="display:flex;gap:7px;font-size:11px"><b>16:00</b><span>Video · S. Gharbi</span></div>
+            </div></div>
+            <button class="btn" data-go="v-calendar">Open schedule ›</button>
+          </div>
+          <div class="fcard"><h3>Players Report</h3>
+            <div class="visual"><div style="width:100%" id="homeReport"></div></div>
+            <button class="btn" data-go="v-reports">View report ›</button>
+          </div>
+          <div class="fcard"><h3>Match-day Bingo</h3>
+            <div class="visual"><div style="width:100%" id="homeBingo"></div></div>
+            <button class="btn" data-go="v-games">See all ›</button>
+          </div>
+          <div class="fcard"><h3>News</h3>
+            <div class="visual"><div style="width:100%">
+              <img class="newsimg" src="../mobile/assets/home-bg.jpg" alt="">
+              <div class="headline">Tunisia name squad for WAFCON qualifying double-header</div>
+              <div class="nmeta"><span class="src">CAF Online</span><span class="ago">2h ago</span><span>↗</span></div>
+            </div></div>
+            <button class="btn" data-go="v-news">See all ›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════ CALENDAR ════════ -->
+      <section class="view" id="v-calendar">
+        <div class="hdr">
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Calendar</div><div class="hdr-sub">November camp · 12 days</div></div>
+          <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
+        </div>
+        <div class="daycard"><h4>24 November</h4>
+          <div class="sess"><span class="tm">09:00</span><span class="ac">Training – Annex, grass</span></div>
+          <div class="sess"><span class="tm">12:00</span><span class="ac">Lunch &amp; rest</span></div>
+          <div class="sess"><span class="tm">16:00</span><span class="ac">Video analysis · S. Gharbi</span></div>
+        </div>
+        <div class="daycard"><h4>25 November</h4>
+          <div class="sess"><span class="tm">09:00</span><span class="ac">Training – Annex, grass</span></div>
+          <div class="sess"><span class="tm">15:00</span><span class="ac">Friendly vs Club Africain</span></div>
+        </div>
+        <div class="daycard"><h4>27 November</h4>
+          <div class="sess"><span class="tm">15:00</span><span class="ac">Match vs Morocco – Main pitch</span></div>
+          <div class="sess"><span class="tm"></span><span class="ac">Rest day</span></div>
+        </div>
+      </section>
+
+      <!-- ════════ REPORTS ════════ -->
+      <section class="view" id="v-reports">
+        <div class="hdr">
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Reports</div><div class="hdr-sub">Club matches · verify</div></div>
+        </div>
+        <div id="reportList"></div>
+      </section>
+
+      <!-- ════════ METRICS ════════ -->
+      <section class="view" id="v-stats">
+        <div class="hdr">
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Metrics</div><div class="hdr-sub">Season 2026</div></div>
+        </div>
+        <div class="sec"><h2>Top scorers</h2></div>
+        <div id="metricList"></div>
+      </section>
+
+      <!-- ════════ PROFILE ════════ -->
+      <section class="view" id="v-profile">
+        <div class="hdr">
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Profile</div><div class="hdr-sub">A. Trabelsi</div></div>
+          <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-av">AT</div>
+          <div class="hero-name">A. Trabelsi</div>
+          <span class="role-badge"><i></i>Staff</span>
+        </div>
+        <div class="sec"><h2>Team</h2></div>
+        <div class="tool-card">
+          <button class="trow" data-go="v-squad"><span class="tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="t"><b>Squad</b><span>Players, fitness and call-ups</span></span><span class="chev">›</span></button>
+          <button class="trow" data-go="v-staff"><span class="tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="t"><b>Staff</b><span>Coaches and crew</span></span><span class="chev">›</span></button>
+          <button class="trow" data-go="v-camps"><span class="tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 21 14 3"/><path d="M20 19.5 8.5 9.5"/><path d="M16 3h5v5"/><path d="M8 3H3v5"/></svg></span><span class="t"><b>Camps</b><span>Gatherings and venues</span></span><span class="chev">›</span></button>
+        </div>
+        <div class="sec"><h2>Work</h2></div>
+        <div class="tool-card">
+          <button class="trow" data-go="v-meetings"><span class="tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span><span class="t"><b>Meetings</b><span>Video calls and briefings</span></span><span class="count-pill">2</span><span class="chev">›</span></button>
+          <button class="trow" data-go="v-career"><span class="tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span><span class="t"><b>Career</b><span>Pathways and highlights</span></span><span class="chev">›</span></button>
+        </div>
+        <div class="sec"><h2>Notifications</h2></div>
+        <div class="tool-card">
+          <div class="switchrow"><span>Match reminders</span><span class="sw on" data-sw></span></div>
+          <div class="switchrow"><span>Availability alerts</span><span class="sw" data-sw></span></div>
+        </div>
+        <button class="signout">⇲&nbsp;&nbsp;Sign out</button>
+      </section>
+
+      <!-- ════════ SQUAD ════════ -->
+      <section class="view" id="v-squad">
+        <div class="hdr">
+          <button class="backbtn" data-back>‹</button>
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Squad</div><div class="hdr-sub" id="squadSub">Seniors · 6 players</div></div>
+        </div>
+        <div class="pills" id="catPills"></div>
+        <div class="chips" id="posChips"></div>
+        <div id="squadList" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+
+      <!-- ════════ STAFF ════════ -->
+      <section class="view" id="v-staff">
+        <div class="hdr">
+          <button class="backbtn" data-back>‹</button>
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Staff</div><div class="hdr-sub">Coaches and crew</div></div>
+        </div>
+        <div id="staffList" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+
+      <!-- ════════ CAMPS ════════ -->
+      <section class="view" id="v-camps">
+        <div class="hdr">
+          <button class="backbtn" data-back>‹</button>
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Camps</div><div class="hdr-sub">Gatherings and venues</div></div>
+        </div>
+        <div class="daycard"><h4>November camp · Radès</h4>
+          <div class="sess"><span class="tm">24 NOV</span><span class="ac">Arrival &amp; first session</span></div>
+          <div class="sess"><span class="tm">27 NOV</span><span class="ac">Match vs Morocco</span></div>
+          <div class="sess"><span class="tm">05 DEC</span><span class="ac">Departure</span></div>
+        </div>
+        <div class="daycard"><h4>October camp · Tunis</h4>
+          <div class="sess"><span class="tm">DONE</span><span class="ac">3 sessions · 1 friendly</span></div>
+        </div>
+      </section>
+
+      <!-- ════════ MEETINGS ════════ -->
+      <section class="view" id="v-meetings">
+        <div class="hdr">
+          <button class="backbtn" data-back>‹</button>
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Meetings</div><div class="hdr-sub">2 upcoming</div></div>
+        </div>
+        <div id="meetingList" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+
+      <!-- ════════ CAREER ════════ -->
+      <section class="view" id="v-career">
+        <div class="hdr">
+          <button class="backbtn" data-back>‹</button>
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Career</div><div class="hdr-sub">Pathways</div></div>
+        </div>
+        <div class="sec"><h2>Top rated</h2></div>
+        <div id="careerList" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+
+      <!-- ════════ NEWS ════════ -->
+      <section class="view" id="v-news">
+        <div class="hdr">
+          <button class="backbtn" data-back>‹</button>
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">News</div><div class="hdr-sub">Team headlines</div></div>
+        </div>
+        <div id="newsList" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+
+      <!-- ════════ GAMES ════════ -->
+      <section class="view" id="v-games">
+        <div class="hdr">
+          <button class="backbtn" data-back>‹</button>
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">Match-day Bingo</div><div class="hdr-sub">Season board</div></div>
+        </div>
+        <div class="sec"><h2>Leaderboard</h2></div>
+        <div id="bingoList" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+
+    </div><!-- /phoneBody -->
+
+    <!-- Player sheet -->
+    <div class="sheet-veil" id="veil"></div>
+    <div class="sheet" id="sheet">
+      <div class="grab"></div>
+      <h3 id="shName">—</h3>
+      <div class="sub2" id="shMeta">—</div>
+      <div class="statgrid">
+        <div class="statcell"><b id="shCaps">0</b><span>Caps</span></div>
+        <div class="statcell"><b id="shGoals">0</b><span>Goals</span></div>
+        <div class="statcell"><b id="shStatus">—</b><span>Status</span></div>
+      </div>
+      <button class="btn close" id="sheetClose">Close ›</button>
+    </div>
+
+    <div class="tabbar">
+      <button class="tab on" data-tab="v-dashboard"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Dashboard</span></button>
+      <button class="tab" data-tab="v-calendar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendar</span></button>
+      <button class="tab" data-tab="v-reports"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 10h6"/></svg><span>Reports</span></button>
+      <button class="tab" data-tab="v-stats"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg><span>Metrics</span></button>
+      <button class="tab" data-tab="v-profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/></svg><span>Profile</span></button>
+    </div>
+  </div>
+  </div>
+
+  <div class="notes">
+    <h3>How to click</h3>
+    <ul>
+      <li>Use the <b>bottom tabs</b> to move between the five staff screens.</li>
+      <li>On Dashboard, the <b>four cards open</b> Calendar, Reports, the Bingo board and News.</li>
+      <li>On Profile, <b>Team and Work rows open</b> Squad, Staff, Camps, Meetings and Career. <kbd>‹</kbd> goes back.</li>
+      <li>On Squad, the <b>pills and chips filter</b> the list; tapping a player opens her sheet.</li>
+      <li>On Reports, tapping a <b>verify pill flips it</b>. The timer ticks live. Switches toggle.</li>
+      <li>Nothing here is wired to data — approve the structure and I build it for real.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const PLAYERS = [
+  { name: 'Y. Ben Amor', pos: 'MID', num: 12, club: 'ASF Sousse', cat: 'Seniors', status: 'fit', caps: 48, goals: 9 },
+  { name: 'S. Gharbi', pos: 'FWD', num: 7, club: 'Espérance Tunis', cat: 'Seniors', status: 'fit', caps: 36, goals: 14 },
+  { name: 'M. Hamdi', pos: 'DEF', num: 10, club: 'Club Africain', cat: 'Seniors', status: 'recovery', caps: 29, goals: 2 },
+  { name: 'A. Mansour', pos: 'GK', num: 1, club: 'ASF Sousse', cat: 'Seniors', status: 'fit', caps: 52, goals: 0 },
+  { name: 'N. Karoui', pos: 'MID', num: 8, club: 'ASF Sfax', cat: 'U-20', status: 'fit', caps: 11, goals: 3 },
+  { name: 'R. Saidi', pos: 'FWD', num: 9, club: 'Espérance Tunis', cat: 'U-20', status: 'fit', caps: 9, goals: 5 },
+  { name: 'L. Amri', pos: 'DEF', num: 4, club: 'Club Africain', cat: 'U-17', status: 'fit', caps: 4, goals: 0 },
+];
+const BINGO = [
+  { user: 'Amira', games: 4, pts: 86 },
+  { user: 'Syrine', games: 4, pts: 71 },
+  { user: 'Nour', games: 3, pts: 58 },
+];
+const REPORTS = [
+  { who: 'S. Gharbi', what: 'Hat-trick vs ASF Sousse · 90 min', verified: false },
+  { who: 'M. Hamdi', what: 'Clean sheet vs CA · subbed 70 min', verified: false },
+  { who: 'Y. Ben Amor', what: 'Assist vs EST · full match', verified: true },
+];
+const MEETINGS = [
+  { title: 'Pre-match briefing', when: 'Today · 18:00', where: 'Video call' },
+  { title: 'Recovery review', when: 'Tomorrow · 10:00', where: 'Staff room' },
+];
+const STAFFLIST = [
+  { name: 'A. Trabelsi', role: 'Head coach' },
+  { name: 'M. Lahmar', role: 'Assistant · fitness' },
+  { name: 'S. Dridi', role: 'Physio' },
+];
+const NEWS = [
+  { h: 'Tunisia name squad for WAFCON qualifying double-header', s: 'CAF Online', ago: '2h ago' },
+  { h: 'Radès to host November camp friendlies', s: 'FTF Media', ago: '6h ago' },
+  { h: "WAFCON draw: Tunisia learn group-stage opponents", s: 'CAF Online', ago: '1d ago' },
+];
+
+/* Router */
+const body = document.getElementById('phoneBody');
+let stack = ['v-dashboard'];
+function show(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === id));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === id));
+  body.scrollTop = 0;
+}
+function go(id) { stack.push(id); show(id); }
+function back() { if (stack.length > 1) stack.pop(); show(stack[stack.length - 1]); }
+document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', back));
+document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { stack = [b.dataset.tab]; show(b.dataset.tab); }));
+
+/* Squad */
+let cat = 'Seniors', pos = 'ALL';
+const CATS = ['Seniors', 'U-20', 'U-17'], POSS = ['ALL', 'GK', 'DEF', 'MID', 'FWD'];
+function fitBadge(s) { return s === 'fit' ? '<span class="fit ok">Fit</span>' : '<span class="fit rec">Recovery</span>'; }
+function renderSquad() {
+  document.getElementById('catPills').innerHTML = CATS.map(c =>
+    `<button class="pill${c === cat ? ' on' : ''}" data-cat="${c}">${c}</button>`).join('');
+  document.getElementById('posChips').innerHTML = POSS.map(p =>
+    `<button class="chip${p === pos ? ' on' : ''}" data-pos="${p}">${p === 'ALL' ? 'All' : p}</button>`).join('');
+  const list = PLAYERS.filter(p => p.cat === cat && (pos === 'ALL' || p.pos === pos));
+  document.getElementById('squadSub').textContent = `${cat} · ${list.length} players`;
+  document.getElementById('squadList').innerHTML = list.length ? list.map((p, i) =>
+    `<button class="prow" data-player="${i}"><span class="av">${String(p.num).padStart(2, '0')}</span>
+     <span class="who"><span class="n">${p.name}</span>
+     <span class="meta"><span class="pospill">${p.pos}</span><span class="club">${p.club}</span></span></span>
+     ${fitBadge(p.status)}<span class="chev">›</span></button>`).join('')
+    : '<div style="color:var(--muted);text-align:center;padding:40px 0">No players</div>';
+  document.querySelectorAll('[data-cat]').forEach(b => b.addEventListener('click', () => { cat = b.dataset.cat; renderSquad(); }));
+  document.querySelectorAll('[data-pos]').forEach(b => b.addEventListener('click', () => { pos = b.dataset.pos; renderSquad(); }));
+  document.querySelectorAll('[data-player]').forEach(b => b.addEventListener('click', () => {
+    const p = list[Number(b.dataset.player)];
+    document.getElementById('shName').textContent = p.name;
+    document.getElementById('shMeta').textContent = `${p.pos} · #${p.num} · ${p.club}`;
+    document.getElementById('shCaps').textContent = p.caps;
+    document.getElementById('shGoals').textContent = p.goals;
+    document.getElementById('shStatus').textContent = p.status === 'fit' ? 'Fit' : 'Recovery';
+    document.getElementById('veil').classList.add('on');
+    document.getElementById('sheet').classList.add('on');
+  }));
+}
+document.getElementById('veil').addEventListener('click', closeSheet);
+document.getElementById('sheetClose').addEventListener('click', closeSheet);
+function closeSheet() {
+  document.getElementById('veil').classList.remove('on');
+  document.getElementById('sheet').classList.remove('on');
+}
+renderSquad();
+
+/* Reports with verify toggle */
+function renderReports() {
+  document.getElementById('reportList').innerHTML = REPORTS.map((r, i) =>
+    `<div class="rep"><div class="rh"><b>${r.who}</b>
+     <button class="vpill ${r.verified ? 'yes' : 'no'}" data-v="${i}">${r.verified ? 'Verified' : 'Pending'}</button></div>
+     <div class="rd">${r.what}</div></div>`).join('');
+  document.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => {
+    REPORTS[Number(b.dataset.v)].verified = !REPORTS[Number(b.dataset.v)].verified;
+    renderReports();
+  }));
+}
+renderReports();
+
+/* Metrics + home teasers + bingo */
+function barRow(name, sub, val, max) {
+  return `<div class="mrow"><div class="mn"><b>${name}</b><span>${sub}</span></div>
+    <div class="mv"><b>${val}</b><div class="pbar" style="width:64px;margin-top:6px"><i style="width:${Math.max(val / max * 100, 8)}%"></i></div></div></div>`;
+}
+const byGoals = [...PLAYERS].sort((a, b) => b.goals - a.goals);
+document.getElementById('metricList').innerHTML =
+  byGoals.slice(0, 4).map(p => barRow(p.name, `${p.pos} · #${p.num}`, p.goals, byGoals[0].goals)).join('');
+document.getElementById('homeReport').innerHTML =
+  byGoals.slice(0, 3).map((p, i) => `<div class="prow3"><span class="rankn">${i + 1}</span>
+    <span class="who"><span class="n" style="font-size:12px">${p.name}</span>
+    <span class="meta"><span style="font-size:9px;color:var(--muted)">${p.pos} · #${p.num}</span></span></span>
+    <span style="width:44px;text-align:right"><b style="font-size:14px">${p.goals}</b>
+    <span class="pbar"><i style="width:${Math.max(p.goals / byGoals[0].goals * 100, 8)}%"></i></span></span></div>`).join('');
+document.getElementById('homeBingo').innerHTML =
+  BINGO.map((r, i) => `<div class="prow3"><span class="rankn">${i + 1}</span>
+    <span class="who"><span class="n" style="font-size:12px">${r.user}</span>
+    <span class="meta"><span style="font-size:9px;color:var(--muted)">${r.games} games</span></span></span>
+    <span style="width:44px;text-align:right"><b style="font-size:14px">${r.pts}</b>
+    <span class="pbar"><i style="width:${Math.max(r.pts / BINGO[0].pts * 100, 8)}%"></i></span></span></div>`).join('');
+document.getElementById('bingoList').innerHTML =
+  BINGO.map((r, i) => barRow(r.user, `${r.games} games played`, r.pts, BINGO[0].pts)).join('');
+
+/* Staff / meetings / career / news */
+document.getElementById('staffList').innerHTML = STAFFLIST.map(s =>
+  `<div class="prow" style="cursor:default"><span class="av">${s.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</span>
+   <span class="who"><span class="n">${s.name}</span><span class="meta"><span class="club">${s.role}</span></span></span></div>`).join('');
+document.getElementById('meetingList').innerHTML = MEETINGS.map((m, i) =>
+  `<div class="prow" style="cursor:default"><span class="who"><span class="n">${m.title}</span>
+   <span class="meta"><span class="club">${m.when} · ${m.where}</span></span></span>
+   <button class="btn" style="width:auto;height:38px" data-join="${i}">Join ›</button></div>`).join('');
+document.querySelectorAll('[data-join]').forEach(b => b.addEventListener('click', () => { b.textContent = 'Joined'; }));
+document.getElementById('careerList').innerHTML =
+  byGoals.slice(0, 3).map(p => barRow(p.name, `Rating ${(8 + p.goals / 10).toFixed(1)} · ${p.club}`, p.caps, byGoals[0].caps)).join('');
+document.getElementById('newsList').innerHTML = NEWS.map(n =>
+  `<div class="prow" style="cursor:default"><span class="who"><span class="headline">${n.h}</span>
+   <span class="nmeta"><span class="src">${n.s}</span><span class="ago">${n.ago}</span><span>↗</span></span></span></div>`).join('');
+
+/* Switches */
+document.querySelectorAll('[data-sw]').forEach(s => s.addEventListener('click', () => s.classList.toggle('on')));
+
+/* Live timer */
+let rem = 4 * 86400 + 11 * 3600 + 26 * 60 + 9;
+const pad = n => String(n).padStart(2, '0');
+setInterval(() => {
+  rem = Math.max(rem - 1, 0);
+  document.getElementById('t-d').textContent = pad(Math.floor(rem / 86400));
+  document.getElementById('t-h').textContent = pad(Math.floor(rem % 86400 / 3600));
+  document.getElementById('t-m').textContent = pad(Math.floor(rem % 3600 / 60));
+  document.getElementById('t-s').textContent = pad(rem % 60);
+}, 1000);
+</script>
+</body>
+</html>
