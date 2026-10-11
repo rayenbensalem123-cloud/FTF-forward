@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ClipboardList, FileDown, LogOut, UserPlus, Users } from 'lucide-react-native';
+import { Calendar, ClipboardList, FileDown, LogOut, Users } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { Avatar } from '@/components/Avatar';
@@ -29,7 +29,7 @@ const ROLE_LABEL: Record<Role, StringKey> = { admin: 'roleAdmin', staff: 'roleSt
 
 export default function ProfileScreen() {
   const { t, language, setLanguage } = useLanguage();
-  const { user, can, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const { players } = usePlayers();
   // A player account owns a members row: player.id is String(member_id).
   const me = user?.memberId != null ? players.find((p) => p.id === String(user.memberId)) ?? null : null;
@@ -132,15 +132,18 @@ export default function ProfileScreen() {
         <View>
           <Text style={styles.heading}>{t('teamManagement')}</Text>
           <Card style={{ paddingVertical: space.xs }}>
-            {can('addPlayer') && (
-              <TouchableOpacity style={styles.action} onPress={() => router.push('/add-player')} accessibilityRole="button">
-                <View style={styles.actionIcon}><UserPlus color={colors.white} size={18} /></View>
-                <Text style={styles.actionText}>{t('addPlayer')}</Text>
+            {isStaffRole && (
+              <TouchableOpacity style={styles.action} onPress={() => router.push('/more/camp-schedule')} accessibilityRole="button">
+                <View style={styles.actionIcon}><Calendar color={colors.white} size={18} /></View>
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={styles.actionText}>{t('tabCampSchedule')}</Text>
+                  <Text style={styles.actionDesc} numberOfLines={1}>{t('moreCampScheduleDesc')}</Text>
+                </View>
                 <ForwardChevron />
               </TouchableOpacity>
             )}
             <TouchableOpacity
-              style={[styles.action, can('addPlayer') && styles.divider]}
+              style={[styles.action, isStaffRole && styles.divider]}
               onPress={onExport}
               disabled={exporting}
               accessibilityRole="button"
