@@ -22,6 +22,7 @@ import { loadLatestSchedule } from '@/lib/campSchedule';
 export default function ScheduleScreen() {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const isStaff = user?.role === 'staff' || user?.role === 'admin';
   const [schedule, setSchedule] = useState<CampSchedule | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -60,7 +61,7 @@ export default function ScheduleScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.white} />}
       >
-        <AppHeader title={t('tabSchedule')} subtitle={schedule?.title || t('tabCampSchedule')} />
+        <AppHeader title={isStaff ? t('tabCalendar') : t('tabSchedule')} subtitle={schedule?.title || t('tabCampSchedule')} />
         <SyncLine version={schedule?.version} />
 
         {loading ? null : days.length === 0 ? (

@@ -16,7 +16,7 @@ export function ToolsCard() {
     { href: '/id-card', icon: IdCard, title: t('tabIdCard'), desc: t('moreIdCardDesc') },
     { href: '/more/camp-schedule', icon: Calendar, title: t('tabCampSchedule'), desc: t('moreCampScheduleDesc') },
     { href: '/more/camps', icon: Tent, title: N.camps, desc: N.campsDesc },
-    { href: '/more/reports', icon: ClipboardList, title: t('tabReports'), desc: t('moreReportsDesc') },
+    { href: '/reports', icon: ClipboardList, title: t('tabReports'), desc: t('moreReportsDesc') },
     { href: '/more/meetings', icon: Video, title: t('tabMeetings'), desc: t('moreMeetingsDesc') },
     { href: '/more/news', icon: Newspaper, title: N.news, desc: N.newsDesc },
     { href: '/more/staff', icon: Users, title: N.staff, desc: N.staffDesc },

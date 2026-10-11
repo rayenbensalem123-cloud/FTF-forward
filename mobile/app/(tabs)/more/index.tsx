@@ -20,7 +20,7 @@ import type { StringKey } from '@/i18n/strings';
  */
 const TOOLS: { href: Href; icon: typeof Video; title: StringKey; desc: StringKey }[] = [
   { href: '/more/camp-schedule', icon: Calendar, title: 'tabCampSchedule', desc: 'moreCampScheduleDesc' },
-  { href: '/more/reports', icon: ClipboardList, title: 'tabReports', desc: 'moreReportsDesc' },
+  { href: '/reports', icon: ClipboardList, title: 'tabReports', desc: 'moreReportsDesc' },
   { href: '/more/meetings', icon: Video, title: 'tabMeetings', desc: 'moreMeetingsDesc' },
   { href: '/more/career', icon: Trophy, title: 'tabCareer', desc: 'moreCareerDesc' },
   { href: '/id-card', icon: IdCard, title: 'tabIdCard', desc: 'moreIdCardDesc' },

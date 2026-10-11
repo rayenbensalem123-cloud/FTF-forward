@@ -95,7 +95,7 @@ export default function ReportsScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.white} />}
       >
-        <AppHeader back showBell={false} />
+        <AppHeader showBell={false} />
         <View>
           <Text style={styles.title}>{T.title}</Text>
           <Text style={styles.sub}>{isStaff ? `${pendingCount} ${T.waiting}` : T.sub}</Text>

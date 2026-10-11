@@ -1,21 +1,23 @@
 import React from 'react';
 import { Redirect, Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BarChart3, Calendar, Home, Menu, User, Users } from 'lucide-react-native';
+import { BarChart3, Calendar, ClipboardList, Home, User } from 'lucide-react-native';
 import { colors, fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 
 /**
- * Two navigators, chosen by the signed-in role, as in the redesign prototype:
+ * Two navigators, chosen by the signed-in role:
  *
- *   staff  : Squad · Home · Stats · More
+ *   staff  : Dashboard · Calendar · Reports · Metrics · Profile
  *   player : Home · Schedule · Stats · Profile
  *
- * `href: null` hides a tab without deleting its route: Schedule and Profile are
- * hidden for staff, Squad and More for players. Lineup and Matches are no
- * longer tabs at all -- they were moved to the root stack (app/lineup.tsx,
- * app/matches.tsx) and are pushed from Home with a back button.
+ * The staff set follows the dashboard reference. Calendar is the camp-program
+ * screen, which the database already filters per role, so it is the same
+ * route for both. Reports was promoted from the More stack to a tab.
+ *
+ * Squad and More stay mounted but hidden: their contents get placed on real
+ * pages next, and nothing links to them today except the tab bar itself.
  */
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
@@ -30,7 +32,7 @@ export default function TabsLayout() {
   const isStaff = user.role === 'staff' || user.role === 'admin';
 
   // Prototype tab bar: card background, hairline top border, 10px uppercase
-  // labels, white when active and muted otherwise.
+  // labels in the display face, white when active and muted otherwise.
   const options = {
     headerShown: false,
     tabBarActiveTintColor: colors.white,
@@ -49,34 +51,33 @@ export default function TabsLayout() {
 
   return (
     <Tabs screenOptions={options}>
-      {/* ── Role-dependent visibility, fixed order ────────── */}
-      <Tabs.Screen
-        name="squad"
-        options={{
-          title: t('tabSquad'),
-          href: isStaff ? undefined : null,
-          tabBarIcon: ({ color, size }) => <Users color={color} size={size} />,
-        }}
-      />
+      {/* ── Role-dependent titles, fixed order ────────── */}
       <Tabs.Screen
         name="index"
         options={{
-          title: t('tabHome'),
+          title: isStaff ? t('tabDashboard') : t('tabHome'),
           tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="schedule"
         options={{
-          title: t('tabSchedule'),
-          href: isStaff ? null : undefined,
+          title: isStaff ? t('tabCalendar') : t('tabSchedule'),
           tabBarIcon: ({ color, size }) => <Calendar color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="reports"
+        options={{
+          title: t('tabReports'),
+          href: isStaff ? undefined : null,
+          tabBarIcon: ({ color, size }) => <ClipboardList color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="stats"
         options={{
-          title: t('tabStats'),
+          title: isStaff ? t('tabMetrics') : t('tabStats'),
           tabBarIcon: ({ color, size }) => <BarChart3 color={color} size={size} />,
         }}
       />
@@ -84,18 +85,12 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: t('tabProfile'),
-          href: isStaff ? null : undefined,
           tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
         }}
       />
-      <Tabs.Screen
-        name="more"
-        options={{
-          title: t('tabMore'),
-          href: isStaff ? undefined : null,
-          tabBarIcon: ({ color, size }) => <Menu color={color} size={size} />,
-        }}
-      />
+      {/* ── Mounted but hidden until their contents are placed ────────── */}
+      <Tabs.Screen name="squad" options={{ href: null }} />
+      <Tabs.Screen name="more" options={{ href: null }} />
     </Tabs>
   );
 }

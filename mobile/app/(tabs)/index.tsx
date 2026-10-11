@@ -88,7 +88,7 @@ export default function HomeScreen() {
               <FeatureCard
                 title={t('playersReport')}
                 cta={t('viewReport')}
-                href="/more/reports"
+                href="/reports"
               >
                 <ReportTeaser players={players} />
               </FeatureCard>
