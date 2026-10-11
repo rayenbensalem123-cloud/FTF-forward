@@ -15,7 +15,8 @@
         {
           "calendarPermission": "Tunisia WNT uses the calendar to add your national-team matches so you don't miss one."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "ios": {
       "supportsTablet": false

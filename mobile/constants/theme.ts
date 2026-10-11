@@ -51,15 +51,57 @@ export const shadow = {
 } as const;
 
 /**
+ * The Lovable design's whole visual signature is one condensed display face:
+ * every heading, team code and score is Oswald 700. The app had no display
+ * face at all before this, so all of it rendered in the platform default.
+ *
+ * Loaded in app/_layout.tsx with expo-font. Oswald ships Latin only, so
+ * Arabic headings fall back to the system face per glyph -- the layout is
+ * unaffected because neither face is condensed enough to change a line break.
+ */
+export const fonts = { display: 'Oswald_700Bold' } as const;
+
+/**
+ * The design's type scale, deliberately small: everything 12px and below is
+ * a body or a micro-label in the platform face, and Oswald only starts at
+ * `section`. Screens pick a role here rather than restating raw numbers, so a
+ * label reads the same on every screen.
+ */
+export const typeScale = {
+  /** 10/700 uppercase, wide tracking -- "PROCHAIN MATCH". */
+  micro: { fontSize: 10, fontWeight: '700' as const, letterSpacing: 2.5, textTransform: 'uppercase' as const },
+  /** 10/600 -- the bottom tab bar's label. */
+  navLabel: { fontSize: 10, fontWeight: '600' as const, letterSpacing: 0.5 },
+  /** 11/400 -- "SAM 24 OCT · Radès". */
+  meta: { fontSize: 11, fontWeight: '400' as const },
+  /** 12/400 -- "CAN Féminine · Qualif.". */
+  body: { fontSize: 12, fontWeight: '400' as const },
+  /** 12/600 -- the "Tout voir" see-all link. */
+  link: { fontSize: 12, fontWeight: '600' as const },
+  /** 12/700 -- a kick-off time inside a card. */
+  time: { fontSize: 12, fontWeight: '700' as const },
+  /** Oswald 16/700 -- "TUN". */
+  teamCode: { fontFamily: fonts.display, fontSize: 16, fontWeight: '700' as const },
+  /** Oswald 18/700 uppercase -- a screen title or the app name in the header. */
+  brand: { fontFamily: fonts.display, fontSize: 18, fontWeight: '700' as const, letterSpacing: 0.45, textTransform: 'uppercase' as const },
+  /** Oswald 24/700 uppercase -- "SÉNIORS" on a feature card. */
+  feature: { fontFamily: fonts.display, fontSize: 24, fontWeight: '700' as const, textTransform: 'uppercase' as const },
+  /** Oswald 30/700 -- the hero number on a match card. */
+  hero: { fontFamily: fonts.display, fontSize: 30, fontWeight: '700' as const },
+} as const;
+
+/**
  * The single strongest repeated motif of the redesign: gold, uppercase,
- * 13px/800 with 0.12em tracking, above every section. Screens reuse this so
- * the eyebrow looks identical everywhere.
+ * above every section. Screens reuse this so the eyebrow looks identical
+ * everywhere. Now set in the display face at the design's 18px -- the colour
+ * stays gold because that is the FTF accent, only the face changed.
  */
 export const sectionTitle = {
+  fontFamily: fonts.display,
   color: colors.gold,
-  fontSize: 13,
-  fontWeight: '800' as const,
-  letterSpacing: 1.5,
+  fontSize: 18,
+  fontWeight: '700' as const,
+  letterSpacing: 0.45,
   textTransform: 'uppercase' as const,
   marginBottom: 12,
 } as const;

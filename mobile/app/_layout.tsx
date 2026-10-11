@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useFonts, Oswald_700Bold } from '@expo-google-fonts/oswald';
 import { colors } from '@/constants/theme';
 import { AuthProvider } from '@/context/AuthContext';
 import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
@@ -22,6 +23,13 @@ function DirectionalRoot({ children }: { children: React.ReactNode }) {
 }
 
 export default function RootLayout() {
+  // The display face ships inside the bundle, so it resolves before the first
+  // paint -- but not instantly. Rendering the tree straight away would paint
+  // every heading in the platform face and then swap, which reads as a glitch,
+  // so hold on a navy frame rather than flashing white.
+  const [loaded] = useFonts({ Oswald_700Bold });
+  if (!loaded) return <View style={{ flex: 1, backgroundColor: colors.navy }} />;
+
   return (
     <SafeAreaProvider>
       <LanguageProvider>

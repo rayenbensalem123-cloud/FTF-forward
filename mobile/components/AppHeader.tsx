@@ -2,15 +2,16 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Bell, ChevronLeft } from 'lucide-react-native';
-import { colors, radius, space } from '@/constants/theme';
+import { colors, radius, space, typeScale } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNotifications } from '@/context/NotificationsContext';
 
 /**
- * The redesign's header: a 44px logo tile, a sentence-case title (17/800) and
- * an uppercase meta line (11/600). Screens pass their own `title`/`subtitle`
- * ("Squad" / "Seniors · 23 Players"); without them the app name and the
- * federation show, which is what the home screens want.
+ * The redesign's header: a 44px logo tile, an uppercase title set in the
+ * display face (Oswald 18/700) and an uppercase meta line (11/600). Screens
+ * pass their own `title`/`subtitle` ("Squad" / "Seniors · 23 Players"); without
+ * them the app name and the federation show, which is what the home screens
+ * want.
  */
 export function AppHeader({
   showBell = true,
@@ -68,7 +69,10 @@ const styles = StyleSheet.create({
   },
   logo: { width: 30, height: 30 },
   titles: { flex: 1, minWidth: 0 },
-  title: { color: colors.white, fontSize: 17, fontWeight: '800', letterSpacing: 0.3 },
+  // The design sets the app name and every screen title in the display face at
+  // 18/700 uppercase. Arabic has no case, so `textTransform` is a no-op there
+  // and those headings fall back to the system face per glyph.
+  title: { ...typeScale.brand, color: colors.white },
   subtitle: {
     color: colors.muted, fontSize: 11, fontWeight: '600', letterSpacing: 0.9,
     textTransform: 'uppercase', marginTop: 2,

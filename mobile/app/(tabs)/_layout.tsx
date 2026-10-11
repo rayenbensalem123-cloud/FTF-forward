@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect, Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BarChart3, Calendar, Home, Menu, User, Users } from 'lucide-react-native';
-import { colors } from '@/constants/theme';
+import { colors, fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -30,12 +30,12 @@ export default function TabsLayout() {
   const isStaff = user.role === 'staff' || user.role === 'admin';
 
   // Prototype tab bar: card background, hairline top border, 10px uppercase
-  // labels, gold when active and muted otherwise.
+  // labels in the display face, gold when active and muted otherwise.
   const options = {
     headerShown: false,
     tabBarActiveTintColor: colors.gold,
     tabBarInactiveTintColor: colors.muted,
-    tabBarLabelStyle: { fontSize: 10, fontWeight: '700' as const, letterSpacing: 0.5, textTransform: 'uppercase' as const },
+    tabBarLabelStyle: { fontFamily: fonts.display, fontSize: 10, fontWeight: '700' as const, letterSpacing: 0.5, textTransform: 'uppercase' as const },
     tabBarStyle: {
       backgroundColor: colors.card,
       borderTopColor: colors.hairline,
