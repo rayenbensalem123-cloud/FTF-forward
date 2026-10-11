@@ -261,16 +261,49 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 .notes li b{color:var(--white);font-weight:700}
 kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;padding:1px 7px;
   font-family:Inter;font-size:12px;color:var(--white)}
+
+/* Role switch + role-gated blocks */
+.roleswitch{display:flex;gap:8px;margin:22px 0 0}
+.roleswitch button{border-radius:var(--r-pill);padding:8px 22px;font-size:12px;font-weight:800;
+  letter-spacing:.6px;text-transform:uppercase;border:1px solid var(--hairline);background:var(--card);
+  color:var(--muted);cursor:pointer;font-family:Inter}
+.roleswitch button.on{background:var(--red);border-color:var(--red);color:#fff}
+body[data-role="staff"] .only-player{display:none !important}
+body[data-role="player"] .only-staff{display:none !important}
+
+/* My form (player home) */
+.formcard{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);padding:16px}
+.formhead{display:flex;align-items:center;gap:12px;margin:12px 0}
+.formhead .who .n{font-size:15px}
+.formpos{font-size:12px;color:var(--muted);margin-top:2px}
+.statgrid{display:flex;gap:10px}
+.statcell{flex:1;background:rgba(255,255,255,.05);border-radius:var(--r-sm);padding:12px 8px;text-align:center}
+.statcell b{display:block;font-size:24px;font-weight:900;font-variant-numeric:tabular-nums}
+.statcell span{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+
+/* ID card */
+.idcard{background:linear-gradient(135deg,#142c52 0%,#0e1f3e 100%);border:2px solid rgba(255,255,255,.3);
+  border-radius:var(--r-card);padding:20px 16px;text-align:center}
+.idcard .brand{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.idcard .pname{font-size:20px;font-weight:900;margin-top:10px}
+.idcard .pmeta{font-size:12px;color:var(--muted);margin-top:4px}
+.idcard .bars{display:flex;gap:3px;justify-content:center;margin-top:16px;height:44px;align-items:stretch}
+.idcard .bars i{display:block;width:4px;background:var(--white);border-radius:1px}
 </style>
 </head>
-<body>
+<body data-role="staff">
 <div class="page">
   <h1>FTF Forward — clickable prototype</h1>
   <p class="sub">
-    Everything below is tappable: the <b>5 tabs</b>, the <b>home cards</b>, the <b>Squad filters and player rows</b>
-    (a sheet opens), the <b>tool rows</b>, the <b>report verify pills</b>, the <b>switches</b>. The timer ticks live.
-    Data is mock but shaped exactly like the app's. Click around — then tell me what to change.
+    Everything below is tappable: the <b>role switch</b>, the <b>tabs</b>, the <b>home cards</b>, the
+    <b>Squad filters and player rows</b> (a sheet opens), the <b>tool rows</b>, the <b>report verify pills</b>,
+    the <b>switches</b>. The timer ticks live. Data is mock but shaped exactly like the app's.
+    Click around — then tell me what to change.
   </p>
+  <div class="roleswitch">
+    <button data-role="staff" class="on">Staff</button>
+    <button data-role="player">Player</button>
+  </div>
 
   <div class="wrap">
   <div class="phone">
@@ -283,7 +316,7 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
       <section class="view on" id="v-dashboard">
         <div class="hdr">
           <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
-          <div class="hdr-txt"><div class="hdr-title">FTF Forward</div><div class="hdr-sub">Staff</div></div>
+          <div class="hdr-txt"><div class="hdr-title">FTF Forward</div><div class="hdr-sub only-staff">Staff</div><div class="hdr-sub only-player">Player</div></div>
           <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
         </div>
 
@@ -308,8 +341,8 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
           </div>
         </div></div>
 
-        <div class="sec"><h2>Available Features &amp; Services</h2></div>
-        <div class="grid">
+        <div class="sec only-staff"><h2>Available Features &amp; Services</h2></div>
+        <div class="grid only-staff">
           <div class="fcard"><h3>Today's Program</h3>
             <div class="visual"><div style="width:100%;display:flex;flex-direction:column;gap:7px;justify-content:center">
               <div style="font-size:10px;font-weight:800;letter-spacing:.8px;color:var(--white)">24 NOVEMBER</div>
@@ -336,13 +369,29 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
             <button class="btn" data-go="v-news">See all ›</button>
           </div>
         </div>
+
+        <div class="only-player">
+          <div class="sec"><h2>My form</h2></div>
+          <div class="formcard">
+            <div class="formhead">
+              <span class="av">07</span>
+              <span class="who"><span class="n">S. Gharbi</span><span class="formpos">FWD · #07</span></span>
+              <span class="fit ok">Fit</span>
+            </div>
+            <div class="statgrid">
+              <div class="statcell"><b>36</b><span>Caps</span></div>
+              <div class="statcell"><b>14</b><span>Goals</span></div>
+              <div class="statcell"><b>08</b><span>Assists</span></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- ════════ CALENDAR ════════ -->
       <section class="view" id="v-calendar">
         <div class="hdr">
           <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
-          <div class="hdr-txt"><div class="hdr-title">Calendar</div><div class="hdr-sub">November camp · 12 days</div></div>
+          <div class="hdr-txt"><div class="hdr-title only-staff">Calendar</div><div class="hdr-title only-player">Schedule</div><div class="hdr-sub">November camp · 12 days</div></div>
           <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
         </div>
         <div class="daycard"><h4>24 November</h4>
@@ -364,7 +413,7 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
       <section class="view" id="v-reports">
         <div class="hdr">
           <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
-          <div class="hdr-txt"><div class="hdr-title">Reports</div><div class="hdr-sub">Club matches · verify</div></div>
+          <div class="hdr-txt"><div class="hdr-title">Reports</div><div class="hdr-sub only-staff">Club matches · verify</div><div class="hdr-sub only-player">My club matches</div></div>
         </div>
         <div id="reportList"></div>
       </section>
@@ -373,14 +422,20 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
       <section class="view" id="v-profile">
         <div class="hdr">
           <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
-          <div class="hdr-txt"><div class="hdr-title">Profile</div><div class="hdr-sub">A. Trabelsi</div></div>
+          <div class="hdr-txt"><div class="hdr-title">Profile</div><div class="hdr-sub only-staff">A. Trabelsi</div><div class="hdr-sub only-player">S. Gharbi</div></div>
           <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
         </div>
-        <div class="hero-card">
+        <div class="hero-card only-staff">
           <div class="hero-av">AT</div>
           <div class="hero-name">A. Trabelsi</div>
           <span class="role-badge"><i></i>Staff</span>
         </div>
+        <div class="hero-card only-player">
+          <div class="hero-av">07</div>
+          <div class="hero-name">S. Gharbi</div>
+          <span class="role-badge"><i></i>Player · FWD</span>
+        </div>
+        <div class="only-staff" style="display:flex;flex-direction:column;gap:16px">
         <div class="sec"><h2>Team</h2></div>
         <div class="tool-card">
           <button class="trow" data-go="v-squad"><span class="tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="t"><b>Squad</b><span>Players, fitness and call-ups</span></span><span class="chev">›</span></button>
@@ -392,6 +447,12 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
           <button class="trow" data-go="v-meetings"><span class="tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span><span class="t"><b>Meetings</b><span>Video calls and briefings</span></span><span class="count-pill">2</span><span class="chev">›</span></button>
           <button class="trow" data-go="v-career"><span class="tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span><span class="t"><b>Career</b><span>Pathways and highlights</span></span><span class="chev">›</span></button>
         </div>
+        </div><!-- /only-staff -->
+
+        <div class="only-player" style="display:flex;flex-direction:column;gap:16px">
+        <div class="sec"><h2>Tools</h2></div>
+        <div class="tool-card" id="playerTools"></div>
+        </div><!-- /only-player -->
         <div class="sec"><h2>Notifications</h2></div>
         <div class="tool-card">
           <div class="switchrow"><span>Match reminders</span><span class="sw on" data-sw></span></div>
@@ -460,6 +521,23 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
         <div id="careerList" style="display:flex;flex-direction:column;gap:10px"></div>
       </section>
 
+      <!-- ════════ ID CARD ════════ -->
+      <section class="view" id="v-idcard">
+        <div class="hdr">
+          <button class="backbtn" data-back>‹</button>
+          <img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
+          <div class="hdr-txt"><div class="hdr-title">ID Card</div><div class="hdr-sub">National team card</div></div>
+        </div>
+        <div class="idcard">
+          <div style="font-size:36px;font-weight:900">FTF</div>
+          <div class="brand">Fédération Tunisienne de Football</div>
+          <div class="pname">S. Gharbi</div>
+          <div class="pmeta">Forward · #07 · Tunisia WNT</div>
+          <div class="bars"><i></i><i style="width:7px"></i><i></i><i style="width:2px"></i><i style="width:6px"></i><i></i><i style="width:3px"></i><i style="width:5px"></i><i></i><i style="width:2px"></i></div>
+        </div>
+        <button class="btn">Share card ›</button>
+      </section>
+
       <!-- ════════ NEWS ════════ -->
       <section class="view" id="v-news">
         <div class="hdr">
@@ -507,10 +585,16 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
       <button class="btn close" id="sheetClose">Close ›</button>
     </div>
 
-    <div class="tabbar">
+    <div class="tabbar only-staff">
       <button class="tab on" data-tab="v-dashboard"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Dashboard</span></button>
       <button class="tab" data-tab="v-calendar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendar</span></button>
       <button class="tab" data-tab="v-reports"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 10h6"/></svg><span>Reports</span></button>
+      <button class="tab" data-tab="v-games"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.01.2-.01.4-.01.6v5.8a4 4 0 0 0 3.98 3.59c.2.01.4.01.6.01h10.64c.2 0 .4 0 .6-.01A4 4 0 0 0 21.3 15V9.2c0-.2 0-.4-.01-.6A4 4 0 0 0 17.32 5Z"/></svg><span>Games</span></button>
+      <button class="tab" data-tab="v-profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/></svg><span>Profile</span></button>
+    </div>
+    <div class="tabbar only-player">
+      <button class="tab on" data-tab="v-dashboard"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></button>
+      <button class="tab" data-tab="v-calendar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Schedule</span></button>
       <button class="tab" data-tab="v-games"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.01.2-.01.4-.01.6v5.8a4 4 0 0 0 3.98 3.59c.2.01.4.01.6.01h10.64c.2 0 .4 0 .6-.01A4 4 0 0 0 21.3 15V9.2c0-.2 0-.4-.01-.6A4 4 0 0 0 17.32 5Z"/></svg><span>Games</span></button>
       <button class="tab" data-tab="v-profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/></svg><span>Profile</span></button>
     </div>
@@ -520,11 +604,12 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
   <div class="notes">
     <h3>How to click</h3>
     <ul>
-      <li>Use the <b>bottom tabs</b> to move between the five staff screens.</li>
-      <li>On Dashboard, the <b>four cards open</b> Calendar, Reports, the Bingo board and News.</li>
-      <li>On Profile, <b>Team and Work rows open</b> Squad, Staff, Camps, Meetings and Career. <kbd>‹</kbd> goes back.</li>
+      <li>Flip <b>Staff / Player</b> at the top — tabs, home content, reports and profile all change.</li>
+      <li><b>Staff home</b> is the banner plus four cards. <b>Player home</b> is the banner plus her form card.</li>
+      <li>Use the <b>bottom tabs</b> to move around. On Dashboard, the <b>four cards open</b> Calendar, Reports, the Bingo board and News.</li>
+      <li>On Profile, <b>Team and Work rows open</b> Squad, Staff, Camps, Meetings and Career (staff) or the <b>nine-row Tools card</b> (player). <kbd>‹</kbd> goes back.</li>
       <li>On Squad, the <b>pills and chips filter</b> the list; tapping a player opens her sheet.</li>
-      <li>On Reports, tapping a <b>verify pill flips it</b>. The timer ticks live. Switches toggle.</li>
+      <li>On Reports, tapping a <b>verify pill flips it</b> (staff). The timer ticks live. Switches toggle.</li>
       <li>Nothing here is wired to data — approve the structure and I build it for real.</li>
     </ul>
   </div>
@@ -550,6 +635,19 @@ const REPORTS = [
   { who: 'M. Hamdi', what: 'Clean sheet vs CA · subbed 70 min', verified: false },
   { who: 'Y. Ben Amor', what: 'Assist vs EST · full match', verified: true },
 ];
+const PLAYER_TOOLS = [
+  { t: 'Career', d: 'Pathways and highlights', go: 'v-career' },
+  { t: 'ID Card', d: 'National team card', go: 'v-idcard' },
+  { t: 'Camp Schedule', d: 'Day-by-day program', go: 'v-calendar' },
+  { t: 'Camps', d: 'Gatherings and venues', go: 'v-camps' },
+  { t: 'Reports', d: 'My club matches', go: 'v-reports' },
+  { t: 'Meetings', d: 'Video calls and briefings', go: 'v-meetings' },
+  { t: 'News', d: 'Team headlines', go: 'v-news' },
+  { t: 'Staff', d: 'Coaches and crew', go: 'v-staff' },
+  { t: 'Games', d: 'Bingo and quizzes', go: 'v-games' },
+];
+document.getElementById('playerTools').innerHTML = PLAYER_TOOLS.map(p =>
+  `<button class="trow" data-go="${p.go}"><span class="t"><b>${p.t}</b><span>${p.d}</span></span><span class="chev">›</span></button>`).join('');
 const MEETINGS = [
   { title: 'Pre-match briefing', when: 'Today · 18:00', where: 'Video call' },
   { title: 'Recovery review', when: 'Tomorrow · 10:00', where: 'Staff room' },
@@ -568,6 +666,7 @@ const NEWS = [
 /* Router */
 const body = document.getElementById('phoneBody');
 let stack = ['v-dashboard'];
+let role = 'staff';
 function show(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === id));
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === id));
@@ -575,9 +674,21 @@ function show(id) {
 }
 function go(id) { stack.push(id); show(id); }
 function back() { if (stack.length > 1) stack.pop(); show(stack[stack.length - 1]); }
-document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+// Delegated: one listener for every [data-go], including rows rendered later.
+document.addEventListener('click', (e) => {
+  const t = e.target && e.target.closest ? e.target.closest('[data-go]') : null;
+  if (t && t.dataset.go) go(t.dataset.go);
+});
 document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', back));
 document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { stack = [b.dataset.tab]; show(b.dataset.tab); }));
+document.querySelectorAll('[data-role]').forEach(b => b.addEventListener('click', () => {
+  role = b.dataset.role;
+  document.body.dataset.role = role;
+  document.querySelectorAll('[data-role]').forEach(x => x.classList.toggle('on', x === b));
+  stack = ['v-dashboard'];
+  renderReports();
+  show('v-dashboard');
+}));
 
 /* Squad */
 let cat = 'Seniors', pos = 'ALL';
@@ -617,14 +728,24 @@ function closeSheet() {
 }
 renderSquad();
 
-/* Reports with verify toggle */
+/* Reports with verify toggle (staff) or own list (player) */
+const STAFF_REPORTS = [
+  { who: 'S. Gharbi', what: 'Hat-trick vs ASF Sousse · 90 min', verified: false },
+  { who: 'M. Hamdi', what: 'Clean sheet vs CA · subbed 70 min', verified: false },
+  { who: 'Y. Ben Amor', what: 'Assist vs EST · full match', verified: true },
+];
+const MY_REPORTS = [
+  { who: 'Hat-trick vs ASF Sousse', what: '90 min · verified', verified: true },
+  { who: 'Brace vs Club Africain', what: 'Awaiting verification', verified: false },
+];
 function renderReports() {
-  document.getElementById('reportList').innerHTML = REPORTS.map((r, i) =>
-    `<div class="rep"><div class="rh"><b>${r.who}</b>
-     <button class="vpill ${r.verified ? 'yes' : 'no'}" data-v="${i}">${r.verified ? 'Verified' : 'Pending'}</button></div>
+  const list = role === 'staff' ? STAFF_REPORTS : MY_REPORTS;
+  document.getElementById('reportList').innerHTML = list.map((r, i) =>
+    `<div class="rep"><div class="rh"><b>${r.who}</b>${
+      role === 'staff' ? `<button class="vpill ${r.verified ? 'yes' : 'no'}" data-v="${i}">${r.verified ? 'Verified' : 'Pending'}</button>` : ''}</div>
      <div class="rd">${r.what}</div></div>`).join('');
   document.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => {
-    REPORTS[Number(b.dataset.v)].verified = !REPORTS[Number(b.dataset.v)].verified;
+    STAFF_REPORTS[Number(b.dataset.v)].verified = !STAFF_REPORTS[Number(b.dataset.v)].verified;
     renderReports();
   }));
 }
