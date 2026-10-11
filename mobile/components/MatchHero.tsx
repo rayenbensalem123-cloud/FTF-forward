@@ -111,10 +111,13 @@ const styles = StyleSheet.create({
   topRow: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space.sm },
   eyebrow: { fontSize: 10, fontWeight: '700', letterSpacing: 2.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.92)' },
   competition: { color: 'rgba(255,255,255,0.72)', fontSize: 11, fontWeight: '600', flexShrink: 1, textAlign: 'right' },
-  teams: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12 },
-  team: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 },
+  // Side columns get the extra room (1.2 vs 0.8) so a 7-letter name like
+  // "Tunisie" never truncates against the date; the date column only needs
+  // ~80px and takes what is left.
+  teams: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12 },
+  team: { flex: 1.2, flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 },
   teamRight: { justifyContent: 'flex-end' },
-  center: { flex: 1.15, alignItems: 'center' },
+  center: { flex: 0.8, alignItems: 'center' },
   // Proper circular crests: a white ring around a dark disc, with the emblem
   // at badge size in the middle -- the header's language. Neither the crest
   // nor a flag is ever cropped to fill the disc.

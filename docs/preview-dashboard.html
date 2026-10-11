@@ -34,9 +34,8 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .dots i{display:block;width:16px;height:9px;border:1.4px solid var(--white);border-radius:2.5px;opacity:.9}
 
 .hdr{display:flex;align-items:center;gap:12px;padding:8px 16px}
-.logo-tile{width:42px;height:42px;border-radius:21px;overflow:hidden;flex:none;
-  background:rgba(255,255,255,.07)}
-.logo-tile img{width:100%;height:100%;object-fit:cover}
+.logo-tile{width:38px;height:38px;flex:none}
+.logo-tile img{width:100%;height:100%;object-fit:contain}
 .hdr-txt{flex:1;min-width:0}
 .title-row{display:flex;align-items:center;gap:8px}
 .hdr-title{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
@@ -71,15 +70,15 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .eyebrow{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
   color:rgba(255,255,255,.92)}
 .competition{font-size:11px;font-weight:600;color:rgba(255,255,255,.72);text-align:right}
-.teams{display:flex;align-items:center;gap:8px;margin-top:12px}
-.team{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+.teams{display:flex;align-items:center;gap:6px;margin-top:12px}
+.team{flex:1.2;display:flex;align-items:center;gap:8px;min-width:0}
 .team.r{justify-content:flex-end}
 .crest{width:46px;height:46px;border-radius:23px;overflow:hidden;flex:none;
   background:var(--card-raised);border:2px solid rgba(255,255,255,.35);
   display:grid;place-items:center;font-size:18px}
 .crest img{width:32px;height:32px;object-fit:contain}
 .crest .flag{width:30px;height:22px}
-.center{flex:1.15;text-align:center}
+.center{flex:.8;text-align:center}
 .big{font-family:Oswald;font-size:26px;font-weight:700;letter-spacing:.5px;color:#fff;
   font-variant-numeric:tabular-nums;line-height:28px}
 /* One timer line under the teams, centered on the date */
@@ -310,7 +309,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The background is visible now.</b> Photo opacity up 0.16 to 0.38, with a wash that starts lighter up top (0.55) and deepens to 0.92 where the list content lives. The previous values disappeared on a phone panel.</li>
+      <li><b>Header logo sits raw, banner names get room.</b> The header crest loses its circle entirely -- the file's corners are transparent, verified pixel by pixel -- and the teams row gives its extra width to the side columns so "Tunisie" renders in full.</li>
       <li><b>Crests are proper circles.</b> A white ring with the flag cropped to fill the disc -- no distortion, no letterbox floating in a translucent circle -- and a plain "?" when there is no opponent.</li>
       <li><b>The bingo list shows player pictures.</b> Each row opens with a small avatar -- the roster photo when the username matches a player, initials otherwise -- instead of the rank numeral.</li>
       <li><b>News carries the team photo.</b> The feed has no thumbnails, so the squad photo anchors the card above the live headline, source and age. Tapping opens the article; "See all" opens the news screen.</li>

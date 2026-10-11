@@ -47,9 +47,9 @@ export function AppHeader({
         </TouchableOpacity>
       )}
       {/* Bundled in the app, so it shows offline and on the first frame. Same crest as the website. */}
-      <View style={styles.logoTile}>
-        <Image source={require('../assets/ftf-logo.png')} style={styles.logo} resizeMode="contain" accessibilityLabel="FTF crest" />
-      </View>
+      {/* Placed directly with no tile and no ring: the file's corners are
+          transparent, so the emblem sits on the header as-is. */}
+      <Image source={require('../assets/ftf-logo.png')} style={styles.logo} resizeMode="contain" accessibilityLabel="FTF crest" />
       <View style={styles.titles}>
         <View style={styles.titleRow}>
           <Text style={styles.title} numberOfLines={1}>{title ?? t('appName')}</Text>
@@ -86,13 +86,9 @@ const styles = StyleSheet.create({
     width: 38, height: 38, borderRadius: 19, backgroundColor: colors.card,
     borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center',
   },
-  // The crest sits directly on the header. The earlier version put it on a
-  // white disc, which read as a badge behind the logo rather than the logo.
-  logoTile: {
-    width: 42, height: 42, borderRadius: 21, overflow: 'hidden',
-    backgroundColor: 'rgba(255,255,255,0.07)',
-  },
-  logo: { width: 30, height: 30 },
+  // No tile, no ring: the file's corners are transparent, so the emblem sits
+  // on the header as-is.
+  logo: { width: 38, height: 38 },
   titles: { flex: 1, minWidth: 0 },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   title: {
