@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { ForwardChevron } from '@/components/ForwardChevron';
-import { colors, sectionTitle, space } from '@/constants/theme';
+import { accent, colors, sectionTitle, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 
 /**

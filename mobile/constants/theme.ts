@@ -91,18 +91,32 @@ export const typeScale = {
 } as const;
 
 /**
- * The single strongest repeated motif of the redesign: gold, uppercase,
- * above every section. Screens reuse this so the eyebrow looks identical
- * everywhere. Now set in the display face at the design's 18px -- the colour
- * stays gold because that is the FTF accent, only the face changed.
+ * The single strongest repeated motif of the redesign: uppercase, above every
+ * section, set in the display face. Screens reuse this so the eyebrow looks
+ * identical everywhere.
+ *
+ * White, not gold: that is how the model heads every section (its "CALENDRIER"
+ * is white Oswald over a near-black page), and it is what makes the gold read
+ * as an accent on the few things that are actually gold.
  */
 export const sectionTitle = {
   fontFamily: fonts.display,
-  color: colors.gold,
+  color: colors.white,
   fontSize: 18,
   fontWeight: '700' as const,
   letterSpacing: 0.45,
   textTransform: 'uppercase' as const,
   marginBottom: 12,
 } as const;
+
+/**
+ * The model's accent. It is not a new hue -- #E30613 is the federation's own
+ * red and was already `colors.red` for danger -- it is simply promoted from a
+ * status colour to the thing that carries "this is interactive": the header
+ * bar, the see-all link, the icons in the action row, the active tab.
+ *
+ * It sits on navy, so it is never used as small text on a dark card where it
+ * would fail contrast; gold stays in that job.
+ */
+export const accent = colors.red;
 

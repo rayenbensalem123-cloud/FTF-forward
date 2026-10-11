@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FTF Forward — Home, after 3e75b89</title>
+<title>FTF Forward — Home, after the header rework</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -18,14 +18,11 @@
   --r-sm:10px; --r-md:16px; --r-card:20px; --r-pill:999px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  background:#070d18; color:var(--white);
-  font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;
-  padding:40px 24px 72px;
-}
+body{background:#070d18;color:var(--white);
+  font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;padding:40px 24px 72px}
 .page{max-width:1180px;margin:0 auto}
 h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
-.sub{color:var(--muted);font-size:13px;margin-top:6px;max-width:74ch;line-height:1.6}
+.sub{color:var(--muted);font-size:13px;margin-top:6px;max-width:76ch;line-height:1.6}
 .legend{display:flex;gap:18px;flex-wrap:wrap;margin:26px 0 34px}
 .legend div{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}
 .sw{width:13px;height:13px;border-radius:4px;border:1px solid var(--hairline)}
@@ -44,20 +41,23 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 .dots{display:flex;gap:5px;align-items:center}
 .dots i{display:block;width:16px;height:9px;border:1.4px solid var(--white);border-radius:2.5px;opacity:.9}
 
-/* Header -- AppHeader.tsx */
+/* Header -- components/AppHeader.tsx, content-first, no bar */
 .hdr{display:flex;align-items:center;gap:12px;padding:6px 0 4px}
-.logo-tile{width:44px;height:44px;border-radius:12px;background:var(--card-raised);
+.logo-tile{width:42px;height:42px;border-radius:21px;background:var(--card-raised);
   border:1px solid var(--hairline);display:grid;place-items:center;overflow:hidden;flex:none}
 .logo-tile img{width:30px;height:30px}
 .hdr-txt{flex:1;min-width:0}
-.hdr-title{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
-  text-transform:uppercase;line-height:1.1}
+.hdr-title{font-family:Oswald;font-size:20px;font-weight:700;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--white);line-height:23px}
 .hdr-sub{font-size:11px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;
   color:var(--muted);margin-top:2px}
-.bell{width:40px;height:40px;border-radius:14px;background:var(--card);
+.round{width:38px;height:38px;border-radius:19px;background:var(--card);
   border:1px solid var(--hairline);display:grid;place-items:center;position:relative;flex:none}
-.bell b{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;
+.round b{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;
   background:var(--red);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+/* The broadcast rule: red into gold, fading out */
+.rule{height:2px;border-radius:1px;margin-top:8px;
+  background:linear-gradient(90deg,var(--red) 0%,var(--gold) 45%,transparent 100%)}
 
 /* IconTile -- components/IconTile.tsx */
 .actions{display:flex;gap:12px;align-items:flex-start}
@@ -97,14 +97,14 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 .cal{margin-left:auto;background:rgba(246,199,68,.14);color:var(--gold);border-radius:var(--r-pill);
   padding:3px 8px;font-size:9px;font-weight:800;text-transform:uppercase;display:flex;gap:4px;align-items:center}
 
-/* SectionHeader -- components/SectionHeader.tsx */
+/* SectionHeader -- components/SectionHeader.tsx: white title, red link */
 .sec{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .sec h2{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
-  text-transform:uppercase;color:var(--gold);line-height:1.1}
-.sec a{color:var(--gold);font-size:12px;font-weight:600;text-decoration:none;
+  text-transform:uppercase;color:var(--white);line-height:1.1}
+.sec a{color:var(--red);font-size:12px;font-weight:600;text-decoration:none;
   display:flex;align-items:center;gap:2px}
 
-/* Readiness */
+/* Panels */
 .panel{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);padding:16px}
 .ready{display:flex;align-items:baseline;gap:10px;margin-top:12px}
 .ready b{font-size:42px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
@@ -160,20 +160,20 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 </head>
 <body>
 <div class="page">
-  <h1>Home screen — what changed in 3e75b89</h1>
+  <h1>Home screen — the header rework</h1>
   <p class="sub">
     Rendered from the real tokens in <code>mobile/constants/theme.ts</code> and the real component
-    layouts. The only difference from the device is that Oswald is loaded from Google Fonts here and
-    bundled on the phone. The two frames are the <b>same screen for the two roles</b> — the tile row
-    is the part that differs.
+    layouts. The two frames are the <b>same screen for the two roles</b> — the tile row is the one
+    part that differs. Oswald loads from Google Fonts here and is bundled on the phone, so the
+    device is a hair narrower than this.
   </p>
 
   <div class="legend">
     <div><span class="sw" style="background:#0C1F3D"></span> navy #0C1F3D — page</div>
     <div><span class="sw" style="background:#101B33"></span> card #101B33</div>
     <div><span class="sw" style="background:#112950"></span> raised #112950</div>
-    <div><span class="sw" style="background:#F6C744"></span> gold #F6C744 — accent</div>
-    <div><span class="sw" style="background:#E30613"></span> red #E30613 — danger</div>
+    <div><span class="sw" style="background:#F6C744"></span> gold #F6C744</div>
+    <div><span class="sw" style="background:#E30613"></span> red #E30613</div>
     <div><span class="sw" style="background:rgba(148,170,210,.35)"></span> hairline .18</div>
   </div>
 
@@ -192,15 +192,15 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
               <div class="hdr-title">FTF Forward</div>
               <div class="hdr-sub">Staff</div>
             </div>
-            <div class="bell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
+            <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
           </div>
+          <div class="rule"></div>
 
-          <!-- NEW: 4-tile row, both roles -->
           <div class="actions hi">
-            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span>Camp schedule</span></a>
-            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span><span>Meetings</span></a>
-            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 10h6"/></svg></span><span>Reports</span></a>
-            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.01.2-.01.4-.01.6v5.8a4 4 0 0 0 3.98 3.59c.2.01.4.01.6.01h10.64c.2 0 .4 0 .6-.01A4 4 0 0 0 21.3 15V9.2c0-.2 0-.4-.01-.6A4 4 0 0 0 17.32 5Z"/></svg></span><span>Games</span></a>
+            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span>Camp schedule</span></a>
+            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span><span>Meetings</span></a>
+            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 10h6"/></svg></span><span>Reports</span></a>
+            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.01.2-.01.4-.01.6v5.8a4 4 0 0 0 3.98 3.59c.2.01.4.01.6.01h10.64c.2 0 .4 0 .6-.01A4 4 0 0 0 21.3 15V9.2c0-.2 0-.4-.01-.6A4 4 0 0 0 17.32 5Z"/></svg></span><span>Games</span></a>
           </div>
 
           <div class="hero">
@@ -268,15 +268,15 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
               <div class="hdr-title">FTF Forward</div>
               <div class="hdr-sub">Player</div>
             </div>
-            <div class="bell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+            <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
           </div>
+          <div class="rule"></div>
 
-          <!-- NEW: these four were unreachable for players before -->
           <div class="actions hi">
-            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.01.2-.01.4-.01.6v5.8a4 4 0 0 0 3.98 3.59c.2.01.4.01.6.01h10.64c.2 0 .4 0 .6-.01A4 4 0 0 0 21.3 15V9.2c0-.2 0-.4-.01-.6A4 4 0 0 0 17.32 5Z"/></svg></span><span>Games</span></a>
-            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg></span><span>News</span></a>
-            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span><span>Career</span></a>
-            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 8h4M14 12h4M6 16h12"/></svg></span><span>ID card</span></a>
+            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.01.2-.01.4-.01.6v5.8a4 4 0 0 0 3.98 3.59c.2.01.4.01.6.01h10.64c.2 0 .4 0 .6-.01A4 4 0 0 0 21.3 15V9.2c0-.2 0-.4-.01-.6A4 4 0 0 0 17.32 5Z"/></svg></span><span>Games</span></a>
+            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg></span><span>News</span></a>
+            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span><span>Career</span></a>
+            <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 8h4M14 12h4M6 16h12"/></svg></span><span>ID card</span></a>
           </div>
 
           <div class="hero">
@@ -337,12 +337,11 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The highlighted tile row is new, and it is the important change.</b> Player tabs are Home, Schedule, Stats and Profile — the "More" tab holding every tool is hidden for them, so a player previously had <b>no route at all</b> to Games, News, Career or the ID card. Only <code>camp-schedule</code> actually checks role; the rest render fine. Four features are now one tap away.</li>
-      <li><b>Tiles are the design's shape, not the old 2-column card grid.</b> Four features used to fill a whole screen and push everything below the fold. <code>IconTile</code> divides the row with <code>flex:1</code>, so the same four cost about a third of the height and read as a toolbar.</li>
-      <li><b>Headings are one component now.</b> <code>SectionHeader</code> — Oswald 18/700 uppercase in gold, with a "See all" link where a destination exists. Four screens had been carrying their own inline copy of the old 13px style, which is why headings looked different per screen.</li>
-      <li><b>Camp schedule's day headers</b> — the strongest headings on that screen, since a parsed programme is organised by them — take the shared display heading too.</li>
-      <li><b>Typeface throughout is Oswald</b>, bundled on the device. Here it loads from Google Fonts, so this preview is a hair wider than the phone will be.</li>
-      <li><b>Colours are untouched.</b> Navy page, gold accent, red for danger — every value above is transcribed from <code>theme.ts</code>, nothing invented.</li>
+      <li><b>The header is no longer a bar.</b> A filled red bar was tried and rejected -- on a dark page it reads heavier and older than everything below it, and it fights the cards for the top of the screen. Now the crest, the wordmark and the meta line sit straight on the page, and a 2px rule fades from the federation red through gold and out to nothing underneath them. The brand colours still meet, at a weight that does not compete with content.</li>
+      <li><b>Section titles are white, not gold.</b> That is how the model heads every section -- its "CALENDRIER" is white Oswald over a near-black page -- and it is what lets gold go back to being an accent on the few things that are actually gold.</li>
+      <li><b>Red is the interactive accent.</b> The see-all link and the action-tile icons are the federation's own #E30613, promoted from a status colour to the thing that says "this is tappable". It is never used as small text on a dark card, where it would fail contrast; gold stays in that job.</li>
+      <li><b>The highlighted tile row is the IA fix.</b> Player tabs are Home, Schedule, Stats and Profile, and the "More" tab holding every tool is hidden for them, so a player previously had <b>no route at all</b> to Games, News, Career or the ID card. Only <code>camp-schedule</code> actually checks role; the rest render fine. Four features are now one tap away.</li>
+      <li><b>Colours are untouched.</b> Navy page, gold accent, red for danger -- every value above is transcribed from <code>theme.ts</code>, nothing invented.</li>
     </ul>
   </div>
 </div>

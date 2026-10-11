@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import type { LucideIcon } from 'lucide-react-native';
-import { colors, radius, typeScale } from '@/constants/theme';
+import { accent, colors, radius, typeScale } from '@/constants/theme';
 
 /**
  * The design's quick-action tile: a rounded square with the icon in the accent
