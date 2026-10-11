@@ -1,9 +1,8 @@
 import React from 'react';
-import { Alert, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Calendar, CalendarPlus, ClipboardList, Gamepad2, IdCard, MapPin, Newspaper, Trophy, Video } from 'lucide-react-native';
+import { Calendar, ClipboardList, Gamepad2, IdCard, Newspaper, Trophy, Video } from 'lucide-react-native';
 import { AnnouncementsCard } from '@/components/AnnouncementsCard';
 import { AppHeader } from '@/components/AppHeader';
 import { Avatar } from '@/components/Avatar';
@@ -14,19 +13,16 @@ import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchTravelCard } from '@/components/MatchTravelCard';
 import { CheckInCard, CheckInSummary } from '@/components/CheckIn';
 import { MatchDayCard } from '@/components/MatchDayCard';
-import { Countdown } from '@/components/Countdown';
-import { ForwardChevron } from '@/components/ForwardChevron';
+import { MatchHero } from '@/components/MatchHero';
+import { PillTabs } from '@/components/PillTabs';
 import { Flag } from '@/components/Flag';
 import { SyncBanner } from '@/components/SyncBanner';
-import { flagCodeFor } from '@/lib/countryFlags';
-import { colors, radius, shadow, space } from '@/constants/theme';
+import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
 import { formatDate } from '@/lib/format';
-import { addMatchToCalendar } from '@/lib/calendar';
-import { CS } from '@/i18n/careerStrings';
-import type { Match } from '@/types';
+import type { Category, Match } from '@/types';
 
 /**
  * The design puts four compact tiles straight under the header and gives them
@@ -59,22 +55,14 @@ function resultOf(m: Match): 'W' | 'D' | 'L' | null {
 
 export default function HomeScreen() {
   const { t, language } = useLanguage();
-  const CT = CS[language];
   const router = useRouter();
   const { players, matches, nextMatch, upcoming, refresh, refreshing } = usePlayers();
   const { user } = useAuth();
   const isStaff = user?.role === 'staff' || user?.role === 'admin';
-  const [addingToCal, setAddingToCal] = React.useState(false);
+  // The model's pill row switches the age category, and the player lists on
+  // this screen follow it rather than ignoring it.
+  const [category, setCategory] = React.useState<Category>('Seniors');
 
-  const onAddToCalendar = async () => {
-    if (!nextMatch) return;
-    setAddingToCal(true);
-    const res = await addMatchToCalendar(nextMatch);
-    setAddingToCal(false);
-    if (res === 'added') Alert.alert(CT.addToCalendar, CT.addedToCalendar);
-    else if (res === 'denied') Alert.alert(CT.addToCalendar, CT.calendarDenied);
-    else Alert.alert(CT.addToCalendar, CT.calendarFailed);
-  };
   const known = players.filter((p) => p.status !== 'unknown');
   const total = known.length;
   const fitCount = known.filter((p) => p.status === 'fit').length;
@@ -84,13 +72,14 @@ export default function HomeScreen() {
   // A player account owns a members row: player.id is String(member_id).
   const me = user?.memberId != null ? players.find((p) => p.id === String(user.memberId)) ?? null : null;
 
-  const topPlayers = [...players].sort((a, b) => b.caps - a.caps || b.goals - a.goals).slice(0, 4);
+  const topPlayers = [...players]
+    .filter((p) => p.category === category)
+    .sort((a, b) => b.caps - a.caps || b.goals - a.goals)
+    .slice(0, 4);
   const results = [...matches]
     .filter((m) => resultOf(m) !== null)
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 4);
-
-  const code = (name: string) => name.replace(/[^\p{L}]/gu, '').slice(0, 3).toUpperCase() || '—';
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -102,89 +91,29 @@ export default function HomeScreen() {
         <AppHeader subtitle={user ? t(isStaff ? 'roleStaff' : 'rolePlayer') : undefined} />
         <SyncBanner />
 
-        {/* The design's four-tile row, directly under the header for both roles */}
+        {/* The model's pill row: switches the age category, and the player
+            lists below follow it rather than ignoring it. */}
+        <PillTabs
+          tabs={[
+            { value: 'Seniors', label: t('seniors') },
+            { value: 'U-20', label: t('u20') },
+            { value: 'U-17', label: t('u17') },
+          ]}
+          value={category}
+          onChange={setCategory}
+        />
+
+        {/* The model's hero: the next match on a photo of the squad, with one
+            full-width call to action. Replaces the old gradient card, which
+            carried a countdown and three competing buttons. */}
+        <MatchHero match={nextMatch} />
+
+        {/* The design's four-tile row, directly under the hero for both roles */}
         <View style={styles.actions}>
           {(isStaff ? STAFF_ACTIONS : PLAYER_ACTIONS).map((a) => (
             <IconTile key={a.href} href={a.href} icon={a.icon} label={t(a.title)} />
           ))}
         </View>
-
-        {/* Hero: upcoming match — the broadcast card of the redesign */}
-        <LinearGradient
-          colors={['#B30011', '#5B0A24', colors.navy]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.hero}
-        >
-          <View style={styles.heroTop}>
-            <View style={styles.compBadge}>
-              <Text style={styles.compText} numberOfLines={1}>
-                {nextMatch?.competition || nextMatch?.category || 'WNT'}
-              </Text>
-            </View>
-            <Text style={styles.heroLabel}>
-              {t('nextMatch')}
-              {nextMatch ? ` · ${formatDate(nextMatch.date)}` : ''}
-            </Text>
-          </View>
-
-          <View style={styles.teams}>
-            <View style={styles.team}>
-              <View style={styles.crest}><Flag name="Tunisia" width={30} /></View>
-              <Text style={styles.teamName} numberOfLines={1}>Tunisia</Text>
-            </View>
-            <Text style={styles.vs}>VS</Text>
-            <View style={[styles.team, { justifyContent: 'flex-end' }]}>
-              <Text style={[styles.teamName, { textAlign: 'right' }]} numberOfLines={1}>
-                {nextMatch?.opponent || t('noMatchScheduled')}
-              </Text>
-              <View style={styles.crest}>
-                {nextMatch && flagCodeFor(nextMatch.opponent) ? (
-                  <Flag name={nextMatch.opponent} width={30} />
-                ) : (
-                  <Text style={styles.crestText}>{nextMatch ? code(nextMatch.opponent) : '?'}</Text>
-                )}
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.bottomRow}>
-            <Countdown
-              target={nextMatch ? `${nextMatch.date}T00:00:00` : ''}
-              labels={{ days: t('days'), hrs: t('hrs'), min: t('min'), sec: t('sec') }}
-            />
-            <TouchableOpacity
-              style={styles.heroBtn}
-              onPress={() => router.push('/match-details')}
-              accessibilityRole="button"
-              accessibilityLabel={t('matchDetails')}
-            >
-              <Text style={styles.heroBtnText} numberOfLines={1}>{t('matchDetails')}</Text>
-              <ForwardChevron color={colors.navy} size={14} />
-            </TouchableOpacity>
-          </View>
-
-          {!!nextMatch && (
-            <View style={styles.infoRow}>
-              {!!nextMatch.venue && (
-                <>
-                  <MapPin color={colors.gold} size={12} />
-                  <Text style={[styles.infoText, { flex: 1 }]} numberOfLines={1}>{nextMatch.venue}</Text>
-                </>
-              )}
-              <TouchableOpacity
-                style={styles.calChip}
-                onPress={onAddToCalendar}
-                disabled={addingToCal}
-                accessibilityRole="button"
-                accessibilityLabel={CT.addToCalendar}
-              >
-                <CalendarPlus color={colors.gold} size={12} />
-                <Text style={styles.calChipText}>{CT.addToCalendar}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </LinearGradient>
 
         <MatchDayCard match={nextMatch} />
 
@@ -339,34 +268,6 @@ const styles = StyleSheet.create({
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
   actions: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md },
 
-  /* Hero */
-  hero: { borderRadius: radius.card, padding: space.lg, overflow: 'hidden', ...shadow.hero },
-  heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: space.sm },
-  compBadge: { backgroundColor: colors.gold, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4, flexShrink: 1 },
-  compText: { color: colors.navy, fontWeight: '900', fontSize: 10, letterSpacing: 1, textTransform: 'uppercase' },
-  heroLabel: { color: 'rgba(255,255,255,0.8)', fontSize: 12, fontWeight: '600' },
-  teams: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginVertical: space.md },
-  team: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, minWidth: 0 },
-  vsRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  crest: {
-    width: 48, height: 48, borderRadius: 24, backgroundColor: colors.cardRaised,
-    borderWidth: 2, borderColor: 'rgba(255,255,255,0.3)', alignItems: 'center', justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  calChip: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(246,199,68,0.14)', borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3 },
-  calChipText: { color: colors.gold, fontSize: 9, fontWeight: '800', textTransform: 'uppercase' },
-  crestText: { color: colors.white, fontWeight: '800', fontSize: 11 },
-  teamName: { color: colors.white, fontWeight: '700', fontSize: 13, flexShrink: 1 },
-  vs: { color: colors.gold, fontWeight: '900', fontSize: 14, letterSpacing: 0.7 },
-  infoRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: space.sm },
-  infoText: { color: 'rgba(255,255,255,0.7)', fontSize: 12, flexShrink: 1 },
-  bottomRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  heroBtn: {
-    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2,
-    height: 36, borderRadius: radius.pill, backgroundColor: colors.gold, marginLeft: space.sm,
-  },
-  heroBtnText: { color: colors.navy, fontWeight: '800', fontSize: 12, letterSpacing: 0.6, textTransform: 'uppercase' },
-
   /* Sections */
   group: { gap: space.sm },
 
@@ -422,6 +323,7 @@ const styles = StyleSheet.create({
   scorePill: { borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 6 },
   scoreText: { fontSize: 14, fontWeight: '900', fontVariant: ['tabular-nums'] },
 
+  vsRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   agendaRow: { flexDirection: 'row', alignItems: 'center', gap: space.lg, paddingVertical: 14 },
   agendaTime: { color: colors.gold, fontSize: 15, fontWeight: '800', width: 74, fontVariant: ['tabular-nums'] },
   agendaTitle: { color: colors.white, fontSize: 15, fontWeight: '700' },

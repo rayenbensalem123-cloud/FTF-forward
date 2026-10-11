@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FTF Forward — Home, after the header rework</title>
+<title>FTF Forward — Home, following the Lovable model</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -22,7 +22,7 @@ body{background:#070d18;color:var(--white);
   font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;padding:40px 24px 72px}
 .page{max-width:1180px;margin:0 auto}
 h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
-.sub{color:var(--muted);font-size:13px;margin-top:6px;max-width:76ch;line-height:1.6}
+.sub{color:var(--muted);font-size:13px;margin-top:6px;max-width:78ch;line-height:1.6}
 .legend{display:flex;gap:18px;flex-wrap:wrap;margin:26px 0 34px}
 .legend div{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}
 .sw{width:13px;height:13px;border-radius:4px;border:1px solid var(--hairline)}
@@ -33,7 +33,6 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
   border:1px solid rgba(148,170,210,.14);box-shadow:0 24px 60px rgba(0,0,0,.6)}
 .phone-label{font-family:Oswald;font-size:13px;font-weight:700;letter-spacing:2.5px;
   text-transform:uppercase;color:var(--gold);margin-bottom:12px}
-.body{padding:14px 16px 26px;display:flex;flex-direction:column;gap:16px}
 
 /* Status bar */
 .status{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;
@@ -41,23 +40,55 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 .dots{display:flex;gap:5px;align-items:center}
 .dots i{display:block;width:16px;height:9px;border:1.4px solid var(--white);border-radius:2.5px;opacity:.9}
 
-/* Header -- components/AppHeader.tsx, content-first, no bar */
-.hdr{display:flex;align-items:center;gap:12px;padding:6px 0 4px}
-.logo-tile{width:42px;height:42px;border-radius:21px;background:var(--card-raised);
-  border:1px solid var(--hairline);display:grid;place-items:center;overflow:hidden;flex:none}
+/* Header -- components/AppHeader.tsx: full-bleed red bar */
+.hdr{background:var(--red);display:flex;align-items:center;gap:12px;
+  padding:10px 16px;margin:0}
+.logo-tile{width:38px;height:38px;border-radius:19px;background:#fff;
+  display:grid;place-items:center;overflow:hidden;flex:none}
 .logo-tile img{width:30px;height:30px}
 .hdr-txt{flex:1;min-width:0}
-.hdr-title{font-family:Oswald;font-size:20px;font-weight:700;letter-spacing:.6px;
-  text-transform:uppercase;color:var(--white);line-height:23px}
+.hdr-title{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
+  text-transform:uppercase;color:#fff;line-height:21px}
 .hdr-sub{font-size:11px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;
-  color:var(--muted);margin-top:2px}
-.round{width:38px;height:38px;border-radius:19px;background:var(--card);
-  border:1px solid var(--hairline);display:grid;place-items:center;position:relative;flex:none}
+  color:rgba(255,255,255,.82);margin-top:2px}
+.round{width:36px;height:36px;border-radius:18px;background:rgba(0,0,0,.22);
+  display:grid;place-items:center;position:relative;flex:none}
 .round b{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;
-  background:var(--red);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;padding:0 4px}
-/* The broadcast rule: red into gold, fading out */
-.rule{height:2px;border-radius:1px;margin-top:8px;
-  background:linear-gradient(90deg,var(--red) 0%,var(--gold) 45%,transparent 100%)}
+  background:var(--navy);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+
+.body{padding:14px 16px 26px;display:flex;flex-direction:column;gap:16px}
+
+/* PillTabs -- components/PillTabs.tsx */
+.pills{display:flex;gap:8px;padding:2px 0}
+.pill{border-radius:var(--r-pill);padding:6px 16px;font-size:12px;font-weight:700;
+  text-transform:uppercase;border:1px solid var(--hairline);background:var(--card);color:var(--muted)}
+.pill.on{background:var(--red);border-color:var(--red);color:#fff}
+
+/* MatchHero -- components/MatchHero.tsx: photo card */
+.hero{border-radius:var(--r-card);overflow:hidden;position:relative;min-height:210px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  background:linear-gradient(180deg,rgba(6,12,24,.82) 0%,rgba(6,12,24,.35) 45%,rgba(6,12,24,.62) 100%),
+             url('../mobile/assets/home-bg.jpg') center/cover no-repeat}
+.hero-in{padding:16px}
+.eyebrow{font-family:Inter;font-size:10px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:rgba(255,255,255,.92)}
+.competition{font-size:12px;font-weight:600;color:rgba(255,255,255,.72);margin-top:2px}
+.teams{display:flex;align-items:center;gap:8px;margin-top:14px}
+.team{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+.team.r{justify-content:flex-end}
+.crest{width:42px;height:42px;border-radius:21px;background:var(--card-raised);
+  border:1px solid rgba(255,255,255,.35);display:grid;place-items:center;flex:none;font-size:18px}
+.crest img{width:34px;height:34px}
+.tname{font-family:Oswald;font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;flex:1;min-width:0}
+.tname.r{text-align:right}
+.center{flex:1.15;text-align:center}
+.big{font-family:Oswald;font-size:26px;font-weight:700;letter-spacing:.5px;color:#fff;
+  font-variant-numeric:tabular-nums}
+.venue{display:flex;align-items:center;gap:5px;margin-top:12px;font-size:12px;color:rgba(255,255,255,.75)}
+.cta{height:44px;border-radius:var(--r-pill);background:var(--red);color:#fff;
+  display:flex;align-items:center;justify-content:center;gap:4px;margin-top:14px;
+  font-size:13px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+.cta span{font-size:18px;font-weight:700;line-height:18px}
 
 /* IconTile -- components/IconTile.tsx */
 .actions{display:flex;gap:12px;align-items:flex-start}
@@ -67,35 +98,6 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
   border:1px solid var(--hairline);display:grid;place-items:center}
 .tile span{font-size:12px;font-weight:600;color:var(--white);text-align:center;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-
-/* Hero */
-.hero{border-radius:var(--r-card);padding:16px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,#B30011 0%,#5B0A24 52%,#0C1F3D 100%);
-  box-shadow:0 8px 20px rgba(0,0,0,.5)}
-.hero-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.comp{background:var(--gold);color:var(--navy);border-radius:var(--r-pill);
-  padding:4px 10px;font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
-.hero-lbl{font-size:12px;font-weight:600;color:rgba(255,255,255,.8)}
-.teams{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0}
-.team{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
-.team.r{justify-content:flex-end}
-.crest{width:48px;height:48px;border-radius:24px;background:var(--card-raised);
-  border:2px solid rgba(255,255,255,.3);display:grid;place-items:center;flex:none;font-size:19px}
-.crest img{width:30px;height:30px}
-.tname{font-size:13px;font-weight:700;flex:1;min-width:0}
-.tname.r{text-align:right}
-.vs{color:var(--gold);font-family:Oswald;font-weight:900;font-size:14px;letter-spacing:.7px}
-.count{display:flex;gap:6px}
-.count div{background:rgba(0,0,0,.28);border-radius:var(--r-sm);padding:6px 9px;text-align:center;min-width:44px}
-.count b{display:block;font-family:Oswald;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
-.count span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.65)}
-.cta{flex:1;height:36px;border-radius:var(--r-pill);background:var(--gold);color:var(--navy);
-  display:flex;align-items:center;justify-content:center;gap:3px;margin-left:8px;
-  font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
-.hero-row{display:flex;align-items:center;gap:8px}
-.venue{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:rgba(255,255,255,.7)}
-.cal{margin-left:auto;background:rgba(246,199,68,.14);color:var(--gold);border-radius:var(--r-pill);
-  padding:3px 8px;font-size:9px;font-weight:800;text-transform:uppercase;display:flex;gap:4px;align-items:center}
 
 /* SectionHeader -- components/SectionHeader.tsx: white title, red link */
 .sec{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -160,7 +162,7 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 </head>
 <body>
 <div class="page">
-  <h1>Home screen — the header rework</h1>
+  <h1>Home screen — following the Lovable model</h1>
   <p class="sub">
     Rendered from the real tokens in <code>mobile/constants/theme.ts</code> and the real component
     layouts. The two frames are the <b>same screen for the two roles</b> — the tile row is the one
@@ -184,46 +186,42 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
       <div class="phone-label">Staff</div>
       <div class="phone">
         <div class="status"><span>9:41</span><span class="dots"><i></i><i style="width:22px"></i></span></div>
-        <div class="body">
 
-          <div class="hdr">
-            <div class="logo-tile"><img src="../mobile/assets/ftf-logo.png" alt=""></div>
-            <div class="hdr-txt">
-              <div class="hdr-title">FTF Forward</div>
-              <div class="hdr-sub">Staff</div>
-            </div>
-            <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
+        <div class="hdr">
+          <div class="logo-tile"><img src="../mobile/assets/ftf-logo.png" alt=""></div>
+          <div class="hdr-txt">
+            <div class="hdr-title">FTF Forward</div>
+            <div class="hdr-sub">Staff</div>
           </div>
-          <div class="rule"></div>
+          <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
+        </div>
 
-          <div class="actions hi">
+        <div class="body">
+          <div class="pills">
+            <span class="pill on">Seniors</span>
+            <span class="pill">U-20</span>
+            <span class="pill">U-17</span>
+          </div>
+
+          <div class="hero hi">
+            <div class="hero-in">
+              <div class="eyebrow">Prochain match</div>
+              <div class="competition">CAN Féminine · Qualif.</div>
+              <div class="teams">
+                <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisie</span></div>
+                <div class="center"><div class="big">SAM 24 OCT</div></div>
+                <div class="team r"><span class="tname r">Maroc</span><span class="crest">🇲🇦</span></div>
+              </div>
+              <div class="venue">📍 Stade de Radès</div>
+              <div class="cta">Voir la convocation <span>›</span></div>
+            </div>
+          </div>
+
+          <div class="actions">
             <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span>Camp schedule</span></a>
             <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span><span>Meetings</span></a>
             <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 10h6"/></svg></span><span>Reports</span></a>
             <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.01.2-.01.4-.01.6v5.8a4 4 0 0 0 3.98 3.59c.2.01.4.01.6.01h10.64c.2 0 .4 0 .6-.01A4 4 0 0 0 21.3 15V9.2c0-.2 0-.4-.01-.6A4 4 0 0 0 17.32 5Z"/></svg></span><span>Games</span></a>
-          </div>
-
-          <div class="hero">
-            <div class="hero-top">
-              <span class="comp">CAN Féminine · Qualif.</span>
-              <span class="hero-lbl">Next match · SAM 24 OCT</span>
-            </div>
-            <div class="teams">
-              <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisia</span></div>
-              <span class="vs">VS</span>
-              <div class="team r"><span class="tname r">Morocco</span><span class="crest">🇲🇦</span></div>
-            </div>
-            <div class="hero-row">
-              <div class="count">
-                <div><b>04</b><span>Days</span></div>
-                <div><b>11</b><span>Hrs</span></div>
-                <div><b>26</b><span>Min</span></div>
-              </div>
-              <div class="cta">Match details ›</div>
-            </div>
-            <div class="venue">📍 Stade de Radès
-              <span class="cal">＋ Add</span>
-            </div>
           </div>
 
           <div class="sec"><h2>Squad readiness</h2></div>
@@ -244,8 +242,8 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
             <div class="lrow"><span class="ldate">24 Oct</span><div class="lmain"><div class="lvs"><span class="fl">🇹🇳</span> vs <span class="fl">🇲🇦</span></div><div class="lplace">CAN Féminine · Stade de Radès</div></div></div>
             <div class="lrow"><span class="ldate">27 Oct</span><div class="lmain"><div class="lvs"><span class="fl">🇩🇿</span> vs <span class="fl">🇹🇳</span></div><div class="lplace">Match amical · Alger</div></div></div>
           </div>
-
         </div>
+
         <div class="tabbar">
           <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Squad</span></div>
           <div class="tab on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></div>
@@ -260,46 +258,42 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
       <div class="phone-label">Player</div>
       <div class="phone">
         <div class="status"><span>9:41</span><span class="dots"><i></i><i style="width:22px"></i></span></div>
-        <div class="body">
 
-          <div class="hdr">
-            <div class="logo-tile"><img src="../mobile/assets/ftf-logo.png" alt=""></div>
-            <div class="hdr-txt">
-              <div class="hdr-title">FTF Forward</div>
-              <div class="hdr-sub">Player</div>
-            </div>
-            <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+        <div class="hdr">
+          <div class="logo-tile"><img src="../mobile/assets/ftf-logo.png" alt=""></div>
+          <div class="hdr-txt">
+            <div class="hdr-title">FTF Forward</div>
+            <div class="hdr-sub">Player</div>
           </div>
-          <div class="rule"></div>
+          <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+        </div>
 
-          <div class="actions hi">
+        <div class="body">
+          <div class="pills">
+            <span class="pill on">Seniors</span>
+            <span class="pill">U-20</span>
+            <span class="pill">U-17</span>
+          </div>
+
+          <div class="hero hi">
+            <div class="hero-in">
+              <div class="eyebrow">Prochain match</div>
+              <div class="competition">CAN Féminine · Qualif.</div>
+              <div class="teams">
+                <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisie</span></div>
+                <div class="center"><div class="big">SAM 24 OCT</div></div>
+                <div class="team r"><span class="tname r">Maroc</span><span class="crest">🇲🇦</span></div>
+              </div>
+              <div class="venue">📍 Stade de Radès</div>
+              <div class="cta">Voir la convocation <span>›</span></div>
+            </div>
+          </div>
+
+          <div class="actions">
             <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.01.2-.01.4-.01.6v5.8a4 4 0 0 0 3.98 3.59c.2.01.4.01.6.01h10.64c.2 0 .4 0 .6-.01A4 4 0 0 0 21.3 15V9.2c0-.2 0-.4-.01-.6A4 4 0 0 0 17.32 5Z"/></svg></span><span>Games</span></a>
             <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg></span><span>News</span></a>
             <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span><span>Career</span></a>
             <a class="tile"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 8h4M14 12h4M6 16h12"/></svg></span><span>ID card</span></a>
-          </div>
-
-          <div class="hero">
-            <div class="hero-top">
-              <span class="comp">CAN Féminine · Qualif.</span>
-              <span class="hero-lbl">Next match · SAM 24 OCT</span>
-            </div>
-            <div class="teams">
-              <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisia</span></div>
-              <span class="vs">VS</span>
-              <div class="team r"><span class="tname r">Morocco</span><span class="crest">🇲🇦</span></div>
-            </div>
-            <div class="hero-row">
-              <div class="count">
-                <div><b>04</b><span>Days</span></div>
-                <div><b>11</b><span>Hrs</span></div>
-                <div><b>26</b><span>Min</span></div>
-              </div>
-              <div class="cta">Match details ›</div>
-            </div>
-            <div class="venue">📍 Stade de Radès
-              <span class="cal">＋ Add</span>
-            </div>
           </div>
 
           <div class="sec"><h2>My form</h2></div>
@@ -321,8 +315,8 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
             <div class="lrow"><span class="ldate">24 Oct</span><div class="lmain"><div class="lvs"><span class="fl">🇹🇳</span> vs <span class="fl">🇲🇦</span></div><div class="lplace">CAN Féminine · Stade de Radès</div></div></div>
             <div class="lrow"><span class="ldate">27 Oct</span><div class="lmain"><div class="lvs"><span class="fl">🇩🇿</span> vs <span class="fl">🇹🇳</span></div><div class="lplace">Match amical · Alger</div></div></div>
           </div>
-
         </div>
+
         <div class="tabbar">
           <div class="tab on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></div>
           <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Schedule</span></div>
@@ -337,10 +331,10 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The header is no longer a bar.</b> A filled red bar was tried and rejected -- on a dark page it reads heavier and older than everything below it, and it fights the cards for the top of the screen. Now the crest, the wordmark and the meta line sit straight on the page, and a 2px rule fades from the federation red through gold and out to nothing underneath them. The brand colours still meet, at a weight that does not compete with content.</li>
-      <li><b>Section titles are white, not gold.</b> That is how the model heads every section -- its "CALENDRIER" is white Oswald over a near-black page -- and it is what lets gold go back to being an accent on the few things that are actually gold.</li>
-      <li><b>Red is the interactive accent.</b> The see-all link and the action-tile icons are the federation's own #E30613, promoted from a status colour to the thing that says "this is tappable". It is never used as small text on a dark card, where it would fail contrast; gold stays in that job.</li>
-      <li><b>The highlighted tile row is the IA fix.</b> Player tabs are Home, Schedule, Stats and Profile, and the "More" tab holding every tool is hidden for them, so a player previously had <b>no route at all</b> to Games, News, Career or the ID card. Only <code>camp-schedule</code> actually checks role; the rest render fine. Four features are now one tap away.</li>
+      <li><b>The header is now the model's: a full-bleed red bar, edge to edge.</b> The earlier attempt was an inset rounded bar, which read as a button -- that is what felt old. Breaking out to the screen edges is what makes it read as a header. The crest sits on a white disc so it keeps its own contrast against the red.</li>
+      <li><b>The pill row is new and it does something.</b> Seniors / U-20 / U-17 switch the age category, and the player lists on the screen follow it -- players carry a <code>category</code> field, so the filter is real rather than decorative.</li>
+      <li><b>The hero is now a photo card.</b> The next match sits on <code>assets/home-bg.jpg</code> with a dark gradient so the type reads, and carries one full-width call to action. The old gradient card had a countdown and three competing buttons; the photo is what makes it read as a broadcast card rather than a panel.</li>
+      <li><b>Section titles are white, see-all links and tile icons are red.</b> Red #E30613 is the federation's own colour, promoted from a status colour to the thing that says "this is tappable". Gold stays where contrast actually needs it.</li>
       <li><b>Colours are untouched.</b> Navy page, gold accent, red for danger -- every value above is transcribed from <code>theme.ts</code>, nothing invented.</li>
     </ul>
   </div>
