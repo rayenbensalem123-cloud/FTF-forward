@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MapPin } from 'lucide-react-native';
 import { colors, fonts, radius, space } from '@/constants/theme';
@@ -21,8 +21,8 @@ import type { Match } from '@/types';
  * with something unrelated, and nothing spans two lines except the team
  * names, which earn it.
  *
- * The crests sit directly on the image with a faint translucent backing
- * rather than on solid discs.
+ * Proper circular crests with a white ring: the federation crest for Tunisia,
+ * the opponent's flag cropped to fill the disc.
  */
 export function MatchHero({ match }: { match: Match | null }) {
   const { t } = useLanguage();
@@ -52,7 +52,12 @@ export function MatchHero({ match }: { match: Match | null }) {
 
         <View style={styles.teams}>
           <View style={styles.team}>
-            <View style={styles.crest}><Flag name="Tunisia" width={46} /></View>
+            {/* The federation crest, not the flag: the flag's white center
+                disk fills the whole circle at this size and reads as a white
+                blob. Same crest as the header. */}
+            <View style={styles.crest}>
+              <Image source={require('../assets/ftf-logo.png')} style={styles.crestImage} resizeMode="cover" />
+            </View>
             <Text style={styles.teamName} numberOfLines={1}>Tunisie</Text>
           </View>
 
@@ -118,6 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.cardRaised, borderWidth: 2, borderColor: 'rgba(255,255,255,0.35)',
     alignItems: 'center', justifyContent: 'center',
   },
+  crestImage: { width: 46, height: 46, borderRadius: 23 },
   crestText: { fontFamily: fonts.display, color: 'rgba(255,255,255,0.7)', fontWeight: '700', fontSize: 20 },
   teamName: { fontFamily: fonts.display, fontSize: 15, fontWeight: '700', letterSpacing: 0.5, color: colors.white, flexShrink: 1 },
   teamNameRight: { textAlign: 'right' },
