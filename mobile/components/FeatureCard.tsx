@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { colors, radius, space } from '@/constants/theme';
+import { Button } from '@/components/Button';
 
 /**
  * One of the home screen's feature cards: a title, an optional one-line
@@ -32,16 +33,11 @@ export function FeatureCard({
       <Text style={styles.title} numberOfLines={1}>{title}</Text>
       {!!description && <Text style={styles.desc} numberOfLines={2}>{description}</Text>}
       <View style={styles.visual}>{children}</View>
-      <TouchableOpacity
-        style={styles.cta}
+      <Button
+        title={cta}
         onPress={() => router.push(href)}
-        activeOpacity={0.85}
-        accessibilityRole="button"
-        accessibilityLabel={cta}
-      >
-        <Text style={styles.ctaText}>{cta}</Text>
-        <Text style={styles.ctaChevron}>›</Text>
-      </TouchableOpacity>
+        icon={<Text style={styles.chevron}>›</Text>}
+      />
     </View>
   );
 }
@@ -59,16 +55,5 @@ const styles = StyleSheet.create({
   title: { color: colors.white, fontSize: 14, fontWeight: '800' },
   desc: { color: colors.muted, fontSize: 11, fontWeight: '600', marginTop: 3, lineHeight: 15 },
   visual: { marginVertical: space.sm, minHeight: 72, justifyContent: 'center' },
-  cta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 3,
-    height: 32,
-    borderRadius: radius.pill,
-    backgroundColor: colors.gold,
-    marginTop: space.sm,
-  },
-  ctaText: { color: colors.navy, fontSize: 11, fontWeight: '800', letterSpacing: 0.5, textTransform: 'uppercase' },
-  ctaChevron: { color: colors.navy, fontSize: 15, fontWeight: '700', lineHeight: 15 },
+  chevron: { color: colors.navy, fontSize: 15, fontWeight: '700', lineHeight: 15 },
 });

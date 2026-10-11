@@ -86,10 +86,11 @@ const styles = StyleSheet.create({
     width: 38, height: 38, borderRadius: 19, backgroundColor: colors.card,
     borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center',
   },
+  // The crest sits directly on the header. The earlier version put it on a
+  // white disc, which read as a badge behind the logo rather than the logo.
   logoTile: {
-    width: 42, height: 42, borderRadius: 21, backgroundColor: colors.cardRaised,
-    borderWidth: 1, borderColor: colors.hairline, alignItems: 'center',
-    justifyContent: 'center', overflow: 'hidden',
+    width: 42, height: 42, borderRadius: 21, overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.07)',
   },
   logo: { width: 30, height: 30 },
   titles: { flex: 1, minWidth: 0 },

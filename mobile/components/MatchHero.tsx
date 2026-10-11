@@ -1,26 +1,28 @@
 import React from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { CalendarPlus, MapPin } from 'lucide-react-native';
+import { MapPin } from 'lucide-react-native';
 import { colors, fonts, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
+import { Button } from '@/components/Button';
 import { Countdown } from '@/components/Countdown';
 import { Flag } from '@/components/Flag';
 import { flagCodeFor } from '@/lib/countryFlags';
 import { formatDate } from '@/lib/format';
 import { addMatchToCalendar } from '@/lib/calendar';
+import { WeatherChip } from '@/components/WeatherChip';
 import { CS } from '@/i18n/careerStrings';
 import type { Match } from '@/types';
 
 /**
  * The dashboard hero: the next match on a dark maroon gradient, with a gold
- * competition pill, a three-box countdown, a gold primary button and a
- * gold-outlined secondary one.
+ * competition pill, a three-box countdown, the weather for the venue, a gold
+ * primary button and a gold-outlined secondary one.
  *
- * This replaces the photo hero from the Lovable model, which the dashboard
- * reference supersedes. The maroon is deliberately darker than the old
- * red-to-navy gradient -- it sits behind gold type without competing with it.
+ * Crests show the flag directly. The earlier version put each one on a blue
+ * disc, which read as a coloured badge behind the flag rather than the flag
+ * itself; a faint translucent backing is enough to lift it off the gradient.
  */
 export function MatchHero({ match }: { match: Match | null }) {
   const { t, language } = useLanguage();
@@ -83,16 +85,13 @@ export function MatchHero({ match }: { match: Match | null }) {
           target={match ? `${match.date}T00:00:00` : ''}
           labels={{ days: t('days'), hrs: t('hrs'), min: t('min'), sec: t('sec') }}
         />
-        <TouchableOpacity
-          style={styles.primary}
-          activeOpacity={0.85}
-          onPress={() => router.push('/match-details')}
-          accessibilityRole="button"
-          accessibilityLabel={t('matchDetails')}
-        >
-          <Text style={styles.primaryText}>{t('matchDetails')}</Text>
-          <Text style={styles.chevron}>›</Text>
-        </TouchableOpacity>
+        <View style={styles.primaryWrap}>
+          <Button
+            title={t('matchDetails')}
+            onPress={() => router.push('/match-details')}
+            icon={<Text style={styles.chevron}>›</Text>}
+          />
+        </View>
       </View>
 
       <View style={styles.venueRow}>
@@ -102,16 +101,10 @@ export function MatchHero({ match }: { match: Match | null }) {
             <Text style={styles.venueText} numberOfLines={1}>{match.venue}</Text>
           </View>
         )}
-        <TouchableOpacity
-          style={styles.secondary}
-          onPress={onAdd}
-          disabled={adding}
-          accessibilityRole="button"
-          accessibilityLabel={CT.addToCalendar}
-        >
-          <CalendarPlus color={colors.gold} size={12} />
-          <Text style={styles.secondaryText}>{CT.addToCalendar}</Text>
-        </TouchableOpacity>
+        {match?.venue ? <WeatherChip venue={match.venue} date={match.date} /> : null}
+        <View style={styles.secondaryWrap}>
+          <Button title={CT.addToCalendar} onPress={onAdd} variant="secondary" icon={<Text style={styles.plus}>＋</Text>} />
+        </View>
       </View>
     </LinearGradient>
   );
@@ -129,28 +122,22 @@ const styles = StyleSheet.create({
   teams: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginVertical: space.md },
   team: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, minWidth: 0 },
   teamRight: { justifyContent: 'flex-end' },
+  // A faint translucent backing rather than a solid disc: the flag reads as
+  // itself, not as an icon inside a coloured badge.
   crest: {
-    width: 44, height: 44, borderRadius: 22, backgroundColor: colors.cardRaised,
-    borderWidth: 2, borderColor: 'rgba(255,255,255,0.3)', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+    width: 44, height: 44, borderRadius: 22, overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.07)',
   },
   crestText: { color: colors.white, fontWeight: '800', fontSize: 11 },
   teamName: { fontFamily: fonts.display, fontSize: 15, fontWeight: '700', letterSpacing: 0.5, color: colors.white, flexShrink: 1 },
   teamNameRight: { textAlign: 'right' },
   vs: { color: colors.gold, fontWeight: '900', fontSize: 14, letterSpacing: 0.7 },
   actionRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  primary: {
-    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2,
-    height: 38, borderRadius: radius.pill, backgroundColor: colors.gold, marginLeft: space.sm,
-  },
-  primaryText: { color: colors.navy, fontWeight: '800', fontSize: 12, letterSpacing: 0.6, textTransform: 'uppercase' },
+  primaryWrap: { flex: 1, marginLeft: space.sm },
   chevron: { color: colors.navy, fontSize: 16, fontWeight: '700', lineHeight: 16 },
-  venueRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: space.sm },
+  venueRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.sm },
   venue: { flexDirection: 'row', alignItems: 'center', gap: 5, flexShrink: 1 },
   venueText: { color: 'rgba(255,255,255,0.7)', fontSize: 12 },
-  secondary: {
-    flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: 'rgba(246,199,68,0.14)', borderRadius: radius.pill,
-    borderWidth: 1, borderColor: 'rgba(246,199,68,0.4)', paddingHorizontal: 10, paddingVertical: 6,
-  },
-  secondaryText: { color: colors.gold, fontSize: 9, fontWeight: '800', textTransform: 'uppercase' },
+  secondaryWrap: { marginLeft: 'auto' },
+  plus: { color: colors.gold, fontSize: 14, fontWeight: '700', lineHeight: 14 },
 });

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FTF Forward — Dashboard home with feature grid</title>
+<title>FTF Forward — Buttons, weather, direct logos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -27,10 +27,11 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .dots{display:flex;gap:5px;align-items:center}
 .dots i{display:block;width:16px;height:9px;border:1.4px solid var(--white);border-radius:2.5px;opacity:.9}
 
+/* Header -- logo directly, no disc */
 .hdr{display:flex;align-items:center;gap:12px;padding:8px 16px}
-.logo-tile{width:42px;height:42px;border-radius:21px;background:var(--card-raised);
-  border:1px solid var(--hairline);display:grid;place-items:center;overflow:hidden;flex:none}
-.logo-tile img{width:30px;height:30px}
+.logo-tile{width:42px;height:42px;border-radius:21px;overflow:hidden;flex:none;
+  background:rgba(255,255,255,.07)}
+.logo-tile img{width:100%;height:100%;object-fit:cover}
 .hdr-txt{flex:1;min-width:0}
 .title-row{display:flex;align-items:center;gap:8px}
 .hdr-title{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
@@ -48,6 +49,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 
 .body{padding:6px 16px 26px;display:flex;flex-direction:column;gap:16px}
 
+/* Hero -- maroon gradient, weather, direct crests */
 .hero{border-radius:var(--r-card);padding:16px;
   background:linear-gradient(135deg,#3A0A16 0%,#1C060D 100%)}
 .top-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -57,26 +59,34 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .teams{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0}
 .team{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
 .team.r{justify-content:flex-end}
-.crest{width:44px;height:44px;border-radius:22px;background:var(--card-raised);
-  border:2px solid rgba(255,255,255,.3);display:grid;place-items:center;flex:none;font-size:18px}
-.crest img{width:30px;height:30px}
+.crest{width:44px;height:44px;border-radius:22px;overflow:hidden;flex:none;
+  background:rgba(255,255,255,.07);display:grid;place-items:center;font-size:18px}
+.crest img{width:100%;height:100%;object-fit:cover}
 .tname{font-family:Oswald;font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;flex:1;min-width:0}
 .tname.r{text-align:right}
 .vs{color:var(--gold);font-weight:900;font-size:14px;letter-spacing:.7px}
+
+/* Buttons -- one design */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;
+  border-radius:var(--r-pill);padding:0 16px;
+  font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+.btn.primary{background:var(--gold);color:var(--navy)}
+.btn.secondary{background:transparent;border:1px solid rgba(246,199,68,.45);color:var(--gold)}
+.btn .chev{font-size:16px;font-weight:700;line-height:16px}
+.btn .plus{font-size:14px;font-weight:700;line-height:14px}
+
 .action-row{display:flex;align-items:center;gap:8px}
 .count{display:flex;gap:6px}
 .count div{background:rgba(0,0,0,.28);border-radius:var(--r-sm);padding:6px 9px;text-align:center;min-width:44px}
 .count b{display:block;font-family:Oswald;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
 .count span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.65)}
-.primary{flex:1;height:38px;border-radius:var(--r-pill);background:var(--gold);color:var(--navy);
-  display:flex;align-items:center;justify-content:center;gap:2px;margin-left:8px;
-  font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
-.primary span{font-size:16px;font-weight:700;line-height:16px}
-.venue-row{display:flex;align-items:center;gap:6px;margin-top:10px}
+.primary-wrap{flex:1;margin-left:8px}
+.venue-row{display:flex;align-items:center;gap:8px;margin-top:10px}
 .venue{display:flex;align-items:center;gap:5px;flex:1;font-size:12px;color:rgba(255,255,255,.7)}
-.secondary{display:flex;align-items:center;gap:4px;background:rgba(246,199,68,.14);
-  border:1px solid rgba(246,199,68,.4);border-radius:var(--r-pill);padding:6px 10px;
-  color:var(--gold);font-size:9px;font-weight:800;text-transform:uppercase}
+.weather{display:flex;align-items:center;gap:5px;background:rgba(246,199,68,.12);
+  border:1px solid rgba(246,199,68,.25);border-radius:var(--r-pill);padding:5px 10px;
+  color:var(--gold);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+.secondary-wrap{margin-left:auto}
 
 /* Section header */
 .sec{display:flex;align-items:center;justify-content:space-between}
@@ -90,10 +100,6 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .fcard h3{font-size:14px;font-weight:800}
 .fcard .desc{font-size:11px;font-weight:600;color:var(--muted);margin-top:3px;line-height:15px}
 .fcard .visual{margin:8px 0;min-height:72px;display:flex;align-items:center;justify-content:center}
-.cta{display:flex;align-items:center;justify-content:center;gap:3px;height:32px;
-  border-radius:var(--r-pill);background:var(--gold);color:var(--navy);
-  font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
-.cta span{font-size:15px;font-weight:700;line-height:15px}
 
 /* Pitch */
 .pitch{position:relative;height:76px;border-radius:8px;background:#1E7A3C;
@@ -136,11 +142,10 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 </head>
 <body>
 <div class="page">
-  <h1>Dashboard home — feature grid</h1>
+  <h1>Buttons, weather, direct logos</h1>
   <p class="sub">
-    Squad readiness is gone. The home is now the hero plus an "Available Features &amp; Services"
-    grid, following your reference. Rendered from the real tokens in
-    <code>mobile/constants/theme.ts</code> and the real component layouts.
+    Three changes: one shared button design, the match-day weather in the hero, and the logos
+    shown directly instead of on coloured discs. Rendered from the real tokens and components.
   </p>
 
   <div class="phone">
@@ -175,11 +180,12 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
             <div><b>11</b><span>Hrs</span></div>
             <div><b>26</b><span>Min</span></div>
           </div>
-          <div class="primary">Match details <span>›</span></div>
+          <div class="primary-wrap"><div class="btn primary">Match details <span class="chev">›</span></div></div>
         </div>
         <div class="venue-row">
           <div class="venue">📍 Stade de Radès</div>
-          <div class="secondary">＋ Add to calendar</div>
+          <div class="weather">☀ 24° / 18°</div>
+          <div class="secondary-wrap"><div class="btn secondary"><span class="plus">＋</span> Add to calendar</div></div>
         </div>
       </div>
 
@@ -201,7 +207,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
               <div class="dot" style="left:62%;top:14%">SG</div>
             </div>
           </div>
-          <div class="cta">Design Plays <span>›</span></div>
+          <div class="btn primary">Design Plays <span class="chev">›</span></div>
         </div>
 
         <div class="fcard">
@@ -222,7 +228,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
               <circle cx="30" cy="45" r="2" fill="#F6C744"/>
             </svg>
           </div>
-          <div class="cta">View Details <span>›</span></div>
+          <div class="btn primary">View Details <span class="chev">›</span></div>
         </div>
 
         <div class="fcard">
@@ -235,7 +241,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
               <div class="checkrow"><div class="checkbox"></div><span class="checklabel">Medical Check-up</span></div>
             </div>
           </div>
-          <div class="cta">Access Recovery Plans <span>›</span></div>
+          <div class="btn primary">Access Recovery Plans <span class="chev">›</span></div>
         </div>
 
         <div class="fcard">
@@ -254,7 +260,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
               <div class="dot" style="left:58%;top:18%"></div>
             </div>
           </div>
-          <div class="cta">Compare Opponents <span>›</span></div>
+          <div class="btn primary">Compare Opponents <span class="chev">›</span></div>
         </div>
 
       </div>
@@ -272,11 +278,9 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>Squad readiness is gone.</b> The fit count and progress bar filled the screen with one number that was not the point of landing here. Removed, along with the player stat rows and the insight cards.</li>
-      <li><b>The home is now the hero plus an "Available Features &amp; Services" grid</b> -- four cards in a 2x2 layout, matching your reference.</li>
-      <li><b>Each card opens a real screen</b>, so none of them is a dead button: Interactive Tactic Board to the lineup, Scouting Network to the staff list, Injury Prevention Hub to reports, Live Match Analysis to match details.</li>
-      <li><b>The cards carry their own visuals</b> -- two pitch diagrams, a radar for scouting, and a recovery checklist -- so the grid reads as tools rather than a list of links.</li>
-      <li><b>Gold is the accent</b> for the CTAs, and the hero keeps the maroon gradient and gold primary button.</li>
+      <li><b>One button, three variants.</b> A shared Button component: primary (gold fill, navy text), secondary (gold outline, gold text) and ghost. Same height, radius, tracking and weight everywhere -- the hero, the feature cards and anywhere else now use it instead of each rolling its own.</li>
+      <li><b>The hero has the match-day weather.</b> A WeatherChip loads the Open-Meteo forecast for the venue via lib/weather and shows the high/low with a condition icon. It geocodes the venue name, caches for three hours, and renders nothing when the match is beyond the forecast range or the lookup fails -- never a wrong number.</li>
+      <li><b>Logos are shown directly.</b> The header crest and the hero crests no longer sit on white or blue discs. A faint translucent backing lifts them off the gradient without reading as a coloured badge behind the logo.</li>
     </ul>
   </div>
 </div>
