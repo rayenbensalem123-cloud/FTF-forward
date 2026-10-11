@@ -62,6 +62,8 @@ export function WeatherChip({ venue, date }: { venue: string; date: string }) {
 
 const styles = StyleSheet.create({
   spinner: { marginLeft: 4 },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  // flexShrink 0: the chip never wraps under the venue, whatever the venue
+  // name length. The venue truncates instead (numberOfLines 1 + minWidth 0).
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 4, flexShrink: 0 },
   text: { color: colors.gold, fontSize: 11, fontWeight: '800', fontVariant: ['tabular-nums'] },
 });

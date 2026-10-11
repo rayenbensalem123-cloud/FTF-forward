@@ -84,9 +84,10 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .tname{font-family:Oswald;font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;flex:1;min-width:0}
 .tname.r{text-align:right}
 .venue-row{display:flex;align-items:center;gap:8px;margin-top:10px}
-.venue{display:flex;align-items:center;gap:5px;flex:1;min-width:0;font-size:12px;color:rgba(255,255,255,.75)}
-/* Weather: icon + temperature, one compact line at the end of the footer */
-.weather{display:flex;align-items:center;gap:4px;color:var(--gold);
+.venue{display:flex;align-items:center;gap:5px;flex:1;min-width:0;font-size:12px;color:rgba(255,255,255,.75);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Weather: icon + temperature, pinned to the end of the footer, never wraps */
+.weather{display:flex;align-items:center;gap:4px;color:var(--gold);flex:none;
   font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
 
 /* Buttons */
@@ -271,17 +272,17 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
           <div class="visual">
             <div style="display:flex;flex-direction:column;gap:10px;justify-content:center;width:100%">
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">1</span>
+                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--white)">A</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Amira</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">4 games</span></span>
                 <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">86</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:100%;background:var(--gold);border-radius:2px"></span></span></span>
               </div>
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">2</span>
+                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--white)">S</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Syrine</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">4 games</span></span>
                 <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">71</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:82%;background:var(--gold);border-radius:2px"></span></span></span>
               </div>
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">3</span>
+                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--white)">N</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Nour</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">3 games</span></span>
                 <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">58</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:67%;background:var(--gold);border-radius:2px"></span></span></span>
               </div>
@@ -305,7 +306,8 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The timer is one line under the teams, centered on the date.</b> Four boxes in a row on the same dark tiles -- the 2x2 grid inside the center column is gone.</li>
+      <li><b>The footer cannot split.</b> The venue truncates with an ellipsis and the weather chip is pinned to the end of the line -- whatever the venue name length, the two stay on one row.</li>
+      <li><b>The bingo list shows player pictures.</b> Each row opens with a small avatar -- the roster photo when the username matches a player, initials otherwise -- instead of the rank numeral.</li>
       <li><b>News carries the team photo.</b> The feed has no thumbnails, so the squad photo anchors the card above the live headline, source and age. Tapping opens the article; "See all" opens the news screen.</li>
       <li><b>Injury Prevention is replaced by the Bingo score list.</b> The card shows the season leaderboard's top three from the real prediction entries and played matches -- rank, name, games and points with bars -- opening the games screen. It agrees with the leaderboard tab because it is the same computation.</li>
     </ul>

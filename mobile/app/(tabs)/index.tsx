@@ -103,7 +103,7 @@ export default function HomeScreen() {
                 cta={t('seeAll')}
                 href="/more/games"
               >
-                <BingoTeaser matches={matches} />
+                <BingoTeaser matches={matches} players={players} />
               </FeatureCard>
 
               <FeatureCard
