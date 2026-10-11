@@ -242,6 +242,23 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 .idcard .bars{display:flex;gap:3px;justify-content:center;margin-top:16px;height:44px;align-items:stretch}
 .idcard .bars i{display:block;width:4px;background:var(--white);border-radius:1px}
 
+/* Report form sheet */
+.fin{width:100%;background:var(--card);border:1px solid var(--hairline);border-radius:10px;
+  color:var(--white);padding:10px 12px;font-size:14px;font-family:Inter;outline:none}
+.fin::placeholder{color:var(--muted)}
+.flabel{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);
+  margin:12px 0 6px}
+.frow{display:flex;gap:8px}
+.frow .fin{flex:1}
+.togs{display:flex;gap:8px}
+.tog{flex:1;padding:10px;border-radius:10px;border:1px solid var(--hairline);background:var(--card);
+  color:var(--muted);font-size:13px;font-weight:800;cursor:pointer;font-family:Inter}
+.tog.on{background:var(--red);border-color:var(--red);color:#fff}
+.fgrid{display:flex;gap:8px}
+.fcell{flex:1;min-width:0}
+.fbtnrow{display:flex;gap:8px;margin-top:16px}
+.fbtnrow .ghost{background:var(--card);border:1px solid var(--hairline);color:var(--muted)}
+
 /* Sheet modal */
 .sheet-veil{position:absolute;inset:0;background:rgba(3,8,20,.7);display:none;z-index:5}
 .sheet-veil.on{display:block}
@@ -465,7 +482,7 @@ function phoneHTML(role) {
         <div class="statcell"><b>14</b><span>Goals</span></div>
         <div class="statcell"><b>08</b><span>Assists</span></div>
       </div>
-      <button class="btn" data-go="reports" style="margin-top:12px">+&nbsp;&nbsp;Log a match ›</button>
+      <button class="btn" data-form="1" style="margin-top:12px">+&nbsp;&nbsp;Log a match ›</button>
     </div>`;
   const profileBody = staff ? `
     <div class="hero-card">
@@ -614,6 +631,44 @@ function initPhone(role) {
         <div class="statcell"><b data-shgoals>0</b><span>Goals</span></div>
         <div class="statcell"><b data-shstatus>—</b><span>Status</span></div></div>
         <button class="btn close" data-close>Close ›</button></div>
+      ${role === 'player' ? `
+      <div class="sheet-veil" data-fveil></div>
+      <div class="sheet" data-fsheet style="max-height:92%;overflow-y:auto"><div class="grab"></div>
+        <h3>Log club match</h3>
+        <div class="sub2">Sent to the coach for verification</div>
+        <div class="flabel">Date · DD/MM/YYYY, empty = today</div>
+        <input class="fin" data-f="date" placeholder="05/10/2026" inputmode="numeric">
+        <div class="flabel">Opponent</div>
+        <input class="fin" data-f="opponent" placeholder="ASF Sousse">
+        <div class="frow" style="margin-top:8px">
+          <div style="flex:1"><div class="flabel" style="margin-top:0">Competition</div><input class="fin" data-f="competition" placeholder="League"></div>
+          <div style="width:90px"><div class="flabel" style="margin-top:0">Result</div><input class="fin" data-f="result" placeholder="2-1"></div>
+        </div>
+        <div class="flabel">Did you play?</div>
+        <div class="togs" data-fgroup="dnp"><button class="tog on" data-fval="no">Yes, I played</button><button class="tog" data-fval="yes">Did not play</button></div>
+        <div class="flabel">Position</div>
+        <input class="fin" data-f="position" placeholder="FWD">
+        <div class="fgrid" style="margin-top:8px">
+          <div class="fcell"><div class="flabel" style="margin-top:0">Mins</div><input class="fin" data-f="minutes" placeholder="0" inputmode="numeric"></div>
+          <div class="fcell"><div class="flabel" style="margin-top:0">Goals</div><input class="fin" data-f="goals" placeholder="0" inputmode="numeric"></div>
+          <div class="fcell"><div class="flabel" style="margin-top:0">Assists</div><input class="fin" data-f="assists" placeholder="0" inputmode="numeric"></div>
+        </div>
+        <div class="frow" style="margin-top:8px">
+          <div class="fcell"><div class="flabel" style="margin-top:0">Yellow</div><input class="fin" data-f="yellow" placeholder="0" inputmode="numeric"></div>
+          <div class="fcell"><div class="flabel" style="margin-top:0">Red</div><input class="fin" data-f="red" placeholder="0" inputmode="numeric"></div>
+          <div class="fcell"><div class="flabel" style="margin-top:0">Rating</div><input class="fin" data-f="rating" placeholder="/10" inputmode="decimal"></div>
+        </div>
+        <div class="flabel">Starter?</div>
+        <div class="togs" data-fgroup="starter"><button class="tog" data-fval="yes">Started</button><button class="tog on" data-fval="no">Bench</button></div>
+        <div class="flabel">Injury?</div>
+        <div class="togs" data-fgroup="injury"><button class="tog on" data-fval="no">No</button><button class="tog" data-fval="yes">Yes</button></div>
+        <div class="flabel">Notes</div>
+        <input class="fin" data-f="notes" placeholder="Anything the coach should know">
+        <div class="fbtnrow">
+          <button class="btn ghost" data-fclose>Cancel</button>
+          <button class="btn" style="flex:2" data-fsave>Send ›</button>
+        </div>
+      </div>` : ''}
       <div class="tabbar">${spec.tabs.map(t =>
         `<button class="tab${t[0] === spec.order[0] ? ' on' : ''}" data-nav="${t[0]}">${ICO[t[2]]}<span>${t[1]}</span></button>`).join('')}</div>
     </div></div>`;
@@ -636,6 +691,12 @@ function initPhone(role) {
   rootEl.addEventListener('click', (e) => {
     const g = e.target && e.target.closest ? e.target.closest('[data-go]') : null;
     if (g && g.dataset.go) { go(g.dataset.go); return; }
+    const fm = e.target && e.target.closest ? e.target.closest('[data-form]') : null;
+    if (fm) {
+      const fv = rootEl.querySelector('[data-fveil]'), fs = rootEl.querySelector('[data-fsheet]');
+      if (fv && fs) { fv.classList.add('on'); fs.classList.add('on'); }
+      return;
+    }
     const b = e.target && e.target.closest ? e.target.closest('[data-back]') : null;
     if (b) { back(); return; }
     const t = e.target && e.target.closest ? e.target.closest('[data-nav]') : null;
@@ -682,7 +743,31 @@ function initPhone(role) {
   function closeSheet() { q('[data-veil]').classList.remove('on'); q('[data-sheet]').classList.remove('on'); }
   renderSquad();
 
-  /* Reports. */
+  /* Report form (player phone). */
+  rootEl.addEventListener('click', (e) => {
+    const t = e.target && e.target.closest ? e.target.closest('[data-fgroup] .tog') : null;
+    if (t) {
+      [...t.parentElement.querySelectorAll('.tog')].forEach(x => x.classList.toggle('on', x === t));
+      return;
+    }
+    if (e.target && e.target.closest && (e.target.closest('[data-fclose]') || e.target.classList.contains('sheet-veil') && e.target.hasAttribute('data-fveil'))) {
+      rootEl.querySelector('[data-fveil]')?.classList.remove('on');
+      rootEl.querySelector('[data-fsheet]')?.classList.remove('on');
+      return;
+    }
+    const sv = e.target && e.target.closest ? e.target.closest('[data-fsave]') : null;
+    if (sv) {
+      const val = k => { const el = rootEl.querySelector(`[data-f="${k}"]`); return el ? el.value.trim() : ''; };
+      const opp = val('opponent');
+      if (!opp) { sv.textContent = 'Opponent required'; setTimeout(() => { sv.innerHTML = 'Send ›'; }, 1200); return; }
+      const mins = val('minutes') || '0', gl = val('goals') || '0', as = val('assists') || '0';
+      MY_REPORTS.unshift({ who: `vs ${opp}${val('result') ? ' · ' + val('result') : ''}`, what: `${mins} min · ${gl}G ${as}A · Awaiting verification`, verified: false });
+      rootEl.querySelectorAll('.fin').forEach(el => { el.value = ''; });
+      rootEl.querySelector('[data-fveil]')?.classList.remove('on');
+      rootEl.querySelector('[data-fsheet]')?.classList.remove('on');
+      renderReports();
+    }
+  });
   const renderReports = () => {
     const host = q('[data-reports]'); if (!host) return;
     const list = role === 'staff' ? STAFF_REPORTS : MY_REPORTS;
