@@ -9,8 +9,8 @@ import { FeatureCard } from '@/components/FeatureCard';
 import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchHero } from '@/components/MatchHero';
 import { NewsTeaser } from '@/components/NewsTeaser';
-import { PitchDiagram } from '@/components/PitchDiagram';
 import { PillTabs } from '@/components/PillTabs';
+import { ProgramTeaser } from '@/components/ProgramTeaser';
 import { ReportTeaser } from '@/components/ReportTeaser';
 import { SectionHeader } from '@/components/SectionHeader';
 import { colors, radius, space } from '@/constants/theme';
@@ -32,13 +32,6 @@ import type { Category, Match } from '@/types';
  * Staff get the hero and the grid. Players get the hero and their own form;
  * the feature cards are staff tools, so they are not shown to them.
  */
-
-const TACTIC_PITCH = [
-  { x: 50, y: 88 },
-  { x: 22, y: 66 }, { x: 50, y: 70 }, { x: 78, y: 66 },
-  { x: 30, y: 40 }, { x: 70, y: 40 },
-  { x: 42, y: 16, label: 'YA' }, { x: 62, y: 14, label: 'SG' },
-];
 
 export default function HomeScreen() {
   const { t, language } = useLanguage();
@@ -83,11 +76,11 @@ export default function HomeScreen() {
             <SectionHeader title={t('availableFeatures')} />
             <View style={styles.grid}>
               <FeatureCard
-                title={t('interactiveTacticBoard')}
-                cta={t('designPlays')}
-                href="/lineup"
+                title={t('todayProgram')}
+                cta={t('openSchedule')}
+                href="/more/camp-schedule"
               >
-                <PitchDiagram players={TACTIC_PITCH} />
+                <ProgramTeaser />
               </FeatureCard>
 
               <FeatureCard

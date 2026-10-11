@@ -210,21 +210,16 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
       <div class="grid">
 
         <div class="fcard">
-          <h3>Interactive Tactic Board</h3>
+          <h3>Today's Program</h3>
           <div class="visual">
-            <div class="pitch" style="width:100%">
-              <div class="hw"></div><div class="cc"></div><div class="bt"></div><div class="bb"></div>
-              <div class="dot" style="left:50%;top:88%"></div>
-              <div class="dot" style="left:22%;top:66%"></div>
-              <div class="dot" style="left:50%;top:70%"></div>
-              <div class="dot" style="left:78%;top:66%"></div>
-              <div class="dot" style="left:30%;top:40%"></div>
-              <div class="dot" style="left:70%;top:40%"></div>
-              <div class="dot" style="left:42%;top:16%">YA</div>
-              <div class="dot" style="left:62%;top:14%">SG</div>
+            <div style="display:flex;flex-direction:column;gap:7px;justify-content:center;width:100%">
+              <div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--gold)">24 November</div>
+              <div style="display:flex;gap:7px;align-items:baseline"><span style="font-size:11px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums">09:00</span><span style="font-size:11px;font-weight:600">Training – Annex, grass</span></div>
+              <div style="display:flex;gap:7px;align-items:baseline"><span style="font-size:11px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums">12:00</span><span style="font-size:11px;font-weight:600">Lunch &amp; rest</span></div>
+              <div style="display:flex;gap:7px;align-items:baseline"><span style="font-size:11px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums">16:00</span><span style="font-size:11px;font-weight:600">Video analysis · S. Gharbi</span></div>
             </div>
           </div>
-          <div class="btn primary">Design Plays <span class="chev">›</span></div>
+          <div class="btn primary">Open schedule <span class="chev">›</span></div>
         </div>
 
         <div class="fcard">
@@ -306,7 +301,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The footer cannot split.</b> The venue truncates with an ellipsis and the weather chip is pinned to the end of the line -- whatever the venue name length, the two stay on one row.</li>
+      <li><b>The Tactic Board is Today's Program.</b> The card shows the next sessions from the approved camp program -- the day matching today, or the opening day when nothing matches -- with times and personal assignments. Empty state links to the upload screen when nothing is published. The orphaned pitch component is deleted.</li>
       <li><b>The bingo list shows player pictures.</b> Each row opens with a small avatar -- the roster photo when the username matches a player, initials otherwise -- instead of the rank numeral.</li>
       <li><b>News carries the team photo.</b> The feed has no thumbnails, so the squad photo anchors the card above the live headline, source and age. Tapping opens the article; "See all" opens the news screen.</li>
       <li><b>Injury Prevention is replaced by the Bingo score list.</b> The card shows the season leaderboard's top three from the real prediction entries and played matches -- rank, name, games and points with bars -- opening the games screen. It agrees with the leaderboard tab because it is the same computation.</li>
