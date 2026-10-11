@@ -13,12 +13,16 @@ import type { Match } from '@/types';
 
 /**
  * The match banner: the next match on a photo of the squad, with a dark
- * gradient so the type sits on it, and one full-width call to action.
+ * gradient so the type sits on it.
  *
- * This is the hero the reference banner shows, and it replaces the maroon
- * gradient card -- a photo reads as a broadcast banner in a way a flat
- * gradient does not. The crests sit directly on the image with a faint
- * translucent backing rather than on solid discs.
+ * The layout is four tight rows with one job each, so the banner reads top to
+ * bottom instead of as a pile: the competition line, the teams, the timer
+ * strip, and a footer with the venue and the weather. Nothing shares a row
+ * with something unrelated, and nothing spans two lines except the team
+ * names, which earn it.
+ *
+ * The crests sit directly on the image with a faint translucent backing
+ * rather than on solid discs.
  */
 export function MatchHero({ match }: { match: Match | null }) {
   const { t } = useLanguage();
@@ -39,10 +43,12 @@ export function MatchHero({ match }: { match: Match | null }) {
         end={{ x: 0, y: 1 }}
         style={styles.scrim}
       >
-        <Text style={styles.eyebrow}>{t('nextMatch').toUpperCase()}</Text>
-        <Text style={styles.competition} numberOfLines={1}>
-          {match?.competition || match?.category || 'WNT'}
-        </Text>
+        <View style={styles.topRow}>
+          <Text style={styles.eyebrow}>{t('nextMatch').toUpperCase()}</Text>
+          <Text style={styles.competition} numberOfLines={1}>
+            {match?.competition || match?.category || 'WNT'}
+          </Text>
+        </View>
 
         <View style={styles.teams}>
           <View style={styles.team}>
@@ -76,7 +82,7 @@ export function MatchHero({ match }: { match: Match | null }) {
           />
         </View>
 
-        <View style={styles.venueRow}>
+        <View style={styles.footer}>
           {!!match?.venue && (
             <View style={styles.venue}>
               <MapPin color={colors.gold} size={12} />
@@ -93,10 +99,12 @@ export function MatchHero({ match }: { match: Match | null }) {
 const styles = StyleSheet.create({
   card: { borderRadius: radius.card, overflow: 'hidden' },
   photo: { borderRadius: radius.card },
-  scrim: { padding: space.lg, justifyContent: 'flex-end', minHeight: 220 },
+  scrim: { padding: space.lg, justifyContent: 'flex-end' },
+  // One top line: the eyebrow on the left, the competition on the right.
+  topRow: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space.sm },
   eyebrow: { fontSize: 10, fontWeight: '700', letterSpacing: 2.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.92)' },
-  competition: { color: 'rgba(255,255,255,0.72)', fontSize: 12, fontWeight: '600', marginTop: 2 },
-  teams: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 14 },
+  competition: { color: 'rgba(255,255,255,0.72)', fontSize: 11, fontWeight: '600', flexShrink: 1, textAlign: 'right' },
+  teams: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12 },
   team: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 },
   teamRight: { justifyContent: 'flex-end' },
   center: { flex: 1.15, alignItems: 'center' },
@@ -109,12 +117,13 @@ const styles = StyleSheet.create({
   crestText: { color: colors.white, fontWeight: '800', fontSize: 11 },
   teamName: { fontFamily: fonts.display, fontSize: 15, fontWeight: '700', letterSpacing: 0.5, color: colors.white, flexShrink: 1 },
   teamNameRight: { textAlign: 'right' },
-  countRow: { marginTop: 14, alignItems: 'flex-start' },
   bigDate: {
     fontFamily: fonts.display, fontSize: 26, fontWeight: '700', letterSpacing: 0.5,
     color: colors.white, fontVariant: ['tabular-nums'], textAlign: 'center', lineHeight: 28,
   },
-  venueRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12 },
-  venue: { flexDirection: 'row', alignItems: 'center', gap: 5, flexShrink: 1 },
+  countRow: { marginTop: 12 },
+  // One footer line: the venue on the left, the weather on the right.
+  footer: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
+  venue: { flexDirection: 'row', alignItems: 'center', gap: 5, flex: 1, minWidth: 0 },
   venueText: { color: 'rgba(255,255,255,0.75)', fontSize: 12 },
 });

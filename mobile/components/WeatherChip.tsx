@@ -1,8 +1,8 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { Cloud, CloudDrizzle, CloudFog, CloudHail, CloudLightning, CloudRain, CloudSnow, CloudSun, Sun, Wind } from 'lucide-react-native';
-import { colors, radius } from '@/constants/theme';
-import { loadMatchInfo, type Forecast } from '@/lib/weather';
+import { Cloud, CloudFog, CloudLightning, CloudRain, CloudSnow, CloudSun, Sun } from 'lucide-react-native';
+import { colors } from '@/constants/theme';
+import { loadMatchInfo } from '@/lib/weather';
 import type { WeatherKind } from '@/lib/travel';
 
 const ICONS: Record<WeatherKind, typeof Sun> = {
@@ -15,83 +15,53 @@ const ICONS: Record<WeatherKind, typeof Sun> = {
   storm: CloudLightning,
 };
 
-/** WMO weather kinds to a short human label. */
-const LABELS: Record<WeatherKind, string> = {
-  clear: 'Clear',
-  partly: 'Partly cloudy',
-  cloudy: 'Overcast',
-  fog: 'Fog',
-  rain: 'Rain',
-  snow: 'Snow',
-  storm: 'Storm',
-};
-
 /**
- * The match-day forecast for the venue, from Open-Meteo via lib/weather.
+ * The match-day temperature for the venue, from Open-Meteo via lib/weather: a
+ * condition icon and the high/low on one compact line, made to sit at the end
+ * of the banner's footer row next to the venue.
  *
- * The icon is the point: it reflects the actual condition rather than a
- * static glyph, so the badge reads as a weather widget. The platform stores a
- * venue name and no coordinates, so the city is geocoded by name and the
- * forecast is best effort -- while it loads a spinner shows, and if it fails
- * or the match is beyond the forecast range the chip renders nothing rather
- * than a wrong number.
+ * The platform stores a venue name and no coordinates, so the city is geocoded
+ * by name and the forecast is best effort -- if it fails or the match is
+ * beyond the forecast range the chip renders nothing rather than a wrong
+ * number.
  */
 export function WeatherChip({ venue, date }: { venue: string; date: string }) {
-  const [forecast, setForecast] = React.useState<Forecast | null>(null);
+  const [text, setText] = React.useState<string | null>(null);
+  const [kind, setKind] = React.useState<WeatherKind | null>(null);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     let alive = true;
     setLoading(true);
     loadMatchInfo(venue, date, new Date().toISOString().slice(0, 10))
-      .then((info) => { if (alive) setForecast(info?.forecast ?? null); })
-      .catch(() => { if (alive) setForecast(null); })
+      .then((info) => {
+        if (!alive) return;
+        const f = info?.forecast ?? null;
+        setText(f ? (f.minC != null ? `${f.maxC}°/${f.minC}°` : `${f.maxC}°`) : null);
+        setKind(f?.kind ?? null);
+      })
+      .catch(() => { if (alive) { setText(null); setKind(null); } })
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
   }, [venue, date]);
 
   if (loading) {
-    return (
-      <View style={styles.badge}>
-        <ActivityIndicator size="small" color={colors.gold} />
-      </View>
-    );
+    return <ActivityIndicator size="small" color={colors.gold} style={styles.spinner} />;
   }
-  if (!forecast) return null;
+  if (!text || !kind) return null;
 
-  const Icon = ICONS[forecast.kind];
-  const range = forecast.minC != null ? `${forecast.maxC}° / ${forecast.minC}°` : `${forecast.maxC}°`;
+  const Icon = ICONS[kind];
 
   return (
-    <View style={styles.badge}>
-      <View style={styles.iconWrap}>
-        <Icon color={colors.gold} size={18} strokeWidth={2.2} />
-      </View>
-      <View>
-        <Text style={styles.temp}>{range}</Text>
-        <Text style={styles.label} numberOfLines={1}>{LABELS[forecast.kind]}</Text>
-      </View>
+    <View style={styles.chip}>
+      <Icon color={colors.gold} size={13} strokeWidth={2.4} />
+      <Text style={styles.text}>{text}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: 'rgba(6,12,24,0.55)',
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.16)',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-  },
-  iconWrap: {
-    width: 30, height: 30, borderRadius: 15,
-    backgroundColor: 'rgba(246,199,68,0.14)',
-    alignItems: 'center', justifyContent: 'center',
-  },
-  temp: { color: colors.white, fontSize: 13, fontWeight: '800', fontVariant: ['tabular-nums'], lineHeight: 16 },
-  label: { color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: '600', letterSpacing: 0.4, textTransform: 'uppercase', marginTop: 1 },
+  spinner: { marginLeft: 4 },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  text: { color: colors.gold, fontSize: 11, fontWeight: '800', fontVariant: ['tabular-nums'] },
 });

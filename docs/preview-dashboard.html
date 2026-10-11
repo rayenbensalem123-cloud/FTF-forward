@@ -59,18 +59,21 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   background:linear-gradient(180deg,rgba(6,12,24,.78) 0%,rgba(6,12,24,.32) 45%,rgba(6,12,24,.55) 100%),
              url('../mobile/assets/home-bg.jpg') center/cover no-repeat}
 .hero-in{padding:16px}
+/* One top line: eyebrow left, competition right */
+.top-line{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.92)}
+.competition{font-size:11px;font-weight:600;color:rgba(255,255,255,.72);text-align:right}
+.teams{display:flex;align-items:center;gap:8px;margin-top:12px}
 /* Timer cells on the photo: dark translucent tiles */
-.timer{display:flex;gap:6px;margin-top:14px}
+.timer{display:flex;gap:6px;margin-top:12px}
 .timer div{background:rgba(0,0,0,.42);border-radius:10px;padding:6px 8px;
   text-align:center;min-width:46px}
 .timer b{display:block;font-family:Oswald;font-size:19px;font-weight:700;
   font-variant-numeric:tabular-nums;line-height:1}
 .timer span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
   color:rgba(255,255,255,.65)}
-.eyebrow{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
-  color:rgba(255,255,255,.92)}
-.competition{font-size:12px;font-weight:600;color:rgba(255,255,255,.72);margin-top:2px}
-.teams{display:flex;align-items:center;gap:8px;margin:14px 0}
+.teams{display:flex;align-items:center;gap:8px;margin-top:12px}
 .team{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
 .team.r{justify-content:flex-end}
 .crest{width:42px;height:42px;border-radius:21px;overflow:hidden;flex:none;
@@ -81,18 +84,11 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   font-variant-numeric:tabular-nums;line-height:28px}
 .tname{font-family:Oswald;font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;flex:1;min-width:0}
 .tname.r{text-align:right}
-.venue-row{display:flex;align-items:center;gap:8px;margin-top:12px}
-.venue{display:flex;align-items:center;gap:5px;flex:1;font-size:12px;color:rgba(255,255,255,.75)}
-/* Weather badge: icon in a tinted disc, temperature over a condition label */
-.weather{display:flex;align-items:center;gap:8px;background:rgba(6,12,24,.55);
-  border:1px solid rgba(255,255,255,.16);border-radius:var(--r-md);
-  padding:7px 10px 7px 7px}
-.weather .wico{width:30px;height:30px;border-radius:15px;background:rgba(246,199,68,.14);
-  display:grid;place-items:center}
-.weather .wtemp{font-size:13px;font-weight:800;color:var(--white);
-  font-variant-numeric:tabular-nums;line-height:16px}
-.weather .wlabel{font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
-  color:rgba(255,255,255,.7);margin-top:1px}
+.venue-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+.venue{display:flex;align-items:center;gap:5px;flex:1;min-width:0;font-size:12px;color:rgba(255,255,255,.75)}
+/* Weather: icon + temperature, one compact line at the end of the footer */
+.weather{display:flex;align-items:center;gap:4px;color:var(--gold);
+  font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
 
 /* Buttons */
 .btn{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;
@@ -188,8 +184,10 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 
       <div class="hero">
         <div class="hero-in">
-          <div class="eyebrow">Prochain match</div>
-          <div class="competition">CAN Féminine · Qualif.</div>
+          <div class="top-line">
+            <div class="eyebrow">Prochain match</div>
+            <div class="competition">CAN Féminine · Qualif.</div>
+          </div>
           <div class="teams">
             <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisie</span></div>
             <div class="center"><div class="big">SAM 24<br>OCT</div></div>
@@ -203,10 +201,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
           </div>
           <div class="venue-row">
             <div class="venue">📍 Stade de Radès</div>
-            <div class="weather">
-              <span class="wico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
-              <span><span class="wtemp">24° / 18°</span><br><span class="wlabel">Overcast</span></span>
-            </div>
+            <div class="weather"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg> 24°/18°</div>
           </div>
         </div>
       </div>
@@ -237,19 +232,19 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
           <div class="visual">
             <div style="display:flex;flex-direction:column;gap:10px;justify-content:center;width:100%">
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">1</span>
+                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-family:Oswald;font-size:12px;font-weight:700;color:var(--gold)">12</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Y. Ben Amor</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">MID · #12</span></span>
-                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">48</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:100%;background:var(--gold);border-radius:2px"></span></span></span>
+                <span style="width:22px;height:22px;border-radius:11px;background:var(--green);display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff">✓</span>
               </div>
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">2</span>
+                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-family:Oswald;font-size:12px;font-weight:700;color:var(--gold)">07</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">S. Gharbi</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">FWD · #07</span></span>
-                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">36</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:75%;background:var(--gold);border-radius:2px"></span></span></span>
+                <span style="width:22px;height:22px;border-radius:11px;background:var(--green);display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff">✓</span>
               </div>
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">3</span>
+                <span style="width:30px;height:30px;border-radius:15px;background:var(--card-raised,#112950);border:1px solid var(--hairline);display:grid;place-items:center;font-family:Oswald;font-size:12px;font-weight:700;color:var(--gold)">10</span>
                 <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">M. Hamdi</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">DEF · #10</span></span>
-                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">29</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:60%;background:var(--gold);border-radius:2px"></span></span></span>
+                <span style="width:22px;height:22px;border-radius:11px;border:1.5px solid var(--hairline);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted)">–</span>
               </div>
             </div>
           </div>
@@ -299,9 +294,9 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The banner has its timer back.</b> Days / hours / minutes / seconds on dark translucent tiles, ticking every second, sitting on the photo under the teams. It lifts straight off the image without a card behind it.</li>
-      <li><b>Players Report is a real report now, not a renamed radar.</b> The card shows a ranked leaderboard -- the top three scorers with gold rank numerals, names, positions and goal bars scaled to the card max. The radar visual is gone from this card; it was saying nothing.</li>
-      <li><b>Live Match Analysis is NEWS, rebuilt around the content.</b> The card shows the top live headline with its source and age, tapping it opens the article, and "See all" opens the news screen. It reads the same cached feed as the screen, so the two can never disagree. The pitch diagram it carried is gone with it.</li>
+      <li><b>The banner is reorganized into four rows with one job each.</b> The eyebrow and the competition share one top line, then the teams, then the timer strip, then a footer with the venue on the left and a compact weather line on the right. Nothing shares a row with something unrelated anymore.</li>
+      <li><b>The weather is one compact line.</b> Icon plus high/low at the end of the footer row -- the badge with its disc and label was a fifth block competing with the rest.</li>
+      <li><b>Players Report reads as a list.</b> Small photo avatar and name on the left, a done-or-not mark on the right -- green filled check when fit, hollow muted mark otherwise. No rank numerals, no bars.</li>
     </ul>
   </div>
 </div>
