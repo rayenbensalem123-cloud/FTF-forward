@@ -9,12 +9,14 @@ import { FeatureCard } from '@/components/FeatureCard';
 import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchHero } from '@/components/MatchHero';
 import { PitchDiagram } from '@/components/PitchDiagram';
+import { PillTabs } from '@/components/PillTabs';
 import { RadarChart } from '@/components/Charts';
 import { SectionHeader } from '@/components/SectionHeader';
 import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
+import type { Category, Match } from '@/types';
 
 /**
  * The dashboard home: a dark header, a maroon hero for the next match, and a
@@ -51,6 +53,9 @@ export default function HomeScreen() {
   const { user } = useAuth();
   const isStaff = user?.role === 'staff' || user?.role === 'admin';
 
+  // The banner's pill row switches the age category.
+  const [category, setCategory] = React.useState<Category>('Seniors');
+
   // A player account owns a members row: player.id is String(member_id).
   const me = user?.memberId != null ? players.find((p) => p.id === String(user.memberId)) ?? null : null;
 
@@ -65,6 +70,18 @@ export default function HomeScreen() {
           badge={isStaff ? t('staffPortal') : undefined}
           subtitle={user ? t(isStaff ? 'roleStaff' : 'rolePlayer') : undefined}
         />
+
+        {/* The banner's pill row: switches the age category. */}
+        <PillTabs
+          tabs={[
+            { value: 'Seniors', label: t('seniors') },
+            { value: 'U-20', label: t('u20') },
+            { value: 'U-17', label: t('u17') },
+          ]}
+          value={category}
+          onChange={setCategory}
+        />
+
         <MatchHero match={nextMatch} />
 
         {isStaff ? (

@@ -3,15 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FTF Forward — Buttons, weather, direct logos</title>
+<title>FTF Forward — Photo banner hero</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy:#0C1F3D; --card:#101B33; --card-raised:#112950;
+  --navy:#0C1F3D; --card:#101B33;
   --gold:#F6C744; --red:#E30613; --white:#EDEFF4; --muted:#8FA0BD;
-  --green:#22C55E; --amber:#F59E0B;
-  --hairline:rgba(148,170,210,.18);
+  --green:#22C55E; --hairline:rgba(148,170,210,.18);
   --r-sm:10px; --r-md:16px; --r-card:20px; --r-pill:999px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -27,7 +26,6 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .dots{display:flex;gap:5px;align-items:center}
 .dots i{display:block;width:16px;height:9px;border:1.4px solid var(--white);border-radius:2.5px;opacity:.9}
 
-/* Header -- logo directly, no disc */
 .hdr{display:flex;align-items:center;gap:12px;padding:8px 16px}
 .logo-tile{width:42px;height:42px;border-radius:21px;overflow:hidden;flex:none;
   background:rgba(255,255,255,.07)}
@@ -49,44 +47,45 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 
 .body{padding:6px 16px 26px;display:flex;flex-direction:column;gap:16px}
 
-/* Hero -- maroon gradient, weather, direct crests */
-.hero{border-radius:var(--r-card);padding:16px;
-  background:linear-gradient(135deg,#3A0A16 0%,#1C060D 100%)}
-.top-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.pill{background:var(--gold);color:var(--navy);border-radius:var(--r-pill);
-  padding:4px 10px;font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
-.next{font-size:12px;font-weight:600;color:rgba(255,255,255,.75)}
-.teams{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0}
-.team{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+/* Pill tabs */
+.pills{display:flex;gap:8px;padding:2px 0}
+.pill{border-radius:var(--r-pill);padding:6px 16px;font-size:12px;font-weight:700;
+  text-transform:uppercase;border:1px solid var(--hairline);background:var(--card);color:var(--muted)}
+.pill.on{background:var(--red);border-color:var(--red);color:#fff}
+
+/* Photo banner hero */
+.hero{border-radius:var(--r-card);overflow:hidden;position:relative;min-height:220px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  background:linear-gradient(180deg,rgba(6,12,24,.78) 0%,rgba(6,12,24,.32) 45%,rgba(6,12,24,.55) 100%),
+             url('../mobile/assets/home-bg.jpg') center/cover no-repeat}
+.hero-in{padding:16px}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.92)}
+.competition{font-size:12px;font-weight:600;color:rgba(255,255,255,.72);margin-top:2px}
+.teams{display:flex;align-items:center;gap:8px;margin:14px 0}
+.team{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
 .team.r{justify-content:flex-end}
-.crest{width:44px;height:44px;border-radius:22px;overflow:hidden;flex:none;
-  background:rgba(255,255,255,.07);display:grid;place-items:center;font-size:18px}
+.crest{width:42px;height:42px;border-radius:21px;overflow:hidden;flex:none;
+  background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:18px}
 .crest img{width:100%;height:100%;object-fit:cover}
+.center{flex:1.15;text-align:center}
+.big{font-family:Oswald;font-size:26px;font-weight:700;letter-spacing:.5px;color:#fff;
+  font-variant-numeric:tabular-nums;line-height:28px}
 .tname{font-family:Oswald;font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;flex:1;min-width:0}
 .tname.r{text-align:right}
-.vs{color:var(--gold);font-weight:900;font-size:14px;letter-spacing:.7px}
-
-/* Buttons -- one design */
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;
-  border-radius:var(--r-pill);padding:0 16px;
-  font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
-.btn.primary{background:var(--gold);color:var(--navy)}
-.btn.secondary{background:transparent;border:1px solid rgba(246,199,68,.45);color:var(--gold)}
-.btn .chev{font-size:16px;font-weight:700;line-height:16px}
-.btn .plus{font-size:14px;font-weight:700;line-height:14px}
-
-.action-row{display:flex;align-items:center;gap:8px}
-.count{display:flex;gap:6px}
-.count div{background:rgba(0,0,0,.28);border-radius:var(--r-sm);padding:6px 9px;text-align:center;min-width:44px}
-.count b{display:block;font-family:Oswald;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
-.count span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.65)}
-.primary-wrap{flex:1;margin-left:8px}
-.venue-row{display:flex;align-items:center;gap:8px;margin-top:10px}
-.venue{display:flex;align-items:center;gap:5px;flex:1;font-size:12px;color:rgba(255,255,255,.7)}
+.venue-row{display:flex;align-items:center;gap:8px;margin-top:12px}
+.venue{display:flex;align-items:center;gap:5px;flex:1;font-size:12px;color:rgba(255,255,255,.75)}
 .weather{display:flex;align-items:center;gap:5px;background:rgba(246,199,68,.12);
   border:1px solid rgba(246,199,68,.25);border-radius:var(--r-pill);padding:5px 10px;
   color:var(--gold);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
-.secondary-wrap{margin-left:auto}
+
+/* Buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;
+  border-radius:var(--r-pill);padding:0 16px;
+  font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+.btn.danger{background:var(--red);color:#fff}
+.btn .chev{font-size:16px;font-weight:700;line-height:16px}
+.cta-wrap{margin-top:14px}
 
 /* Section header */
 .sec{display:flex;align-items:center;justify-content:space-between}
@@ -100,6 +99,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .fcard h3{font-size:14px;font-weight:800}
 .fcard .desc{font-size:11px;font-weight:600;color:var(--muted);margin-top:3px;line-height:15px}
 .fcard .visual{margin:8px 0;min-height:72px;display:flex;align-items:center;justify-content:center}
+.btn.primary{background:var(--gold);color:var(--navy)}
 
 /* Pitch */
 .pitch{position:relative;height:76px;border-radius:8px;background:#1E7A3C;
@@ -142,10 +142,11 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 </head>
 <body>
 <div class="page">
-  <h1>Buttons, weather, direct logos</h1>
+  <h1>Photo banner hero</h1>
   <p class="sub">
-    Three changes: one shared button design, the match-day weather in the hero, and the logos
-    shown directly instead of on coloured discs. Rendered from the real tokens and components.
+    The hero is now the photo banner you flagged -- the next match on a squad photo with a dark
+    gradient, the pill row above it, and one full-width red call to action. The maroon gradient
+    card is gone.
   </p>
 
   <div class="phone">
@@ -164,28 +165,26 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
     </div>
 
     <div class="body">
+      <div class="pills">
+        <span class="pill on">Seniors</span>
+        <span class="pill">U-20</span>
+        <span class="pill">U-17</span>
+      </div>
+
       <div class="hero">
-        <div class="top-row">
-          <span class="pill">CAN Féminine · Qualif.</span>
-          <span class="next">Next match · SAM 24 OCT</span>
-        </div>
-        <div class="teams">
-          <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisia</span></div>
-          <span class="vs">VS</span>
-          <div class="team r"><span class="tname r">Morocco</span><span class="crest">🇲🇦</span></div>
-        </div>
-        <div class="action-row">
-          <div class="count">
-            <div><b>04</b><span>Days</span></div>
-            <div><b>11</b><span>Hrs</span></div>
-            <div><b>26</b><span>Min</span></div>
+        <div class="hero-in">
+          <div class="eyebrow">Prochain match</div>
+          <div class="competition">CAN Féminine · Qualif.</div>
+          <div class="teams">
+            <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisie</span></div>
+            <div class="center"><div class="big">SAM 24<br>OCT</div></div>
+            <div class="team r"><span class="tname r">Maroc</span><span class="crest">🇲🇦</span></div>
           </div>
-          <div class="primary-wrap"><div class="btn primary">Match details <span class="chev">›</span></div></div>
-        </div>
-        <div class="venue-row">
-          <div class="venue">📍 Stade de Radès</div>
-          <div class="weather">☀ 24° / 18°</div>
-          <div class="secondary-wrap"><div class="btn secondary"><span class="plus">＋</span> Add to calendar</div></div>
+          <div class="venue-row">
+            <div class="venue">📍 Stade de Radès</div>
+            <div class="weather">☀ 24° / 18°</div>
+          </div>
+          <div class="cta-wrap"><div class="btn danger">Voir la convocation <span class="chev">›</span></div></div>
         </div>
       </div>
 
@@ -278,9 +277,10 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>One button, three variants.</b> A shared Button component: primary (gold fill, navy text), secondary (gold outline, gold text) and ghost. Same height, radius, tracking and weight everywhere -- the hero, the feature cards and anywhere else now use it instead of each rolling its own.</li>
-      <li><b>The hero has the match-day weather.</b> A WeatherChip loads the Open-Meteo forecast for the venue via lib/weather and shows the high/low with a condition icon. It geocodes the venue name, caches for three hours, and renders nothing when the match is beyond the forecast range or the lookup fails -- never a wrong number.</li>
-      <li><b>Logos are shown directly.</b> The header crest and the hero crests no longer sit on white or blue discs. A faint translucent backing lifts them off the gradient without reading as a coloured badge behind the logo.</li>
+      <li><b>The hero is the photo banner.</b> The next match sits on <code>assets/home-bg.jpg</code> with a dark gradient so the type reads, and carries one full-width red "Voir la convocation" action. The maroon gradient card is gone -- a photo reads as a broadcast banner in a way a flat gradient does not.</li>
+      <li><b>The pill row is back above the banner.</b> Seniors / U-20 / U-17, the active one filled red. It switches the age category.</li>
+      <li><b>The banner CTA is red.</b> A fourth button variant, danger, for the one action that should feel urgent. Gold stays on the feature-card CTAs.</li>
+      <li><b>Weather stays in the banner</b>, under the teams, and the crests sit directly on the photo with a faint translucent backing.</li>
     </ul>
   </div>
 </div>
