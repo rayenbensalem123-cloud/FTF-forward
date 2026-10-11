@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { FileDown, LogOut, UserPlus } from 'lucide-react-native';
+import { ClipboardList, FileDown, LogOut, UserPlus, Users } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { Avatar } from '@/components/Avatar';
@@ -16,6 +16,7 @@ import { useNotifications, type NotificationSettings } from '@/context/Notificat
 import { usePlayers } from '@/context/PlayersContext';
 import type { StringKey } from '@/i18n/strings';
 import { exportRosterPdf } from '@/lib/roster';
+import { fetchReports } from '@/lib/clubReports';
 import type { Language, Role } from '@/types';
 
 const LANGUAGES: Option<Language>[] = [
@@ -60,6 +61,20 @@ export default function ProfileScreen() {
     ]);
 
   const isStaffRole = user?.role === 'staff' || user?.role === 'admin';
+  const [pending, setPending] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!isStaffRole) return;
+    let alive = true;
+    fetchReports()
+      .then((rs) => {
+        if (alive) setPending(rs.filter((r) => !r.verified).length);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [isStaffRole]);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -76,6 +91,43 @@ export default function ProfileScreen() {
         </Card>
 
         {!isStaffRole && <ToolsCard />}
+
+        {isStaffRole && (
+          <View>
+            <Text style={styles.heading}>
+              {language === 'fr' ? 'Revue' : language === 'ar' ? 'مراجعة' : 'Review'}
+            </Text>
+            <Card style={{ paddingVertical: space.xs }}>
+              <TouchableOpacity style={styles.action} onPress={() => router.push('/reports')} accessibilityRole="button">
+                <View style={styles.actionIcon}><ClipboardList color={colors.white} size={18} /></View>
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={styles.actionText}>{t('tabReports')}</Text>
+                  <Text style={styles.actionDesc} numberOfLines={1}>{t('moreReportsDesc')}</Text>
+                </View>
+                {pending != null && pending > 0 && (
+                  <View style={styles.countPill}>
+                    <Text style={styles.countText}>{pending}</Text>
+                  </View>
+                )}
+                <ForwardChevron />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.action, styles.divider]}
+                onPress={() => router.push('/squad')}
+                accessibilityRole="button"
+              >
+                <View style={styles.actionIcon}><Users color={colors.white} size={18} /></View>
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={styles.actionText}>{t('tabSquad')}</Text>
+                  <Text style={styles.actionDesc} numberOfLines={1}>
+                    {language === 'fr' ? 'Ouvrir la fiche de chaque joueuse' : language === 'ar' ? 'افتحي بطاقة أي لاعبة' : 'Open any player card'}
+                  </Text>
+                </View>
+                <ForwardChevron />
+              </TouchableOpacity>
+            </Card>
+          </View>
+        )}
 
         <View>
           <Text style={styles.heading}>{t('teamManagement')}</Text>
@@ -154,6 +206,9 @@ const styles = StyleSheet.create({
   divider: { borderTopWidth: 1, borderTopColor: colors.hairline },
   actionIcon: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.cardRaised, alignItems: 'center', justifyContent: 'center' },
   actionText: { flex: 1, color: colors.white, fontSize: 14, fontWeight: '700' },
+  actionDesc: { color: colors.muted, fontSize: 12, marginTop: 2 },
+  countPill: { minWidth: 22, height: 22, borderRadius: 11, backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
+  countText: { color: '#fff', fontSize: 12, fontWeight: '800' },
   signOut: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: 50,
     borderRadius: radius.card, borderWidth: 1, borderColor: colors.red, backgroundColor: colors.redSoft,
