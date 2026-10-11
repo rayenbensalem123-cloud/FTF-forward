@@ -97,11 +97,11 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 .weather{display:flex;align-items:center;gap:4px;color:var(--gold);flex:none;
   font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
 
-/* Buttons */
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;
-  border-radius:var(--r-pill);padding:0 16px;
+/* Buttons: red rounded rectangles */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;height:44px;
+  border-radius:14px;padding:0 16px;
   font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
-.btn.primary{background:var(--gold);color:var(--navy)}
+.btn.primary{background:var(--red);color:#fff}
 .btn .chev{font-size:16px;font-weight:700;line-height:16px}
 .btn .plus{font-size:14px;font-weight:700;line-height:14px}
 
@@ -309,7 +309,7 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The background has depth now.</b> The squad photo sits behind the whole screen under a heavy navy wash, with a faint red aura at the top. It is deliberately faint -- a backdrop, not a banner -- so body text reads over it everywhere. A shared <code>ScreenBackground</code> component carries it, so other screens can adopt it later.</li>
+      <li><b>Buttons are red rounded rectangles.</b> Federation red fill with white text, 14px corners that match the cards instead of fighting them, slightly taller at 44px. Gold is out of the buttons entirely.</li>
       <li><b>The bingo list shows player pictures.</b> Each row opens with a small avatar -- the roster photo when the username matches a player, initials otherwise -- instead of the rank numeral.</li>
       <li><b>News carries the team photo.</b> The feed has no thumbnails, so the squad photo anchors the card above the live headline, source and age. Tapping opens the article; "See all" opens the news screen.</li>
       <li><b>Injury Prevention is replaced by the Bingo score list.</b> The card shows the season leaderboard's top three from the real prediction entries and played matches -- rank, name, games and points with bars -- opening the games screen. It agrees with the leaderboard tab because it is the same computation.</li>

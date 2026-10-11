@@ -1,17 +1,18 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { colors, radius } from '@/constants/theme';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { colors } from '@/constants/theme';
 
 /**
  * The one button. Three variants, one shape:
  *
- *   primary   gold fill, navy text   -- the single action on a card
- *   secondary gold outline, gold text -- the second action, same weight
- *   ghost     no outline, muted text  -- the least important action
+ *   primary   federation red fill, white text -- the single action on a card
+ *   secondary transparent, hairline border, white text -- the second action
+ *   ghost     no border, muted text -- the least important action
  *
- * Every button in the app goes through this so the height, radius, tracking
- * and weight are identical everywhere. Before this, the hero, the feature
- * cards and the header each had their own idea of a button.
+ * Rounded rectangles, not pills: the cards they sit on are rectangles, and a
+ * pill inside a rectangle fights the card for the eye. Every button in the
+ * app goes through this so the height, radius, tracking and weight are
+ * identical everywhere.
  */
 export function Button({
   title,
@@ -35,7 +36,7 @@ export function Button({
       accessibilityLabel={accessibilityLabel ?? title}
     >
       {icon}
-      <Text style={[styles.text, variant === 'primary' ? styles.textOnGold : styles.textOnDark]}>{title}</Text>
+      <Text style={[styles.text, variant === 'ghost' ? styles.textMuted : styles.textOnDark]}>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -46,14 +47,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    height: 40,
-    borderRadius: radius.pill,
+    height: 44,
+    borderRadius: 14,
     paddingHorizontal: 16,
   },
-  primary: { backgroundColor: colors.gold },
-  secondary: { backgroundColor: 'transparent', borderWidth: 1, borderColor: 'rgba(246,199,68,0.45)' },
+  primary: { backgroundColor: colors.red },
+  secondary: { backgroundColor: 'transparent', borderWidth: 1, borderColor: 'rgba(255,255,255,0.28)' },
   ghost: { backgroundColor: 'transparent' },
   text: { fontSize: 12, fontWeight: '800', letterSpacing: 0.6, textTransform: 'uppercase' },
-  textOnGold: { color: colors.navy },
-  textOnDark: { color: colors.gold },
+  textOnDark: { color: colors.white },
+  textMuted: { color: colors.muted },
 });

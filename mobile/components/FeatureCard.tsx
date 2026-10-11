@@ -55,5 +55,5 @@ const styles = StyleSheet.create({
   title: { color: colors.white, fontSize: 14, fontWeight: '800' },
   desc: { color: colors.muted, fontSize: 11, fontWeight: '600', marginTop: 3, lineHeight: 15 },
   visual: { marginVertical: space.sm, minHeight: 72, justifyContent: 'center' },
-  chevron: { color: colors.navy, fontSize: 15, fontWeight: '700', lineHeight: 15 },
+  chevron: { color: colors.white, fontSize: 15, fontWeight: '700', lineHeight: 15 },
 });
