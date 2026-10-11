@@ -22,7 +22,8 @@ import type { Match } from '@/types';
  * names, which earn it.
  *
  * Proper circular crests with a white ring: the federation crest for Tunisia,
- * the opponent's flag cropped to fill the disc.
+ * the opponent's flag at badge size. Both sit small on the dark disc, the
+ * header's language -- never cropped to fill.
  */
 export function MatchHero({ match }: { match: Match | null }) {
   const { t } = useLanguage();
@@ -52,11 +53,11 @@ export function MatchHero({ match }: { match: Match | null }) {
 
         <View style={styles.teams}>
           <View style={styles.team}>
-            {/* The federation crest, not the flag: the flag's white center
-                disk fills the whole circle at this size and reads as a white
-                blob. Same crest as the header. */}
+            {/* The federation crest at badge size on the dark disc -- the same
+                language as the header. It must NOT be cropped to fill the
+                circle: the emblem is mostly white and becomes a white blob. */}
             <View style={styles.crest}>
-              <Image source={require('../assets/ftf-logo.png')} style={styles.crestImage} resizeMode="cover" />
+              <Image source={require('../assets/ftf-logo.png')} style={styles.crestImage} resizeMode="contain" />
             </View>
             <Text style={styles.teamName} numberOfLines={1}>Tunisie</Text>
           </View>
@@ -71,7 +72,7 @@ export function MatchHero({ match }: { match: Match | null }) {
             </Text>
             <View style={styles.crest}>
               {opponentCode ? (
-                <Flag name={opponentCode} width={46} />
+                <Flag name={opponentCode} width={30} />
               ) : (
                 <Text style={styles.crestText}>?</Text>
               )}
@@ -114,16 +115,15 @@ const styles = StyleSheet.create({
   team: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 },
   teamRight: { justifyContent: 'flex-end' },
   center: { flex: 1.15, alignItems: 'center' },
-  // Proper circular crests: a white ring, the flag cropped to fill the disc
-  // (4:3 flags centered and overflow-hidden, so no distortion and no
-  // letterbox floating in a translucent circle), and a plain "?" when there
-  // is no opponent rather than a dash.
+  // Proper circular crests: a white ring around a dark disc, with the emblem
+  // at badge size in the middle -- the header's language. Neither the crest
+  // nor a flag is ever cropped to fill the disc.
   crest: {
     width: 46, height: 46, borderRadius: 23, overflow: 'hidden',
     backgroundColor: colors.cardRaised, borderWidth: 2, borderColor: 'rgba(255,255,255,0.35)',
     alignItems: 'center', justifyContent: 'center',
   },
-  crestImage: { width: 46, height: 46, borderRadius: 23 },
+  crestImage: { width: 32, height: 32 },
   crestText: { fontFamily: fonts.display, color: 'rgba(255,255,255,0.7)', fontWeight: '700', fontSize: 20 },
   teamName: { fontFamily: fonts.display, fontSize: 15, fontWeight: '700', letterSpacing: 0.5, color: colors.white, flexShrink: 1 },
   teamNameRight: { textAlign: 'right' },
