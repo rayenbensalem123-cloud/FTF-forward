@@ -110,13 +110,10 @@ export const sectionTitle = {
 } as const;
 
 /**
- * The model's accent. It is not a new hue -- #E30613 is the federation's own
- * red and was already `colors.red` for danger -- it is simply promoted from a
- * status colour to the thing that carries "this is interactive": the header
- * bar, the see-all link, the icons in the action row, the active tab.
- *
- * It sits on navy, so it is never used as small text on a dark card where it
- * would fail contrast; gold stays in that job.
+ * The interactive accent. In the dashboard design this is gold: it carries the
+ * competition pill, the primary button, the section-header dot and the active
+ * tab. Red is reserved for the hero's dark gradient and the staff badge dot,
+ * so it stays a status colour rather than the thing that says "tappable".
  */
-export const accent = colors.red;
+export const accent = colors.gold;
 

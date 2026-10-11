@@ -2,21 +2,17 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Bell, ChevronLeft } from 'lucide-react-native';
-import { colors, fonts, space } from '@/constants/theme';
+import { colors, fonts, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNotifications } from '@/context/NotificationsContext';
 
 /**
- * The model's header: a full-bleed red bar, edge to edge, with the crest on a
- * white disc, the wordmark in the display face, and the avatar as a dark
- * translucent disc.
+ * The dashboard header: dark navy, with the crest, the wordmark in the display
+ * face, an optional role badge, and a single circular affordance on the right.
  *
- * It is full-bleed rather than an inset bar on purpose. An inset rounded bar
- * was tried and read as a button -- heavier and older than everything below
- * it. Breaking out to the screen edges is what makes it read as a header.
- *
- * Screens pad their own content, so the bar pulls itself out to the edges with
- * a negative margin and re-applies the padding inside itself.
+ * The red bar from the earlier attempt is gone. On a dark page a filled bar
+ * reads heavier than the content below it; this header sits on the page
+ * background and lets the hero card be the thing that carries colour.
  *
  * The title is the display face at 18/700 uppercase. Arabic has no case, so
  * `textTransform` is a no-op there and those headings fall back to the system
@@ -29,11 +25,13 @@ import { useNotifications } from '@/context/NotificationsContext';
 export function AppHeader({
   showBell = true,
   back = false,
+  badge,
   title,
   subtitle,
 }: {
   showBell?: boolean;
   back?: boolean;
+  badge?: string;
   title?: string;
   subtitle?: string;
 }) {
@@ -53,7 +51,15 @@ export function AppHeader({
         <Image source={require('../assets/ftf-logo.png')} style={styles.logo} resizeMode="contain" accessibilityLabel="FTF crest" />
       </View>
       <View style={styles.titles}>
-        <Text style={styles.title} numberOfLines={1}>{title ?? t('appName')}</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title} numberOfLines={1}>{title ?? t('appName')}</Text>
+          {!!badge && (
+            <View style={styles.badge}>
+              <View style={styles.badgeDot} />
+              <Text style={styles.badgeText} numberOfLines={1}>{badge}</Text>
+            </View>
+          )}
+        </View>
         <Text style={styles.subtitle} numberOfLines={1}>{subtitle ?? t('federation')}</Text>
       </View>
       {showBell && (
@@ -65,7 +71,7 @@ export function AppHeader({
         >
           <Bell color={colors.white} size={18} />
           {unread > 0 && (
-            <View style={styles.badge}><Text style={styles.badgeText}>{unread > 9 ? '9+' : unread}</Text></View>
+            <View style={styles.badgeCount}><Text style={styles.badgeCountText}>{unread > 9 ? '9+' : unread}</Text></View>
           )}
         </TouchableOpacity>
       )}
@@ -74,41 +80,39 @@ export function AppHeader({
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    backgroundColor: colors.red,
-    // Full-bleed: pull out of the screen's content padding, then re-apply it
-    // inside the bar so the contents still line up with the cards below.
-    marginHorizontal: -space.lg,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm + 2,
-  },
-  // Both affordances are translucent dark discs over the red, as in the model.
+  row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.sm },
+  // Plain outlined discs; a square card here reads as chrome.
   round: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: 'rgba(0,0,0,0.22)',
-    alignItems: 'center', justifyContent: 'center',
+    width: 38, height: 38, borderRadius: 19, backgroundColor: colors.card,
+    borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center',
   },
-  // The crest sits on a white disc so it keeps its own contrast against the
-  // red -- the model does exactly this rather than knocking it out.
   logoTile: {
-    width: 38, height: 38, borderRadius: 19, backgroundColor: colors.white,
-    alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+    width: 42, height: 42, borderRadius: 21, backgroundColor: colors.cardRaised,
+    borderWidth: 1, borderColor: colors.hairline, alignItems: 'center',
+    justifyContent: 'center', overflow: 'hidden',
   },
   logo: { width: 30, height: 30 },
   titles: { flex: 1, minWidth: 0 },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   title: {
     fontFamily: fonts.display, fontSize: 18, fontWeight: '700', letterSpacing: 0.45,
     textTransform: 'uppercase', color: colors.white, lineHeight: 21,
   },
+  // The role badge: a red dot and a muted label, as in the reference.
+  badge: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    backgroundColor: colors.card, borderRadius: radius.pill,
+    borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 8, paddingVertical: 3,
+  },
+  badgeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.red },
+  badgeText: { color: colors.muted, fontSize: 10, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase' },
   subtitle: {
-    color: 'rgba(255,255,255,0.82)', fontSize: 11, fontWeight: '600', letterSpacing: 0.9,
+    color: colors.muted, fontSize: 11, fontWeight: '600', letterSpacing: 0.9,
     textTransform: 'uppercase', marginTop: 2,
   },
-  badge: {
+  badgeCount: {
     position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, borderRadius: 9,
-    backgroundColor: colors.navy, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4,
+    backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4,
   },
-  badgeText: { color: colors.white, fontSize: 10, fontWeight: '800' },
+  badgeCountText: { color: colors.white, fontSize: 10, fontWeight: '800' },
 });

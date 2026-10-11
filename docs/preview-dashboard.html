@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FTF Forward — Dashboard home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0C1F3D; --card:#101B33; --card-raised:#112950;
+  --gold:#F6C744; --red:#E30613; --white:#EDEFF4; --muted:#8FA0BD;
+  --green:#22C55E; --amber:#F59E0B;
+  --hairline:rgba(148,170,210,.18);
+  --r-sm:10px; --r-md:16px; --r-card:20px; --r-pill:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#070d18;color:var(--white);
+  font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;padding:40px 24px 72px}
+.page{max-width:460px;margin:0 auto}
+h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.sub{color:var(--muted);font-size:13px;margin-top:6px;line-height:1.6}
+.phone{width:390px;background:var(--navy);border-radius:34px;overflow:hidden;
+  border:1px solid rgba(148,170,210,.14);box-shadow:0 24px 60px rgba(0,0,0,.6);margin-top:22px}
+.status{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;
+  font-size:12px;font-weight:700}
+.dots{display:flex;gap:5px;align-items:center}
+.dots i{display:block;width:16px;height:9px;border:1.4px solid var(--white);border-radius:2.5px;opacity:.9}
+
+/* Header -- dark navy, badge, bell */
+.hdr{display:flex;align-items:center;gap:12px;padding:8px 16px}
+.logo-tile{width:42px;height:42px;border-radius:21px;background:var(--card-raised);
+  border:1px solid var(--hairline);display:grid;place-items:center;overflow:hidden;flex:none}
+.logo-tile img{width:30px;height:30px}
+.hdr-txt{flex:1;min-width:0}
+.title-row{display:flex;align-items:center;gap:8px}
+.hdr-title{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
+  text-transform:uppercase;color:var(--white);line-height:21px}
+.badge{display:flex;align-items:center;gap:5px;background:var(--card);
+  border:1px solid var(--hairline);border-radius:var(--r-pill);padding:3px 8px}
+.badge i{width:6px;height:6px;border-radius:3px;background:var(--red);display:block}
+.badge span{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+.hdr-sub{font-size:11px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;
+  color:var(--muted);margin-top:2px}
+.round{width:38px;height:38px;border-radius:19px;background:var(--card);
+  border:1px solid var(--hairline);display:grid;place-items:center;position:relative;flex:none}
+.round b{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;
+  background:var(--red);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+
+.body{padding:6px 16px 26px;display:flex;flex-direction:column;gap:16px}
+
+/* Hero -- maroon gradient */
+.hero{border-radius:var(--r-card);padding:16px;
+  background:linear-gradient(135deg,#3A0A16 0%,#1C060D 100%)}
+.top-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pill{background:var(--gold);color:var(--navy);border-radius:var(--r-pill);
+  padding:4px 10px;font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
+.next{font-size:12px;font-weight:600;color:rgba(255,255,255,.75)}
+.teams{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0}
+.team{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+.team.r{justify-content:flex-end}
+.crest{width:44px;height:44px;border-radius:22px;background:var(--card-raised);
+  border:2px solid rgba(255,255,255,.3);display:grid;place-items:center;flex:none;font-size:18px}
+.crest img{width:30px;height:30px}
+.tname{font-family:Oswald;font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;flex:1;min-width:0}
+.tname.r{text-align:right}
+.vs{color:var(--gold);font-weight:900;font-size:14px;letter-spacing:.7px}
+.action-row{display:flex;align-items:center;gap:8px}
+.count{display:flex;gap:6px}
+.count div{background:rgba(0,0,0,.28);border-radius:var(--r-sm);padding:6px 9px;text-align:center;min-width:44px}
+.count b{display:block;font-family:Oswald;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.count span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.65)}
+.primary{flex:1;height:38px;border-radius:var(--r-pill);background:var(--gold);color:var(--navy);
+  display:flex;align-items:center;justify-content:center;gap:2px;margin-left:8px;
+  font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+.primary span{font-size:16px;font-weight:700;line-height:16px}
+.venue-row{display:flex;align-items:center;gap:6px;margin-top:10px}
+.venue{display:flex;align-items:center;gap:5px;flex:1;font-size:12px;color:rgba(255,255,255,.7)}
+.secondary{display:flex;align-items:center;gap:4px;background:rgba(246,199,68,.14);
+  border:1px solid rgba(246,199,68,.4);border-radius:var(--r-pill);padding:6px 10px;
+  color:var(--gold);font-size:9px;font-weight:800;text-transform:uppercase}
+
+/* Readiness */
+.tabs{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+.tab{display:flex;align-items:center;gap:6px}
+.tab i{width:6px;height:6px;border-radius:3px;background:var(--gold);display:block}
+.tab span{font-size:15px;font-weight:700;color:var(--white)}
+.tab.idle span{color:var(--muted);font-weight:600}
+.panel{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);padding:16px}
+.count-row{display:flex;align-items:baseline;gap:10px}
+.count-big{font-size:34px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
+.count-slash{font-size:20px;font-weight:700;color:var(--muted)}
+.count-label{font-size:13px;font-weight:600;color:var(--muted)}
+.track{height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin:12px 0;overflow:hidden}
+.track i{display:block;height:100%;border-radius:3px;background:var(--green)}
+.chip{display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,.16);
+  border-radius:var(--r-pill);padding:7px 12px;color:var(--amber);font-size:12px;font-weight:700}
+.chip i{width:7px;height:7px;border-radius:4px;background:var(--amber);display:block}
+
+/* Section header */
+.sec{display:flex;align-items:center;justify-content:space-between}
+.sec h2{font-family:Oswald;font-size:18px;font-weight:700;letter-spacing:.45px;
+  text-transform:uppercase;color:var(--white)}
+.sec a{color:var(--gold);font-size:12px;font-weight:600;text-decoration:none}
+
+/* Player rows */
+.list{background:var(--card);border:1px solid var(--hairline);border-radius:var(--r-card);padding:4px 16px}
+.prow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--hairline)}
+.prow:first-child{border-top:0}
+.av{width:40px;height:40px;border-radius:20px;background:var(--card-raised);
+  display:grid;place-items:center;font-family:Oswald;font-size:15px;font-weight:700;color:var(--gold);
+  border:1px solid var(--hairline);overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.who{flex:1;min-width:0}
+.who .n{font-size:14px;font-weight:700}
+.who .m{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;margin-top:2px}
+.pstat{text-align:right;margin-right:10px}
+.pstat b{display:block;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.pstat span{font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.pbar{width:4px;height:34px;border-radius:2px;background:rgba(255,255,255,.08);
+  display:flex;align-items:flex-end;overflow:hidden}
+.pbar i{display:block;width:100%;border-radius:2px;background:var(--green)}
+
+/* Insights */
+.insights-head{display:flex;align-items:center;gap:6px}
+.insights-head span{font-size:15px;font-weight:700;color:var(--white)}
+.insights{display:flex;gap:8px}
+.icard{flex:1;background:var(--card);border:1px solid var(--hairline);
+  border-radius:var(--r-card);padding:12px}
+.icard h3{font-size:13px;font-weight:700;margin-bottom:6px}
+.icard .body{display:flex;align-items:center;justify-content:center;min-height:96px}
+
+/* Bottom nav */
+.tabbar{display:flex;border-top:1px solid var(--hairline);background:var(--card);padding:10px 0 18px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);opacity:.55}
+.tab.on{color:var(--gold);opacity:1}
+.tab span{font-family:Oswald;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+.notes{margin-top:40px;max-width:900px}
+.notes h3{font-family:Oswald;font-size:16px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--gold);margin-bottom:12px}
+.notes ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.notes li{color:var(--muted);font-size:13px;line-height:1.6;padding-left:18px;position:relative}
+.notes li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:3px;background:var(--gold)}
+.notes li b{color:var(--white);font-weight:700}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Dashboard home — staff portal</h1>
+  <p class="sub">
+    Following the reference you sent. Rendered from the real tokens in
+    <code>mobile/constants/theme.ts</code> and the real component layouts. Oswald loads from Google
+    Fonts here and is bundled on the phone, so the device is a hair narrower than this.
+  </p>
+
+  <div class="phone">
+    <div class="status"><span>9:41</span><span class="dots"><i></i><i style="width:22px"></i></span></div>
+
+    <div class="hdr">
+      <div class="logo-tile"><img src="../mobile/assets/ftf-logo.png" alt=""></div>
+      <div class="hdr-txt">
+        <div class="title-row">
+          <div class="hdr-title">FTF Forward</div>
+          <div class="badge"><i></i><span>Staff Portal</span></div>
+        </div>
+        <div class="hdr-sub">Fédération Tunisienne de Football</div>
+      </div>
+      <div class="round"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EDEFF4" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b>2</b></div>
+    </div>
+
+    <div class="body">
+      <div class="hero">
+        <div class="top-row">
+          <span class="pill">CAN Féminine · Qualif.</span>
+          <span class="next">Next match · SAM 24 OCT</span>
+        </div>
+        <div class="teams">
+          <div class="team"><span class="crest"><img src="../mobile/assets/ftf-logo.png" alt=""></span><span class="tname">Tunisia</span></div>
+          <span class="vs">VS</span>
+          <div class="team r"><span class="tname r">Morocco</span><span class="crest">🇲🇦</span></div>
+        </div>
+        <div class="action-row">
+          <div class="count">
+            <div><b>04</b><span>Days</span></div>
+            <div><b>11</b><span>Hrs</span></div>
+            <div><b>26</b><span>Min</span></div>
+          </div>
+          <div class="primary">Match details <span>›</span></div>
+        </div>
+        <div class="venue-row">
+          <div class="venue">📍 Stade de Radès</div>
+          <div class="secondary">＋ Add to calendar</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab"><i></i><span>Squad Readiness</span></div>
+        <div class="tab idle"><span>Injury Report</span></div>
+      </div>
+      <div class="panel">
+        <div class="count-row"><span class="count-big">21</span><span class="count-slash">/ 24</span><span class="count-label">players fit</span></div>
+        <div class="track"><i style="width:87.5%"></i></div>
+        <span class="chip"><i></i>3 in recovery</span>
+      </div>
+
+      <div class="sec"><h2>Top players</h2></div>
+      <div class="list">
+        <div class="prow"><div class="av"><img src="../mobile/assets/ftf-logo.png" alt=""></div><div class="who"><div class="n">Y. Ben Amor</div><div class="m">MID · #12</div></div><div class="pstat"><b>48</b><span>Goals</span></div><div class="pbar"><i style="height:100%"></i></div></div>
+        <div class="prow"><div class="av"><img src="../mobile/assets/ftf-logo.png" alt=""></div><div class="who"><div class="n">S. Gharbi</div><div class="m">FWD · #07</div></div><div class="pstat"><b>36</b><span>Goals</span></div><div class="pbar"><i style="height:75%"></i></div></div>
+        <div class="prow"><div class="av">10</div><div class="who"><div class="n">M. Hamdi</div><div class="m">DEF · #10</div></div><div class="pstat"><b>29</b><span>Goals</span></div><div class="pbar"><i style="height:60%"></i></div></div>
+      </div>
+
+      <div class="insights-head"><span>Team Insights &amp; Upcoming Fixtures</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F6C744" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></div>
+      <div class="insights">
+        <div class="icard">
+          <h3>Squad Form</h3>
+          <div class="body">
+            <svg width="116" height="116" viewBox="0 0 116 116">
+              <polygon points="58,22 92,42 80,82 36,82 24,42" fill="none" stroke="rgba(148,170,210,.18)"/>
+              <polygon points="58,34 80,47 72,74 44,74 36,47" fill="none" stroke="rgba(148,170,210,.18)"/>
+              <polygon points="58,46 68,52 64,66 52,66 48,52" fill="none" stroke="rgba(148,170,210,.18)"/>
+              <line x1="58" y1="58" x2="58" y2="22" stroke="rgba(148,170,210,.18)"/>
+              <line x1="58" y1="58" x2="92" y2="42" stroke="rgba(148,170,210,.18)"/>
+              <line x1="58" y1="58" x2="80" y2="82" stroke="rgba(148,170,210,.18)"/>
+              <line x1="58" y1="58" x2="36" y2="82" stroke="rgba(148,170,210,.18)"/>
+              <line x1="58" y1="58" x2="24" y2="42" stroke="rgba(148,170,210,.18)"/>
+              <polygon points="58,30 84,45 74,76 40,76 30,45" fill="rgba(246,199,68,.22)" stroke="#F6C744" stroke-width="1.5"/>
+              <circle cx="58" cy="30" r="2" fill="#F6C744"/><circle cx="84" cy="45" r="2" fill="#F6C744"/>
+              <circle cx="74" cy="76" r="2" fill="#F6C744"/><circle cx="40" cy="76" r="2" fill="#F6C744"/>
+              <circle cx="30" cy="45" r="2" fill="#F6C744"/>
+            </svg>
+          </div>
+        </div>
+        <div class="icard">
+          <h3>Opponent Analysis</h3>
+          <div class="body">
+            <svg width="116" height="116" viewBox="0 0 116 116">
+              <polygon points="58,22 96,58 58,94 20,58" fill="none" stroke="rgba(148,170,210,.18)"/>
+              <polygon points="58,36 82,58 58,80 34,58" fill="none" stroke="rgba(148,170,210,.18)"/>
+              <line x1="58" y1="58" x2="58" y2="22" stroke="rgba(148,170,210,.18)"/>
+              <line x1="58" y1="58" x2="96" y2="58" stroke="rgba(148,170,210,.18)"/>
+              <line x1="58" y1="58" x2="58" y2="94" stroke="rgba(148,170,210,.18)"/>
+              <line x1="58" y1="58" x2="20" y2="58" stroke="rgba(148,170,210,.18)"/>
+              <polygon points="58,34 78,58 58,84 30,58" fill="rgba(227,6,19,.22)" stroke="#E30613" stroke-width="1.5"/>
+              <circle cx="58" cy="34" r="2" fill="#E30613"/><circle cx="78" cy="58" r="2" fill="#E30613"/>
+              <circle cx="58" cy="84" r="2" fill="#E30613"/><circle cx="30" cy="58" r="2" fill="#E30613"/>
+            </svg>
+          </div>
+        </div>
+        <div class="icard">
+          <h3>Opponent Met</h3>
+          <div class="body">
+            <div style="display:flex;align-items:flex-end;gap:8px;height:76px;width:100%">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="width:68%;height:100%;background:#F6C744;border-radius:3px"></div><span style="font-size:8px;font-weight:700;color:var(--muted)">W</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="width:68%;height:33%;background:#F6C744;opacity:.55;border-radius:3px"></div><span style="font-size:8px;font-weight:700;color:var(--muted)">D</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="width:68%;height:50%;background:#F6C744;opacity:.55;border-radius:3px"></div><span style="font-size:8px;font-weight:700;color:var(--muted)">L</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Dashboard</span></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendar</span></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 10h6"/></svg><span>Reports</span></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg><span>Metrics</span></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/></svg><span>Profile</span></div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>What changed</h3>
+    <ul>
+      <li><b>The header is dark navy, not a red bar.</b> Crest, "FTF Forward" in Oswald, a red-dot "Staff Portal" badge, and the notifications bell. The red bar read heavier than the content below it; this lets the hero card carry the colour.</li>
+      <li><b>The hero is a dark maroon gradient card.</b> Gold competition pill, "Next match · SAM 24 OCT", Tunisia vs Morocco, a three-box countdown, a gold "Match details" button, and a gold-outlined "Add to calendar". One primary action instead of three competing ones.</li>
+      <li><b>Squad readiness</b> with a gold-dot active tab, "21 / 24 players fit" over a green bar, and a recovery chip.</li>
+      <li><b>Player stat rows</b> — crest, name, position, and a stat with a vertical bar whose height is the value relative to the row max. The bar is what makes a list of numbers scannable.</li>
+      <li><b>Team insights</b> — three cards with charts drawn on react-native-svg: two radars (Squad Form, Opponent Analysis) and a bar chart (Opponent Met). No chart library installed; hand-rolled is lighter at this size.</li>
+      <li><b>Bottom nav</b> — Dashboard · Calendar · Reports · Metrics · Profile, gold on the active tab.</li>
+      <li><b>Gold is the accent again.</b> It carries the pill, buttons, section dot and active tab. Red is reserved for the hero gradient and the badge dot.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
