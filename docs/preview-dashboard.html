@@ -59,6 +59,14 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   background:linear-gradient(180deg,rgba(6,12,24,.78) 0%,rgba(6,12,24,.32) 45%,rgba(6,12,24,.55) 100%),
              url('../mobile/assets/home-bg.jpg') center/cover no-repeat}
 .hero-in{padding:16px}
+/* Timer cells on the photo: dark translucent tiles */
+.timer{display:flex;gap:6px;margin-top:14px}
+.timer div{background:rgba(0,0,0,.42);border-radius:10px;padding:6px 8px;
+  text-align:center;min-width:46px}
+.timer b{display:block;font-family:Oswald;font-size:19px;font-weight:700;
+  font-variant-numeric:tabular-nums;line-height:1}
+.timer span{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(255,255,255,.65)}
 .eyebrow{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
   color:rgba(255,255,255,.92)}
 .competition{font-size:12px;font-weight:600;color:rgba(255,255,255,.72);margin-top:2px}
@@ -187,6 +195,12 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
             <div class="center"><div class="big">SAM 24<br>OCT</div></div>
             <div class="team r"><span class="tname r">Maroc</span><span class="crest">🇲🇦</span></div>
           </div>
+          <div class="timer">
+            <div><b>04</b><span>Days</span></div>
+            <div><b>11</b><span>Hrs</span></div>
+            <div><b>26</b><span>Min</span></div>
+            <div><b>09</b><span>Sec</span></div>
+          </div>
           <div class="venue-row">
             <div class="venue">📍 Stade de Radès</div>
             <div class="weather">
@@ -220,23 +234,26 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
 
         <div class="fcard">
           <h3>Players Report</h3>
-          <div class="desc">Profile cards for young talents</div>
           <div class="visual">
-            <svg width="88" height="88" viewBox="0 0 116 116">
-              <polygon points="58,22 92,42 80,82 36,82 24,42" fill="none" stroke="rgba(148,170,210,.18)"/>
-              <polygon points="58,34 80,47 72,74 44,74 36,47" fill="none" stroke="rgba(148,170,210,.18)"/>
-              <line x1="58" y1="58" x2="58" y2="22" stroke="rgba(148,170,210,.18)"/>
-              <line x1="58" y1="58" x2="92" y2="42" stroke="rgba(148,170,210,.18)"/>
-              <line x1="58" y1="58" x2="80" y2="82" stroke="rgba(148,170,210,.18)"/>
-              <line x1="58" y1="58" x2="36" y2="82" stroke="rgba(148,170,210,.18)"/>
-              <line x1="58" y1="58" x2="24" y2="42" stroke="rgba(148,170,210,.18)"/>
-              <polygon points="58,30 84,45 74,76 40,76 30,45" fill="rgba(246,199,68,.22)" stroke="#F6C744" stroke-width="1.5"/>
-              <circle cx="58" cy="30" r="2" fill="#F6C744"/><circle cx="84" cy="45" r="2" fill="#F6C744"/>
-              <circle cx="74" cy="76" r="2" fill="#F6C744"/><circle cx="40" cy="76" r="2" fill="#F6C744"/>
-              <circle cx="30" cy="45" r="2" fill="#F6C744"/>
-            </svg>
+            <div style="display:flex;flex-direction:column;gap:10px;justify-content:center;width:100%">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">1</span>
+                <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Y. Ben Amor</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">MID · #12</span></span>
+                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">48</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:100%;background:var(--gold);border-radius:2px"></span></span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">2</span>
+                <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">S. Gharbi</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">FWD · #07</span></span>
+                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">36</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:75%;background:var(--gold);border-radius:2px"></span></span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-family:Oswald;font-size:20px;font-weight:700;color:var(--gold);width:20px;text-align:center">3</span>
+                <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">M. Hamdi</span><span style="display:block;font-size:9px;font-weight:600;color:var(--muted);margin-top:1px">DEF · #10</span></span>
+                <span style="width:44px;text-align:right"><span style="display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums">29</span><span style="display:block;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px"><span style="display:block;height:100%;width:60%;background:var(--gold);border-radius:2px"></span></span></span>
+              </div>
+            </div>
           </div>
-          <div class="btn primary">View Details <span class="chev">›</span></div>
+          <div class="btn primary">View report <span class="chev">›</span></div>
         </div>
 
         <div class="fcard">
@@ -253,22 +270,18 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
         </div>
 
         <div class="fcard">
-          <h3>Live Match Analysis</h3>
+          <h3>News</h3>
           <div class="visual">
-            <div class="pitch" style="width:100%">
-              <div class="hw"></div><div class="cc"></div><div class="bt"></div><div class="bb"></div>
-              <div class="dot" style="left:50%;top:90%"></div>
-              <div class="dot" style="left:20%;top:68%"></div>
-              <div class="dot" style="left:50%;top:72%"></div>
-              <div class="dot" style="left:80%;top:68%"></div>
-              <div class="dot" style="left:28%;top:44%"></div>
-              <div class="dot" style="left:50%;top:48%"></div>
-              <div class="dot" style="left:72%;top:44%"></div>
-              <div class="dot" style="left:36%;top:20%"></div>
-              <div class="dot" style="left:58%;top:18%"></div>
+            <div>
+              <div style="font-size:13px;font-weight:700;line-height:18px">Tunisia name squad for WAFCON qualifying double-header</div>
+              <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
+                <span style="font-size:11px;font-weight:800;color:var(--gold)">CAF Online</span>
+                <span style="font-size:11px;color:var(--muted)">2h ago</span>
+                <span style="font-size:11px;color:var(--muted)">↗</span>
+              </div>
             </div>
           </div>
-          <div class="btn primary">Compare Opponents <span class="chev">›</span></div>
+          <div class="btn primary">See all <span class="chev">›</span></div>
         </div>
 
       </div>
@@ -286,9 +299,9 @@ h1{font-family:Oswald;font-size:24px;font-weight:700;text-transform:uppercase;le
   <div class="notes">
     <h3>What changed</h3>
     <ul>
-      <li><b>The banner carries no button now.</b> The red "Voir la convocation" is removed -- match details are one tap from the fixtures section, not from the hero.</li>
-      <li><b>The weather is a real widget.</b> The badge's icon reflects the actual WMO condition rather than a static glyph, with the temperature over a short label. It still renders nothing on failure rather than a wrong number.</li>
-      <li><b>Scouting Network is now Players Report.</b> Same card shape, same visual, opens the reports screen.</li>
+      <li><b>The banner has its timer back.</b> Days / hours / minutes / seconds on dark translucent tiles, ticking every second, sitting on the photo under the teams. It lifts straight off the image without a card behind it.</li>
+      <li><b>Players Report is a real report now, not a renamed radar.</b> The card shows a ranked leaderboard -- the top three scorers with gold rank numerals, names, positions and goal bars scaled to the card max. The radar visual is gone from this card; it was saying nothing.</li>
+      <li><b>Live Match Analysis is NEWS, rebuilt around the content.</b> The card shows the top live headline with its source and age, tapping it opens the article, and "See all" opens the news screen. It reads the same cached feed as the screen, so the two can never disagree. The pitch diagram it carried is gone with it.</li>
     </ul>
   </div>
 </div>

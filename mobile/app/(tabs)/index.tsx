@@ -7,9 +7,10 @@ import { Card } from '@/components/Card';
 import { FeatureCard } from '@/components/FeatureCard';
 import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchHero } from '@/components/MatchHero';
+import { NewsTeaser } from '@/components/NewsTeaser';
 import { PitchDiagram } from '@/components/PitchDiagram';
 import { PillTabs } from '@/components/PillTabs';
-import { RadarChart } from '@/components/Charts';
+import { ReportTeaser } from '@/components/ReportTeaser';
 import { SectionHeader } from '@/components/SectionHeader';
 import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -36,15 +37,6 @@ const TACTIC_PITCH = [
   { x: 30, y: 40 }, { x: 70, y: 40 },
   { x: 42, y: 16, label: 'YA' }, { x: 62, y: 14, label: 'SG' },
 ];
-
-const ANALYSIS_PITCH = [
-  { x: 50, y: 90 },
-  { x: 20, y: 68 }, { x: 50, y: 72 }, { x: 80, y: 68 },
-  { x: 28, y: 44 }, { x: 50, y: 48 }, { x: 72, y: 44 },
-  { x: 36, y: 20 }, { x: 58, y: 18 },
-];
-
-const SCOUT_RADAR = { data: [0.8, 0.6, 0.7, 0.5, 0.65], labels: ['PAC', 'SHO', 'PAS', 'DRI', 'DEF'] };
 
 export default function HomeScreen() {
   const { t } = useLanguage();
@@ -97,11 +89,10 @@ export default function HomeScreen() {
 
               <FeatureCard
                 title={t('playersReport')}
-                description={t('profileCards')}
-                cta={t('viewDetails')}
+                cta={t('viewReport')}
                 href="/more/reports"
               >
-                <RadarChart data={SCOUT_RADAR.data} labels={SCOUT_RADAR.labels} size={88} />
+                <ReportTeaser players={players} />
               </FeatureCard>
 
               <FeatureCard
@@ -118,11 +109,11 @@ export default function HomeScreen() {
               </FeatureCard>
 
               <FeatureCard
-                title={t('liveMatchAnalysis')}
-                cta={t('compareOpponents')}
-                href="/match-details"
+                title={t('tabNews')}
+                cta={t('seeAll')}
+                href="/more/news"
               >
-                <PitchDiagram players={ANALYSIS_PITCH} showLabels={false} />
+                <NewsTeaser />
               </FeatureCard>
             </View>
           </View>

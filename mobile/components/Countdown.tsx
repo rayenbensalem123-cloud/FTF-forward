@@ -12,7 +12,7 @@ export interface CountdownLabels {
   sec: string;
 }
 
-function CountdownInner({ target, labels }: { target: string; labels: CountdownLabels }) {
+function CountdownInner({ target, labels, boxed = false }: { target: string; labels: CountdownLabels; boxed?: boolean }) {
   const { t } = useLanguage();
   const cd = useCountdown(target);
   const boxes: Array<[number, string]> = [
@@ -22,9 +22,9 @@ function CountdownInner({ target, labels }: { target: string; labels: CountdownL
     [cd.seconds, labels.sec],
   ];
   return (
-    <View style={styles.countdown} accessibilityRole="timer" accessibilityLabel={t('kickoffIn')}>
+    <View style={[styles.countdown, boxed && styles.countdownBoxed]} accessibilityRole="timer" accessibilityLabel={t('kickoffIn')}>
       {boxes.map(([v, label]) => (
-        <View key={label} style={styles.cdBox}>
+        <View key={label} style={[styles.cdBox, boxed && styles.cdBoxed]}>
           <Text style={styles.cdValue}>{pad2(v)}</Text>
           <Text style={styles.cdLabel}>{label}</Text>
         </View>
@@ -38,12 +38,17 @@ function CountdownInner({ target, labels }: { target: string; labels: CountdownL
  * 1-second tick only re-renders this tiny component instead of the whole screen.
  * Styled like the hero cells of the redesign: a heavy tabular number over an
  * uppercase micro-label, no box behind it.
+ *
+ * `boxed` puts each cell on a dark translucent tile so the countdown reads on
+ * a photo banner; the default stays box-less for dark cards.
  */
 export const Countdown = memo(CountdownInner);
 
 const styles = StyleSheet.create({
   countdown: { flexDirection: 'row', gap: 14 },
+  countdownBoxed: { gap: 6 },
   cdBox: { alignItems: 'center', minWidth: 34 },
+  cdBoxed: { backgroundColor: 'rgba(0,0,0,0.42)', borderRadius: 10, paddingVertical: 6, paddingHorizontal: 8, minWidth: 46 },
   cdValue: {
     color: colors.white,
     fontSize: 20,

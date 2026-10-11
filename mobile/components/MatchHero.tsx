@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MapPin } from 'lucide-react-native';
 import { colors, fonts, radius, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
+import { Countdown } from '@/components/Countdown';
 import { Flag } from '@/components/Flag';
 import { flagCodeFor } from '@/lib/countryFlags';
 import { formatDate } from '@/lib/format';
@@ -67,6 +68,14 @@ export function MatchHero({ match }: { match: Match | null }) {
           </View>
         </View>
 
+        <View style={styles.countRow}>
+          <Countdown
+            boxed
+            target={match ? `${match.date}T00:00:00` : ''}
+            labels={{ days: t('days'), hrs: t('hrs'), min: t('min'), sec: t('sec') }}
+          />
+        </View>
+
         <View style={styles.venueRow}>
           {!!match?.venue && (
             <View style={styles.venue}>
@@ -100,6 +109,7 @@ const styles = StyleSheet.create({
   crestText: { color: colors.white, fontWeight: '800', fontSize: 11 },
   teamName: { fontFamily: fonts.display, fontSize: 15, fontWeight: '700', letterSpacing: 0.5, color: colors.white, flexShrink: 1 },
   teamNameRight: { textAlign: 'right' },
+  countRow: { marginTop: 14, alignItems: 'flex-start' },
   bigDate: {
     fontFamily: fonts.display, fontSize: 26, fontWeight: '700', letterSpacing: 0.5,
     color: colors.white, fontVariant: ['tabular-nums'], textAlign: 'center', lineHeight: 28,
