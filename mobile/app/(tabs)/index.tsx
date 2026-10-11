@@ -3,11 +3,13 @@ import { Alert, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Calendar, CalendarPlus, ClipboardList, Gamepad2, MapPin, Shirt } from 'lucide-react-native';
+import { Calendar, CalendarPlus, ClipboardList, Gamepad2, IdCard, MapPin, Newspaper, Trophy, Video } from 'lucide-react-native';
 import { AnnouncementsCard } from '@/components/AnnouncementsCard';
 import { AppHeader } from '@/components/AppHeader';
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
+import { IconTile } from '@/components/IconTile';
+import { SectionHeader } from '@/components/SectionHeader';
 import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchTravelCard } from '@/components/MatchTravelCard';
 import { CheckInCard, CheckInSummary } from '@/components/CheckIn';
@@ -17,7 +19,7 @@ import { ForwardChevron } from '@/components/ForwardChevron';
 import { Flag } from '@/components/Flag';
 import { SyncBanner } from '@/components/SyncBanner';
 import { flagCodeFor } from '@/lib/countryFlags';
-import { colors, radius, sectionTitle, shadow, space } from '@/constants/theme';
+import { colors, radius, shadow, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
@@ -26,12 +28,24 @@ import { addMatchToCalendar } from '@/lib/calendar';
 import { CS } from '@/i18n/careerStrings';
 import type { Match } from '@/types';
 
-/** Prototype quick actions: a 2-column grid of tiles, each a real screen. */
-const QUICK_ACTIONS = [
-  { href: '/lineup', icon: Shirt, title: 'tabLineup' },
+/**
+ * The design puts four compact tiles straight under the header and gives them
+ * to both roles. Players previously had no route at all to anything behind the
+ * staff-only "More" tab, so these four are chosen for them: none of those
+ * screens are role-gated inside -- Camp schedule is the only one that is.
+ */
+const STAFF_ACTIONS = [
   { href: '/more/camp-schedule', icon: Calendar, title: 'tabCampSchedule' },
+  { href: '/more/meetings', icon: Video, title: 'tabMeetings' },
   { href: '/more/reports', icon: ClipboardList, title: 'tabReports' },
   { href: '/more/games', icon: Gamepad2, title: 'tabGames' },
+] as const;
+
+const PLAYER_ACTIONS = [
+  { href: '/more/games', icon: Gamepad2, title: 'tabGames' },
+  { href: '/more/news', icon: Newspaper, title: 'tabNews' },
+  { href: '/more/career', icon: Trophy, title: 'tabCareer' },
+  { href: '/id-card', icon: IdCard, title: 'tabIdCard' },
 ] as const;
 
 const RESULT_COLOR = { W: colors.green, D: colors.amber, L: colors.red } as const;
@@ -87,6 +101,13 @@ export default function HomeScreen() {
       >
         <AppHeader subtitle={user ? t(isStaff ? 'roleStaff' : 'rolePlayer') : undefined} />
         <SyncBanner />
+
+        {/* The design's four-tile row, directly under the header for both roles */}
+        <View style={styles.actions}>
+          {(isStaff ? STAFF_ACTIONS : PLAYER_ACTIONS).map((a) => (
+            <IconTile key={a.href} href={a.href} icon={a.icon} label={t(a.title)} />
+          ))}
+        </View>
 
         {/* Hero: upcoming match — the broadcast card of the redesign */}
         <LinearGradient
@@ -169,33 +190,10 @@ export default function HomeScreen() {
 
         {isStaff ? (
           <>
-            {/* Quick actions — 2-column grid */}
-            <View style={styles.group}>
-              <Text style={styles.section}>{t('quickActions')}</Text>
-              <View style={styles.quickGrid}>
-                {QUICK_ACTIONS.map((a) => {
-                  const Icon = a.icon;
-                  return (
-                    <TouchableOpacity
-                      key={a.href}
-                      style={styles.quickAction}
-                      activeOpacity={0.8}
-                      onPress={() => router.push(a.href)}
-                      accessibilityRole="button"
-                      accessibilityLabel={t(a.title)}
-                    >
-                      <View style={styles.quickIcon}><Icon color={colors.gold} size={22} /></View>
-                      <Text style={styles.quickLabel} numberOfLines={1}>{t(a.title)}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </View>
-
             {/* Squad readiness */}
             {total > 0 && (
               <Card>
-                <Text style={styles.section}>{t('readiness')}</Text>
+                <SectionHeader title={t('readiness')} />
                 <View style={styles.readyRow}>
                   <Text style={styles.readyBig}>
                     {fitCount}<Text style={styles.readySlash}> / {total}</Text>
@@ -217,7 +215,7 @@ export default function HomeScreen() {
             {/* Top players */}
             {topPlayers.length > 0 && (
               <View style={styles.group}>
-                <Text style={styles.section}>{t('topPlayers')}</Text>
+                <SectionHeader title={t('topPlayers')} />
                 <View style={styles.playerGrid}>
                   {topPlayers.map((p) => (
                     <View key={p.id} style={styles.playerCard}>
@@ -243,7 +241,7 @@ export default function HomeScreen() {
             {/* Recent results */}
             {results.length > 0 && (
               <View style={styles.group}>
-                <Text style={styles.section}>{t('recentResults')}</Text>
+                <SectionHeader title={t('recentResults')} />
                 <Card style={{ paddingVertical: space.xs }}>
                   {results.map((m, i) => {
                     const r = resultOf(m)!;
@@ -276,7 +274,7 @@ export default function HomeScreen() {
 
             {/* My form: the signed-in player's own card */}
             <Card>
-              <Text style={styles.section}>{t('myForm')}</Text>
+              <SectionHeader title={t('myForm')} />
               <View style={styles.formHeader}>
                 <Avatar name={me?.name ?? user?.name ?? '?'} number={me?.number} photoUrl={me?.photoUrl} size={48} />
                 <View style={{ flex: 1, minWidth: 0 }}>
@@ -301,18 +299,7 @@ export default function HomeScreen() {
 
         {/* Upcoming fixtures */}
         <View style={styles.group}>
-          <View style={styles.sectionRow}>
-            <Text style={styles.section}>{t('todaysAgenda')}</Text>
-            <TouchableOpacity
-              style={styles.moreLink}
-              onPress={() => router.push('/matches')}
-              accessibilityRole="button"
-              accessibilityLabel={t('tabMatches')}
-            >
-              <Text style={styles.moreLinkText}>{t('tabMatches')}</Text>
-              <ForwardChevron color={colors.gold} size={14} />
-            </TouchableOpacity>
-          </View>
+          <SectionHeader title={t('todaysAgenda')} href="/matches" />
           <Card style={{ paddingVertical: space.xs }}>
             {upcoming.length === 0 && <Text style={styles.empty}>{t('noUpcoming')}</Text>}
             {upcoming.map((m, i) => (
@@ -350,7 +337,7 @@ function StatCell({ value, label }: { value: number; label: string }) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
-  section: sectionTitle,
+  actions: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md },
 
   /* Hero */
   hero: { borderRadius: radius.card, padding: space.lg, overflow: 'hidden', ...shadow.hero },
@@ -382,24 +369,6 @@ const styles = StyleSheet.create({
 
   /* Sections */
   group: { gap: space.sm },
-  sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  moreLink: { flexDirection: 'row', alignItems: 'center', gap: 2, marginBottom: 12 },
-  moreLinkText: {
-    color: colors.gold, fontSize: 11, fontWeight: '700', letterSpacing: 0.8,
-    textTransform: 'uppercase',
-  },
-
-  /* Quick actions */
-  quickGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  quickAction: {
-    flexGrow: 1, flexBasis: '47%', backgroundColor: colors.card, borderRadius: radius.card,
-    borderWidth: 1, borderColor: colors.hairline, padding: space.lg, alignItems: 'center', gap: 8,
-  },
-  quickIcon: {
-    width: 44, height: 44, borderRadius: 14, backgroundColor: colors.cardRaised,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  quickLabel: { color: colors.white, fontSize: 12, fontWeight: '700', textAlign: 'center' },
 
   /* Readiness */
   readyRow: { flexDirection: 'row', alignItems: 'baseline', gap: 10 },

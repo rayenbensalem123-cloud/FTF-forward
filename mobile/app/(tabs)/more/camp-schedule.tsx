@@ -7,7 +7,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { EncodingType, readAsStringAsync } from 'expo-file-system/legacy';
 import { CheckCircle, Clock, FileText, Send, Upload, X } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
-import { colors, radius, space } from '@/constants/theme';
+import { colors, radius, sectionTitle, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
@@ -457,7 +457,10 @@ const styles = StyleSheet.create({
   statLabel: { color: colors.muted, fontSize: 10, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', marginTop: 4 },
 
   section: { gap: 10 },
-  sectionTitle: { color: colors.gold, fontSize: 13, fontWeight: '800', letterSpacing: 0.12, textTransform: 'uppercase' },
+  // The parsed programme's day headers are the strongest headings on this
+  // screen, so they take the shared display-face heading rather than a local
+  // copy of the old 13px style.
+  sectionTitle,
 
   activityList: { gap: 8 },
   activityItem: {

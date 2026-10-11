@@ -8,7 +8,7 @@ import { Card } from '@/components/Card';
 import { ToolRow } from '@/components/ToolRow';
 import { NT } from '@/i18n/toolStrings';
 import { ForwardChevron } from '@/components/ForwardChevron';
-import { colors, radius, space } from '@/constants/theme';
+import { colors, radius, sectionTitle, space } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNotifications } from '@/context/NotificationsContext';
 import type { StringKey } from '@/i18n/strings';
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
   group: { gap: 10 },
-  groupTitle: { color: colors.gold, fontSize: 13, fontWeight: '800', letterSpacing: 1.5, textTransform: 'uppercase' },
+  groupTitle: sectionTitle,
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: 14 },
   divider: { borderTopWidth: 1, borderTopColor: colors.hairline },
   iconWrap: {
