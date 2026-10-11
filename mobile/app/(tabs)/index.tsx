@@ -3,13 +3,16 @@ import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { AppHeader } from '@/components/AppHeader';
+import { AnnouncementsCard } from '@/components/AnnouncementsCard';
 import { Avatar } from '@/components/Avatar';
 import { BingoTeaser } from '@/components/BingoTeaser';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
+import { CheckInCard } from '@/components/CheckIn';
 import { FeatureCard } from '@/components/FeatureCard';
 import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchHero } from '@/components/MatchHero';
+import { MatchTravelCard } from '@/components/MatchTravelCard';
 import { NewsTeaser } from '@/components/NewsTeaser';
 import { PillTabs } from '@/components/PillTabs';
 import { ProgramTeaser } from '@/components/ProgramTeaser';
@@ -114,31 +117,38 @@ export default function HomeScreen() {
             </View>
           </View>
         ) : (
-          user?.memberId != null && (
-            <Card>
-              <SectionHeader title={t('myForm')} />
-              <View style={styles.formHeader}>
-                <Avatar name={me?.name ?? user?.name ?? '?'} number={me?.number} photoUrl={me?.photoUrl} size={48} />
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={styles.formName} numberOfLines={1}>{me?.name ?? user?.name ?? ''}</Text>
-                  <Text style={styles.formPos}>
-                    {me ? `${me.position} · #${me.number}` : t('rolePlayer')}
-                  </Text>
+          <>
+            {user?.memberId != null && (
+              <Card>
+                <SectionHeader title={t('myForm')} />
+                <View style={styles.formHeader}>
+                  <Avatar name={me?.name ?? user?.name ?? '?'} number={me?.number} photoUrl={me?.photoUrl} size={48} />
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <Text style={styles.formName} numberOfLines={1}>{me?.name ?? user?.name ?? ''}</Text>
+                    <Text style={styles.formPos}>
+                      {me ? `${me.position} · #${me.number}` : t('rolePlayer')}
+                    </Text>
+                  </View>
+                  {me && <FitnessBadge status={me.status} large />}
                 </View>
-                {me && <FitnessBadge status={me.status} large />}
-              </View>
-              <View style={styles.statGrid}>
-                <StatCell value={me?.caps ?? 0} label={t('caps')} />
-                <StatCell value={me?.goals ?? 0} label={t('goals')} />
-                <StatCell value={me?.assists ?? 0} label={t('assists')} />
-              </View>
-              {/* Straight into the report form: players should not have to dig
-                  through Profile > Tools > Reports to log a club match. */}
-              <View style={{ marginTop: space.md }}>
-                <Button title={t('logMatch')} onPress={() => router.push('/reports?new=1')} icon={<Text style={styles.logChevron}>+</Text>} />
-              </View>
-            </Card>
-          )
+                <View style={styles.statGrid}>
+                  <StatCell value={me?.caps ?? 0} label={t('caps')} />
+                  <StatCell value={me?.goals ?? 0} label={t('goals')} />
+                  <StatCell value={me?.assists ?? 0} label={t('assists')} />
+                </View>
+                {/* Straight into the report form: players should not have to dig
+                    through Profile > Tools > Reports to log a club match. */}
+                <View style={{ marginTop: space.md }}>
+                  <Button title={t('logMatch')} onPress={() => router.push('/reports?new=1')} icon={<Text style={styles.logChevron}>+</Text>} />
+                </View>
+              </Card>
+            )}
+
+            {/* Today's action first, then staff news, then match logistics. */}
+            {user?.memberId != null && <CheckInCard memberId={user.memberId} />}
+            <AnnouncementsCard />
+            <MatchTravelCard />
+          </>
         )}
       </ScrollView>
     </SafeAreaView>
