@@ -1,9 +1,11 @@
 import React from 'react';
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { AppHeader } from '@/components/AppHeader';
 import { Avatar } from '@/components/Avatar';
 import { BingoTeaser } from '@/components/BingoTeaser';
+import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { FeatureCard } from '@/components/FeatureCard';
 import { FitnessBadge } from '@/components/FitnessBadge';
@@ -37,6 +39,7 @@ import type { Category, Match } from '@/types';
 export default function HomeScreen() {
   const { t, language } = useLanguage();
   const GT = GS[language];
+  const router = useRouter();
   const { players, matches, nextMatch, refresh, refreshing } = usePlayers();
   const { user } = useAuth();
   const isStaff = user?.role === 'staff' || user?.role === 'admin';
@@ -129,6 +132,11 @@ export default function HomeScreen() {
                 <StatCell value={me?.goals ?? 0} label={t('goals')} />
                 <StatCell value={me?.assists ?? 0} label={t('assists')} />
               </View>
+              {/* Straight into the report form: players should not have to dig
+                  through Profile > Tools > Reports to log a club match. */}
+              <View style={{ marginTop: space.md }}>
+                <Button title={t('logMatch')} onPress={() => router.push('/reports?new=1')} icon={<Text style={styles.logChevron}>+</Text>} />
+              </View>
             </Card>
           )
         )}
@@ -166,4 +174,5 @@ const styles = StyleSheet.create({
     color: colors.muted, fontSize: 10, fontWeight: '700', letterSpacing: 0.8,
     textTransform: 'uppercase', marginTop: 4,
   },
+  logChevron: { color: colors.white, fontSize: 16, fontWeight: '700', lineHeight: 16 },
 });

@@ -4,6 +4,7 @@ import {
   TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLocalSearchParams } from 'expo-router';
 import { Plus, ShieldCheck, X } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { Card } from '@/components/Card';
@@ -33,6 +34,7 @@ export default function ReportsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<Filter>('pending');
   const [formOpen, setFormOpen] = useState(false);
+  const params = useLocalSearchParams<{ new?: string }>();
 
   const memberId = user?.memberId ?? null;
   const canVerify = can('editPlayer') || can('addPlayer');
@@ -53,6 +55,15 @@ export default function ReportsScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Deep link from the player home ("Log a match"): open the form straight
+  // away instead of making her find the log button. Only when linked, so a
+  // stray param never pops a modal for anyone else.
+  const canLog = memberId != null;
+  useEffect(() => {
+    if (params.new === '1' && canLog) setFormOpen(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const shown = useMemo(() => {
     if (!isStaff) return reports.filter((r) => r.memberId === memberId);
@@ -85,8 +96,6 @@ export default function ReportsScreen() {
         },
       },
     ]);
-
-  const canLog = memberId != null;
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
