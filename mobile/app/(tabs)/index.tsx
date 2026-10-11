@@ -13,6 +13,7 @@ import { PillTabs } from '@/components/PillTabs';
 import { ProgramTeaser } from '@/components/ProgramTeaser';
 import { ReportTeaser } from '@/components/ReportTeaser';
 import { SectionHeader } from '@/components/SectionHeader';
+import { ScreenBackground } from '@/components/ScreenBackground';
 import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -48,6 +49,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
+      <ScreenBackground />
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
