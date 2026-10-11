@@ -17,6 +17,32 @@ const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${pad(
 
 type Tab = 'next' | 'results' | 'board';
 
+/** A full recorded match bundled with the app, so practice is playable before
+ * any real match is recorded. Judged and scored exactly like a real one, but
+ * never saved and never counted on the leaderboard. */
+const DEMO_MATCH: BingoMatch = {
+  opponent: 'Morocco (demo)',
+  date: '2026-10-24',
+  result: '2-1',
+  status: 'approved',
+  teamCategory: 'Seniors',
+  scorers: [{ playerId: 7, goals: 2 }],
+  yellowCards: [12],
+  redCards: [],
+  subs: [{ out: 10, in: 8 }],
+  eventMinutes: { 'g:7:1': 23, 'g:7:2': 67, 'y:12': 45, 's:10:8': 60 },
+  tunisiaPossession: 58,
+  opponentPossession: 42,
+  tunisiaShots: 14,
+  opponentShots: 8,
+  tunisiaShotsOnTarget: 6,
+  opponentShotsOnTarget: 3,
+  tunisiaCorners: 7,
+  opponentCorners: 2,
+  tunisiaFouls: 9,
+  opponentFouls: 12,
+};
+
 // ── the 3×3 card ─────────────────────────────
 function CardGrid({ card, lang, locked, states, lines, onToggle }: {
   card: Square[]; lang: Language; locked: string[]; states?: SquareState[]; lines?: number[][]; onToggle?: (id: string) => void;
@@ -142,6 +168,7 @@ export function MatchBingo({ matches, username, lang }: Props) {
   }, [approved]);
 
   const labelFor = (key: string) => {
+    if (key === matchKey(DEMO_MATCH)) return `${DEMO_MATCH.opponent} · ${formatDate(DEMO_MATCH.date || '')}`;
     const m = all.find((x) => matchKey(x) === key);
     return m ? `${m.opponent || '?'} · ${formatDate(m.date || '')}` : key;
   };
@@ -185,7 +212,14 @@ export function MatchBingo({ matches, username, lang }: Props) {
   const [practiceKey, setPracticeKey] = useState('');
   const [pDraft, setPDraft] = useState<string[]>([]);
   const [revealed, setRevealed] = useState(false);
-  const practiceMatch = useMemo(() => (practiceKey ? findPlayed(approved, practiceKey) : null), [practiceKey, approved]);
+  // Demo match, used only when no played match exists yet: a full recorded
+  // Tunisia 2-1 with real events, so the card is playable offline and before
+  // any match is recorded. It never touches entries or the leaderboard.
+  const showDemo = playedList.length === 0;
+  const practiceMatch = useMemo(
+    () => (showDemo && practiceKey === matchKey(DEMO_MATCH) ? DEMO_MATCH : practiceKey ? findPlayed(approved, practiceKey) : null),
+    [practiceKey, approved, showDemo],
+  );
   const pCard = useMemo(() => (practiceKey ? dealCard(practiceKey, username) : []), [practiceKey, username]);
   const pStates = useMemo(() => (practiceMatch && revealed ? evaluateCard(pCard, practiceMatch) : undefined), [practiceMatch, revealed, pCard]);
   const pScore = pStates ? scoreCard(pCard, pStates, pDraft) : null;
@@ -195,10 +229,15 @@ export function MatchBingo({ matches, username, lang }: Props) {
     setPDraft([...pDraft, id]);
   };
   const choosePractice = (k: string) => { setPracticeKey(k); setPDraft([]); setRevealed(false); };
+  // With only the demo to practice on, select it straight away so the card
+  // is on screen instead of an empty section.
+  useEffect(() => {
+    if (showDemo && !practiceKey) choosePractice(matchKey(DEMO_MATCH));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showDemo, practiceKey]);
 
   // my results
-  const [openKey, setOpenKey] = useState('');
-  const results = useMemo(() => mine
+  const [openKey, setOpenKey] = useState('');  const results = useMemo(() => mine
     .filter((e) => e.picks.length > 0)
     .map((e) => {
       const played = findPlayed(approved, e.matchKey);
@@ -253,11 +292,12 @@ export function MatchBingo({ matches, username, lang }: Props) {
             </>
           )}
 
-          {playedList.length > 0 && (
+          {/* Practice always has something: the demo when no played match exists. */}
+          {(
             <View style={g.section}>
               <Text style={g.sectionTitle}>{T.bgPractice}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={g.chips}>
-                {playedList.slice(0, 8).map((m) => (
+                {(showDemo ? [DEMO_MATCH] : playedList).slice(0, 8).map((m) => (
                   <FixtureChip key={matchKey(m)} opponent={m.opponent || '?'} date={m.date || ''} active={practiceKey === matchKey(m)} tone="light" onPress={() => choosePractice(matchKey(m))} />
                 ))}
               </ScrollView>
