@@ -31,6 +31,7 @@ import {
 import { StagesManager } from "@/components/stages-manager"
 import { DatePicker, AgeCalendar, JerseyScale, Select, NumberStepper, MinuteBox } from "@/components/pickers"
 import { cleanEventMinutes } from "@/lib/bingo-logic"
+import { useFileDrop, isImageFile } from "@/lib/use-file-drop"
 import { WhoAmI } from "@/components/games/who-am-i"
 import { MatchBingo } from "@/components/games/match-bingo"
 import { GameErrorBoundary } from "@/components/games/error-boundary"
@@ -530,6 +531,24 @@ export default function EliteSquadApp() {
   const fileRef=useRef<HTMLInputElement>(null)
   const passRef=useRef<HTMLInputElement>(null)
   const [passportZoom,setPassportZoom]=useState(false)
+
+  // These two upload boxes (portrait, passport scan) looked like drop zones
+  // (dashed border) but had no onDrop/onDragOver handler at all - dragging a
+  // file onto one did nothing, or made the browser navigate away and open
+  // the file, discarding the open form. Each inline onChange below is now
+  // backed by a handleXFile(f) that both the <input> and the real drop
+  // target call, so click-to-choose and drag-and-drop share the same logic.
+  const handlePortraitFile=async(f:File)=>{
+    try{let blob:File|Blob=f,name=f.name;if(f.type!=='image/gif'&&!/\.gif$/i.test(f.name)){blob=await compressImage(f);name=f.name.replace(/\.[^.]+$/,'')+'.jpg'}const fd=new FormData();fd.append('file',blob,name);const r=await fetch('/api/upload',{method:'POST',headers:await authHeaders(),body:fd});const d=await r.json();if(d.url&&d.url!=='/placeholder.jpg'){setForm({...form,image:d.url,imagePath:d.path});return}}catch(err){}
+    const r2=new FileReader();r2.onloadend=()=>setForm({...form,image:r2.result as string});r2.readAsDataURL(f)
+  }
+  const portraitDrop=useFileDrop(files=>handlePortraitFile(files[0]),isImageFile)
+
+  const handlePassportFile=async(f:File)=>{
+    try{let blob:File|Blob=f,name=f.name;if(f.type!=='image/gif'&&!/\.gif$/i.test(f.name)){blob=await compressImage(f,1800,0.85);name=f.name.replace(/\.[^.]+$/,'')+'.jpg'}const fd=new FormData();fd.append('file',blob,name);fd.append('folder','passports');const r=await fetch('/api/upload',{method:'POST',headers:await authHeaders(),body:fd});const d=await r.json();if(d.path){setForm({...form,passportImage:d.path});return}}catch(err){}
+    const r2=new FileReader();r2.onloadend=()=>setForm({...form,passportImage:r2.result as string});r2.readAsDataURL(f)
+  }
+  const passportDrop=useFileDrop(files=>handlePassportFile(files[0]),f=>f.type==='image/jpeg'||f.type==='image/png')
 
   const initForm={name:"",club:"",position:"",image:"",passportImage:"",jerseyNumber:"",camps:[],natMatches:"",goals:"",assists:"",cleansheets:0,height:"",birthdate:"",yellowCards:0,redCards:0,suspended:false,history:[],foot:"R",nationality:"",languages:"",contract:"",bioQuote:"",leagueRegion:"",dualNationality:false,secondNationality:""}
   const [form,setForm]=useState<any>(initForm)
@@ -1772,8 +1791,8 @@ export default function EliteSquadApp() {
             </div>
             <form onSubmit={saveForm} className="pm-body">
               <div className="relative">
-                <div onClick={()=>fileRef.current?.click()} className="flex flex-col items-center gap-2 py-5 rounded-lg border border-dashed border-[rgba(var(--line-rgb),.25)] hover:border-[#e3062c]/60 cursor-pointer bg-[var(--c-deep)] transition-all">
-                  <input type="file" ref={fileRef} onChange={async e=>{const f=e.target.files?.[0];if(f){try{let blob:File|Blob=f,name=f.name;if(f.type!=='image/gif'&&!/\.gif$/i.test(f.name)){blob=await compressImage(f);name=f.name.replace(/\.[^.]+$/,'')+'.jpg'}const fd=new FormData();fd.append('file',blob,name);const r=await fetch('/api/upload',{method:'POST',headers:await authHeaders(),body:fd});const d=await r.json();if(d.url&&d.url!=='/placeholder.jpg'){setForm({...form,image:d.url,imagePath:d.path});return}}catch(err){}const r2=new FileReader();r2.onloadend=()=>setForm({...form,image:r2.result as string});r2.readAsDataURL(f)}}}
+                <div onClick={()=>fileRef.current?.click()} {...portraitDrop.dropProps} className={`flex flex-col items-center gap-2 py-5 rounded-lg border border-dashed cursor-pointer bg-[var(--c-deep)] transition-all ${portraitDrop.isDragging?'border-[#e3062c] bg-[#e3062c]/10 scale-[1.01]':'border-[rgba(var(--line-rgb),.25)] hover:border-[#e3062c]/60'}`}>
+                  <input type="file" ref={fileRef} onChange={e=>{const f=e.target.files?.[0];e.target.value='';if(f)handlePortraitFile(f)}}
 className="hidden" accept="image/jpeg,image/png,image/gif"/>
                   {form.image?<img src={form.imagePath?(imgUrls[String(form.imagePath)]||form.image):form.image} onError={e=>{const t=e.target as HTMLImageElement;if(t.src!==t.getAttribute('data-fallback')){t.setAttribute('data-fallback','/placeholder.jpg');t.src='/placeholder.jpg'}}} className="w-14 h-14 rounded-lg object-cover" alt=""/>:<Camera size={20} className="text-[var(--c-textDim)]"/>}
                   <span className="text-[8px] font-black uppercase tracking-[.2em] text-[var(--c-textMid)]">{tr.form.portraitUpload}</span>
@@ -1782,8 +1801,8 @@ className="hidden" accept="image/jpeg,image/png,image/gif"/>
               </div>
               {activeTab==="PLAYERS"&&(
                 <div className="relative mt-3">
-                  <div onClick={()=>passRef.current?.click()} className="flex flex-col items-center gap-2 py-4 rounded-lg border border-dashed border-[rgba(var(--line-rgb),.25)] hover:border-[#f6c744]/60 cursor-pointer bg-[var(--c-deep)] transition-all">
-                    <input type="file" ref={passRef} onChange={async e=>{const f=e.target.files?.[0];if(f){try{let blob:File|Blob=f,name=f.name;if(f.type!=='image/gif'&&!/\.gif$/i.test(f.name)){blob=await compressImage(f,1800,0.85);name=f.name.replace(/\.[^.]+$/,'')+'.jpg'}const fd=new FormData();fd.append('file',blob,name);fd.append('folder','passports');const r=await fetch('/api/upload',{method:'POST',headers:await authHeaders(),body:fd});const d=await r.json();if(d.path){setForm({...form,passportImage:d.path});return}}catch(err){}const r2=new FileReader();r2.onloadend=()=>setForm({...form,passportImage:r2.result as string});r2.readAsDataURL(f)}}}
+                  <div onClick={()=>passRef.current?.click()} {...passportDrop.dropProps} className={`flex flex-col items-center gap-2 py-4 rounded-lg border border-dashed cursor-pointer bg-[var(--c-deep)] transition-all ${passportDrop.isDragging?'border-[#f6c744] bg-[#f6c744]/10 scale-[1.01]':'border-[rgba(var(--line-rgb),.25)] hover:border-[#f6c744]/60'}`}>
+                    <input type="file" ref={passRef} onChange={e=>{const f=e.target.files?.[0];e.target.value='';if(f)handlePassportFile(f)}}
  className="hidden" accept="image/jpeg,image/png"/>
                     {form.passportImage?<img src={getPassportSrc(form,imgUrls)} onError={e=>{const t=e.target as HTMLImageElement;if(t.src!==t.getAttribute('data-fallback')){t.setAttribute('data-fallback','/placeholder.jpg');t.src='/placeholder.jpg'}}} className="max-h-24 rounded-lg object-contain" alt=""/>:<IdCard size={20} className="text-[var(--c-textDim)]"/>}
                     <span className="text-[8px] font-black uppercase tracking-[.2em] text-[var(--c-textMid)]">{tr.form.passportUpload}</span>
