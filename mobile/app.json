@@ -13,7 +13,7 @@
       [
         "expo-calendar",
         {
-          "calendarPermission": "Tunisia WNT uses the calendar to add your national-team matches so you don't miss one."
+          "calendarPermission": "Tunisia WNT adds the national camps you are called up to onto your calendar so you don't miss one."
         }
       ],
       "expo-font"

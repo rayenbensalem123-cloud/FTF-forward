@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Linking, ScrollView, Share, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Calendar, ClipboardList, FileDown, LogOut, Share2, Users } from 'lucide-react-native';
+import { Calendar, ClipboardList, FileDown, LogOut, Users } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { Avatar } from '@/components/Avatar';
@@ -17,8 +17,6 @@ import { usePlayers } from '@/context/PlayersContext';
 import type { StringKey } from '@/i18n/strings';
 import { exportRosterPdf } from '@/lib/roster';
 import { fetchReports } from '@/lib/clubReports';
-import { fetchCalendarUrl, toWebcal } from '@/lib/calendarFeed';
-import { CAL } from '@/i18n/calendarStrings';
 import type { Language, Role } from '@/types';
 
 const LANGUAGES: Option<Language>[] = [
@@ -50,29 +48,6 @@ export default function ProfileScreen() {
       setExporting(false);
     }
   };
-
-  const C = CAL[language];
-  const [calBusy, setCalBusy] = useState(false);
-  const withCalUrl = async (regenerate: boolean, fn: (url: string) => Promise<void>) => {
-    setCalBusy(true);
-    try {
-      await fn(await fetchCalendarUrl(regenerate));
-    } catch {
-      Alert.alert(C.title, C.failed);
-    } finally {
-      setCalBusy(false);
-    }
-  };
-  const onCalSubscribe = () =>
-    withCalUrl(false, async (url) => {
-      try { await Linking.openURL(toWebcal(url)); } catch { Alert.alert(C.title, C.openFailed); }
-    });
-  const onCalShare = () => withCalUrl(false, async (url) => { await Share.share({ message: url }); });
-  const onCalReset = () =>
-    Alert.alert(C.title, C.resetAsk, [
-      { text: C.cancel, style: 'cancel' },
-      { text: C.reset, style: 'destructive', onPress: () => void withCalUrl(true, async (url) => { await Share.share({ message: url }); }) },
-    ]);
 
   const onToggle = async (key: keyof NotificationSettings, value: boolean) => {
     const ok = await setSetting(key, value);
@@ -177,27 +152,6 @@ export default function ProfileScreen() {
               <Text style={styles.actionText}>{t('exportRoster')}</Text>
               {exporting ? <ActivityIndicator color={colors.white} /> : <ForwardChevron />}
             </TouchableOpacity>
-          </Card>
-        </View>
-
-        <View>
-          <Text style={styles.heading}>{C.title}</Text>
-          <Card style={{ paddingVertical: space.xs }}>
-            <Text style={[styles.actionDesc, { paddingVertical: 10 }]}>{C.intro}</Text>
-            <TouchableOpacity style={[styles.action, styles.divider]} onPress={onCalSubscribe} disabled={calBusy} accessibilityRole="button">
-              <View style={styles.actionIcon}><Calendar color={colors.white} size={18} /></View>
-              <Text style={styles.actionText}>{C.subscribe}</Text>
-              {calBusy ? <ActivityIndicator color={colors.white} /> : <ForwardChevron />}
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.action, styles.divider]} onPress={onCalShare} disabled={calBusy} accessibilityRole="button">
-              <View style={styles.actionIcon}><Share2 color={colors.white} size={18} /></View>
-              <Text style={styles.actionText}>{C.share}</Text>
-              <ForwardChevron />
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.action, styles.divider]} onPress={onCalReset} disabled={calBusy} accessibilityRole="button">
-              <Text style={[styles.actionText, { color: colors.red }]}>{C.reset}</Text>
-            </TouchableOpacity>
-            <Text style={[styles.actionDesc, { paddingBottom: 10 }]}>{C.privateNote}</Text>
           </Card>
         </View>
 

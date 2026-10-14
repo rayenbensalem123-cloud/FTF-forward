@@ -10,6 +10,7 @@ import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
 import { MatchProvider } from '@/context/MatchContext';
 import { NotificationsProvider } from '@/context/NotificationsContext';
 import { PlayersProvider } from '@/context/PlayersContext';
+import { CampCalendarSync } from '@/components/CampCalendarSync';
 
 const modal = { presentation: 'modal', animation: 'slide_from_bottom' } as const;
 
@@ -39,6 +40,7 @@ export default function RootLayout() {
             <MatchProvider>
               <NotificationsProvider>
                 <StatusBar style="light" />
+                <CampCalendarSync />
                 <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.navy } }}>
                   <Stack.Screen name="(tabs)" />
                   <Stack.Screen name="sign-in" options={{ animation: 'fade' }} />

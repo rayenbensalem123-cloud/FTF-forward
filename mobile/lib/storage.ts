@@ -35,4 +35,5 @@ export const KEYS = {
   settings: 'wnt.settings.v1',
   bingoPicks: 'wnt.bingo-picks.v1',
   gameScores: 'wnt.game-scores.v1',
+  campCalendar: 'wnt.camp-calendar.v1',
 } as const;
