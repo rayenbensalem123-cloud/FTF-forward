@@ -2,9 +2,11 @@ import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
 /**
- * LOCAL notifications only: reminders scheduled on this device and alerts shown
- * when this device changes a player's availability. Alerts for other staff
- * members' phones need a backend that sends Expo push notifications.
+ * LOCAL notifications: reminders scheduled on this device and alerts shown when
+ * this device changes a player's availability. Alerts that must reach another
+ * staff member's phone are sent as push: the platform calls Expo's push service
+ * from a database trigger (supabase-push.sql) and the token is registered from
+ * lib/pushTokens.ts.
  *
  * Written for expo-notifications in SDK 53 or newer.
  */

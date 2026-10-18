@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { profileToUser } from '@/lib/mappers';
+import { unregisterPushToken } from '@/lib/pushTokens';
 import { getJson, KEYS, removeKey, setJson } from '@/lib/storage';
 import {
   currentSession, isConfigured, loadSession, select, setSessionLostHandler, signInWithUsername, signOutRemote, type SignInError,
@@ -124,6 +125,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
+    // Forget this phone's push token while the session is still valid, so alerts
+    // for this account stop arriving here.
+    await unregisterPushToken();
     await signOutRemote();
     await removeKey(KEYS.players);
     await removeKey(KEYS.match);

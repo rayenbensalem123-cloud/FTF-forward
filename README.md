@@ -41,6 +41,29 @@ After registering your first account through the portal, promote it to admin:
 UPDATE public.profiles SET role = 'admin', status = 'active' WHERE username = 'YOUR_USERNAME';
 ```
 
+## Push notifications (a player logs a club match)
+
+Run [`supabase-push.sql`](./supabase-push.sql) once in the Supabase SQL editor. It
+creates `push_tokens` (one row per account, RLS-scoped to its owner) and a trigger
+that calls Expo's push service directly from the database when a report is
+inserted — so the staff phone is told even with the app closed. No server, no
+deploy. The trigger is wrapped so a failed push can never lose a report.
+
+Two things it needs that live outside the repo:
+
+1. **Credentials** — an FCM service account key (Android) and an APNs key (iOS)
+   uploaded to the EAS project (`rayen12344/tunisia-wnt`). Without them
+   `getExpoPushTokenAsync()` never returns a token, so no phone registers and
+   nothing is sent.
+2. **A build that is not Expo Go** — `expo-notifications` has no remote support
+   in Expo Go from SDK 53. A development build or the release APK is required.
+   In Expo Go the app keeps its 30-second in-app check, so staff still see new
+   reports while the app is open.
+
+To test the wiring by hand, send yourself a push from the SQL editor (the
+command is at the bottom of `supabase-push.sql`) and read Expo's answer from
+`net._http_response`.
+
 ## Security model
 
 Authorisation is enforced **in the database**, not in the UI:

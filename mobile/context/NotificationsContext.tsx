@@ -5,6 +5,7 @@ import { fetchCamps } from '@/lib/camps';
 import { fetchReports, newPendingReports } from '@/lib/clubReports';
 import { fetchMeetings } from '@/lib/meetings';
 import { cancelMatchReminders, ensurePermission, presentNow, syncReminders } from '@/lib/notifications';
+import { registerPushToken } from '@/lib/pushTokens';
 import { buildReminderPlan } from '@/lib/remindersLogic';
 import { getJson, KEYS, setJson } from '@/lib/storage';
 import type { AppNotification } from '@/types';
@@ -162,6 +163,15 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     setSettings((prev) => ({ ...prev, [key]: value }));
     return true;
   }, []);
+
+  // Register this phone for the report alerts. On a dev build or a release APK
+  // the token lands in push_tokens, and the database pushes even with the app
+  // closed. In Expo Go there is no token; the check below covers it.
+  useEffect(() => {
+    if (!user || !isStaff) return;
+    if (!settings.availabilityAlerts) return;
+    void registerPushToken();
+  }, [user, isStaff, settings.availabilityAlerts]);
 
   const unread = useMemo(() => feed.filter((n) => !n.read).length, [feed]);
   const value = useMemo(

@@ -18,6 +18,11 @@
       ],
       "expo-font"
     ],
+    "extra": {
+      "eas": {
+        "projectId": "265d6fc9-0f72-4085-b923-890a50ee0f77"
+      }
+    },
     "ios": {
       "supportsTablet": false
     },
