@@ -334,7 +334,7 @@ kbd{background:var(--card);border:1px solid var(--hairline);border-radius:6px;pa
   <div class="notes">
     <h3>How to click</h3>
     <ul>
-      <li><b>Left phone is staff</b> (5 tabs), <b>right phone is player</b> (4 tabs).</li>
+      <li><b>Left phone is staff</b> (5 tabs), <b>right phone is player</b> (5 tabs: her Reports tab sits after Games).</li>
       <li>On Dashboard, the <b>four cards open</b> Calendar, Reports, the Bingo board and News. Player home is the banner plus her form.</li>
       <li>On Profile, <b>Team rows open</b> Staff and Camps, and the <b>Review card opens</b> pending reports and player cards (staff) or the <b>nine-row Tools card</b> (player). <kbd>‹</kbd> goes back.</li>
       <li>On Squad, the <b>pills and chips filter</b>; tapping a player opens her sheet. Games lock, reveal and guess.</li>
@@ -469,7 +469,7 @@ function phoneHTML(role) {
   const staff = role === 'staff';
   const tabs = staff
     ? [['dashboard', 'Dashboard', 'home'], ['calendar', 'Calendar', 'cal'], ['reports', 'Reports', 'rep'], ['games', 'Games', 'game'], ['profile', 'Profile', 'user']]
-    : [['dashboard', 'Home', 'home'], ['calendar', 'Schedule', 'cal'], ['games', 'Games', 'game'], ['profile', 'Profile', 'user']];
+    : [['dashboard', 'Home', 'home'], ['calendar', 'Schedule', 'cal'], ['games', 'Games', 'game'], ['reports', 'Reports', 'rep'], ['profile', 'Profile', 'user']];
   const homeExtra = staff ? `
     <div class="sec"><h2>Available Features &amp; Services</h2></div>
     <div class="grid">
@@ -671,7 +671,7 @@ function phoneHTML(role) {
   };
   const order = staff
     ? ['dashboard', 'calendar', 'reports', 'games', 'profile']
-    : ['dashboard', 'calendar', 'games', 'profile'];
+    : ['dashboard', 'calendar', 'games', 'reports', 'profile'];
   return { role, tabs, views, order };
 }
 
