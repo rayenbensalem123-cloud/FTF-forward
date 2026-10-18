@@ -10,11 +10,12 @@ import { useLanguage } from '@/context/LanguageContext';
  * Two navigators, chosen by the signed-in role:
  *
  *   staff  : Dashboard · Calendar · Reports · Games · Profile
- *   player : Home · Schedule · Games · Profile
+ *   player : Home · Schedule · Games · Reports · Profile
  *
  * Calendar is the camp-program screen, which the database already filters per
  * role, so it is the same route for both. Reports and Games were promoted
- * from the More stack to tabs.
+ * from the More stack to tabs; Reports sits after Games for players so a
+ * self-logged club match is one tap from anywhere.
  *
  * Stats, Squad and More stay mounted but hidden: their contents get placed on
  * real pages next, and nothing links to them today except the tab bar itself.
@@ -52,6 +53,8 @@ export default function TabsLayout() {
   return (
     <Tabs screenOptions={options}>
       {/* ── Role-dependent titles, fixed order ────────── */}
+      {/* Players get Reports too, but after Games: Home · Schedule · Games ·
+          Reports · Profile, so logging a club match never hides behind Profile. */}
       <Tabs.Screen
         name="index"
         options={{
@@ -66,14 +69,15 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => <Calendar color={color} size={size} />,
         }}
       />
-      <Tabs.Screen
-        name="reports"
-        options={{
-          title: t('tabReports'),
-          href: isStaff ? undefined : null,
-          tabBarIcon: ({ color, size }) => <ClipboardList color={color} size={size} />,
-        }}
-      />
+      {isStaff ? (
+        <Tabs.Screen
+          name="reports"
+          options={{
+            title: t('tabReports'),
+            tabBarIcon: ({ color, size }) => <ClipboardList color={color} size={size} />,
+          }}
+        />
+      ) : null}
       <Tabs.Screen
         name="games"
         options={{
@@ -81,6 +85,15 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => <Gamepad2 color={color} size={size} />,
         }}
       />
+      {isStaff ? null : (
+        <Tabs.Screen
+          name="reports"
+          options={{
+            title: t('tabReports'),
+            tabBarIcon: ({ color, size }) => <ClipboardList color={color} size={size} />,
+          }}
+        />
+      )}
       <Tabs.Screen
         name="profile"
         options={{
