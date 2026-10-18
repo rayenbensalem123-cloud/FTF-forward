@@ -176,6 +176,8 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 .rep + .rep{margin-top:10px}
 .logbtn{width:100%;padding:13px;border-radius:var(--r-md);border:1px dashed rgba(227,6,19,.5);
   background:none;color:var(--red);font-family:Inter;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:12px}
+.rnote{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.45);border-radius:var(--r-md);
+  padding:12px;font-size:12px;font-weight:700;color:var(--green);margin-bottom:12px}
 .rep .rh{display:flex;align-items:center;gap:8px}
 .rep .rh b{flex:1;font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vpill{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
@@ -281,6 +283,10 @@ h1{font-family:Oswald;font-size:26px;font-weight:700;text-transform:uppercase;le
 .medlog{margin-top:10px;border-top:1px solid var(--hairline);padding-top:10px;font-size:12px}
 .medlog div{margin-top:6px}
 .medlog b{font-size:11px}
+.seasrow{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--hairline);font-size:12px}
+.seasrow:first-of-type{border-top:0}
+.seasrow b{font-size:13px;font-weight:800;white-space:nowrap}
+.seasrow span{flex:1;color:var(--muted)}
 .sheetbtn{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;width:100%;
   border-radius:var(--r-md);font-size:15px;font-weight:800;cursor:pointer;font-family:Inter;border:0;margin-top:10px}
 .sheetbtn.red{background:var(--red);color:#fff}
@@ -608,6 +614,7 @@ function phoneHTML(role) {
       <div class="hdr"><img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
         <div class="hdr-txt"><div class="hdr-title">Reports</div><div class="hdr-sub">${staff ? 'Club matches · verify' : 'My club matches'}</div></div></div>
       ${staff ? '' : '<button class="logbtn" data-form="1">+&nbsp;&nbsp;Log a match</button>'}
+      <div class="rnote" data-rnote style="display:none"></div>
       <div data-reports></div>`,
     games: `
       <div class="hdr"><img class="logo" src="../mobile/assets/ftf-logo.png" alt="">
@@ -693,19 +700,28 @@ function initPhone(role) {
       <div class="sheet-veil" data-fveil></div>
       <div class="sheet" data-fsheet style="max-height:92%;overflow-y:auto"><div class="grab"></div>
         <h3>Log club match</h3>
-        <div class="sub2">Sent to the coach for verification</div>
-        <div class="flabel">Date · DD/MM/YYYY, empty = today</div>
-        <input class="fin" data-f="date" placeholder="05/10/2026" inputmode="numeric">
+        <div class="sub2">Date is set automatically · sent to the head coach</div>
         <div class="flabel">Opponent</div>
         <input class="fin" data-f="opponent" placeholder="ASF Sousse">
+        <div class="flabel">Competition</div>
+        <div class="togs" data-fgroup="competition">
+          <button class="tog on" data-fval="League">League</button>
+          <button class="tog" data-fval="Cup">Cup</button>
+          <button class="tog" data-fval="Friendly">Friendly</button>
+        </div>
         <div class="frow" style="margin-top:8px">
-          <div style="flex:1"><div class="flabel" style="margin-top:0">Competition</div><input class="fin" data-f="competition" placeholder="League"></div>
-          <div style="width:90px"><div class="flabel" style="margin-top:0">Result</div><input class="fin" data-f="result" placeholder="2-1"></div>
+          <div class="fcell"><div class="flabel" style="margin-top:0">Result</div><input class="fin" data-f="result" placeholder="2-1"></div>
+          <div class="fcell"><div class="flabel" style="margin-top:0">Rating</div><input class="fin" data-f="rating" placeholder="/10" inputmode="decimal"></div>
         </div>
         <div class="flabel">Did you play?</div>
         <div class="togs" data-fgroup="dnp"><button class="tog on" data-fval="no">Yes, I played</button><button class="tog" data-fval="yes">Did not play</button></div>
-        <div class="flabel">Position</div>
-        <input class="fin" data-f="position" placeholder="FWD">
+        <div class="flabel">Position played</div>
+        <div class="togs" data-fgroup="position">
+          <button class="tog" data-fval="GK">GK</button>
+          <button class="tog" data-fval="DEF">DEF</button>
+          <button class="tog on" data-fval="MID">MID</button>
+          <button class="tog" data-fval="FWD">FWD</button>
+        </div>
         <div class="fgrid" style="margin-top:8px">
           <div class="fcell"><div class="flabel" style="margin-top:0">Mins</div><input class="fin" data-f="minutes" placeholder="0" inputmode="numeric"></div>
           <div class="fcell"><div class="flabel" style="margin-top:0">Goals</div><input class="fin" data-f="goals" placeholder="0" inputmode="numeric"></div>
@@ -714,7 +730,6 @@ function initPhone(role) {
         <div class="frow" style="margin-top:8px">
           <div class="fcell"><div class="flabel" style="margin-top:0">Yellow</div><input class="fin" data-f="yellow" placeholder="0" inputmode="numeric"></div>
           <div class="fcell"><div class="flabel" style="margin-top:0">Red</div><input class="fin" data-f="red" placeholder="0" inputmode="numeric"></div>
-          <div class="fcell"><div class="flabel" style="margin-top:0">Rating</div><input class="fin" data-f="rating" placeholder="/10" inputmode="decimal"></div>
         </div>
         <div class="flabel">Starter?</div>
         <div class="togs" data-fgroup="starter"><button class="tog" data-fval="yes">Started</button><button class="tog on" data-fval="no">Bench</button></div>
@@ -825,6 +840,16 @@ function initPhone(role) {
           <div><b>2026-09-12</b><br>${p.log}</div>
         </div>
       </div>
+      <div class="medpanel" style="border-color:var(--hairline)">
+        <h5>Season reports</h5>
+        ${[
+          { opp: 'ASF Sousse', meta: 'League · MID · 90 min · 1G 1A', ok: true },
+          { opp: 'Club Africain', meta: 'Cup · MID · 75 min · 0G 2A', ok: true },
+          { opp: 'ASF Sfax', meta: 'Friendly · FWD · 60 min · 2G 0A', ok: false },
+        ].map(r => `<div class="seasrow"><b>vs ${r.opp}</b><span>${r.meta}</span>
+          <em class="vpill ${r.ok ? 'yes' : 'no'}">${r.ok ? 'Verified' : 'Pending'}</em></div>`).join('')}
+        <div class="mednote" style="margin-top:8px">Every club match she logged this season.</div>
+      </div>
       <div data-shcompose style="display:none">
         <textarea class="sheetinput" data-shdraft placeholder="Write to ${p.name}…"></textarea>
         <button class="sheetbtn red" data-sh="send">Send</button>
@@ -856,14 +881,27 @@ function initPhone(role) {
     const sv = e.target && e.target.closest ? e.target.closest('[data-fsave]') : null;
     if (sv) {
       const val = k => { const el = rootEl.querySelector(`[data-f="${k}"]`); return el ? el.value.trim() : ''; };
+      const group = k => { const on = rootEl.querySelector(`[data-fsheet] [data-fgroup="${k}"] .tog.on`); return on ? on.dataset.fval : ''; };
       const opp = val('opponent');
       if (!opp) { sv.textContent = 'Opponent required'; setTimeout(() => { sv.innerHTML = 'Send ›'; }, 1200); return; }
       const mins = val('minutes') || '0', gl = val('goals') || '0', as = val('assists') || '0';
-      MY_REPORTS.unshift({ who: `vs ${opp}${val('result') ? ' · ' + val('result') : ''}`, what: `${mins} min · ${gl}G ${as}A · Awaiting verification`, verified: false });
+      const comp = group('competition'), pos = group('position');
+      MY_REPORTS.unshift({
+        who: `vs ${opp}${val('result') ? ' · ' + val('result') : ''}`,
+        what: `${comp} · ${pos} · ${mins} min · ${gl}G ${as}A · Awaiting verification`,
+        verified: false,
+      });
       rootEl.querySelectorAll('.fin').forEach(el => { el.value = ''; });
       rootEl.querySelector('[data-fveil]')?.classList.remove('on');
       rootEl.querySelector('[data-fsheet]')?.classList.remove('on');
       renderReports();
+      // The head coach is told the moment it is sent; the rest of the staff
+      // find it in this list, or on the player's card.
+      const n = rootEl.querySelector('[data-rnote]');
+      if (n) {
+        n.style.display = 'block';
+        n.textContent = 'Sent. Head coach notified — the rest of the staff can see it here and on her card.';
+      }
     }
   });
   const renderReports = () => {

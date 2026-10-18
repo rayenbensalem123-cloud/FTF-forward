@@ -50,8 +50,11 @@ export function reportFromDb(r: any): ClubReport {
   };
 }
 
+/** The player picks one of these; the value is what the platform stores. */
+export const COMPETITIONS = ['League', 'Cup', 'Friendly'] as const;
+export const POSITIONS = ['GK', 'DEF', 'MID', 'FWD'] as const;
+
 export interface ReportForm {
-  date: string; // DD/MM/YYYY, empty = today
   opponent: string;
   competition: string;
   result: string;
@@ -71,7 +74,7 @@ export interface ReportForm {
 }
 
 export const emptyForm: ReportForm = {
-  date: '', opponent: '', competition: '', result: '', didNotPlay: false, position: '', minutes: '', goals: '',
+  opponent: '', competition: '', result: '', didNotPlay: false, position: '', minutes: '', goals: '',
   assists: '', yellow: '', red: '', isStarting: '', rating: '', highlightsUrl: '', hadInjury: '', injuryNotes: '', notes: '',
 };
 
@@ -85,15 +88,19 @@ export function dmyToIso(v: string): string | null {
   return `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 }
 
-/** Same rules as the website's form: a "did not play" report zeroes the stats and drops the rest. */
-export function buildPayload(f: ReportForm, todayIso: string): { payload?: Record<string, unknown>; error?: 'opponent' | 'date' } {
+/**
+ * Reports the staff have not been told about yet: the newly sent, still
+ * unverified ones. The caller keeps the ids it already alerted on.
+ */
+export function newPendingReports(knownIds: ReadonlySet<number>, reports: ClubReport[]): ClubReport[] {
+  return reports.filter((r) => !r.verified && !knownIds.has(r.id));
+}
+
+/** Same rules as the website's form: a "did not play" report zeroes the stats and drops the rest.
+ *  The match date is never typed by the player — the day it is sent is the day it happened. */
+export function buildPayload(f: ReportForm, todayIso: string): { payload?: Record<string, unknown>; error?: 'opponent' } {
   if (!f.opponent.trim()) return { error: 'opponent' };
-  let date = todayIso;
-  if (f.date.trim()) {
-    const iso = dmyToIso(f.date);
-    if (!iso) return { error: 'date' };
-    date = iso;
-  }
+  const date = todayIso;
   const n = (s: string) => (s ? parseInt(s, 10) : 0);
   const dnp = f.didNotPlay;
   const rating = f.rating ? parseFloat(f.rating) : undefined;

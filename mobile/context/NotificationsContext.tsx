@@ -1,6 +1,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import { usePlayers } from '@/context/PlayersContext';
 import { fetchCamps } from '@/lib/camps';
+import { fetchReports, newPendingReports } from '@/lib/clubReports';
 import { fetchMeetings } from '@/lib/meetings';
 import { cancelMatchReminders, ensurePermission, presentNow, syncReminders } from '@/lib/notifications';
 import { buildReminderPlan } from '@/lib/remindersLogic';
@@ -37,7 +39,7 @@ const NotificationsContext = createContext<NotificationsValue | null>(null);
 export function NotificationsProvider({ children }: { children: React.ReactNode }) {
   const [feed, setFeed] = useState<AppNotification[]>([]);
   const [settings, setSettings] = useState<NotificationSettings>(DEFAULT_SETTINGS);
-  const { nextMatch, onChange } = usePlayers();
+  const { nextMatch, onChange, players } = usePlayers();
   const [loaded, setLoaded] = useState(false);
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -108,6 +110,47 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     () => onChange((e) => notifyAvailability(e.title, e.body)),
     [onChange, notifyAvailability],
   );
+
+  // A player logs a club match; the staff hear about it. There is no push
+  // service, so the phones check the list while the app is open, and the first
+  // check only records what is already there so nobody is woken by old news.
+  const { user } = useAuth();
+  // Any staff phone watches the list — the head coach is one of them.
+  const isStaff = user?.role === 'staff' || user?.role === 'admin';
+  const knownReports = useRef<Set<number>>(new Set());
+  const playersRef = useRef(players);
+  playersRef.current = players;
+
+  useEffect(() => {
+    if (!loaded || !isStaff) return;
+    let alive = true;
+    let first = true;
+    const check = async () => {
+      const rows = await fetchReports().catch(() => null);
+      if (!alive || !rows) return;
+      if (first) {
+        first = false;
+        for (const r of rows) knownReports.current.add(r.id);
+        return;
+      }
+      const fresh = newPendingReports(knownReports.current, rows);
+      for (const r of rows) knownReports.current.add(r.id);
+      const nameOf = new Map(playersRef.current.map((p) => [Number(p.id), p.name]));
+      for (const r of fresh) {
+        const who = nameOf.get(r.memberId) ?? `#${r.memberId}`;
+        notifyAvailability(
+          `New match report from ${who}`,
+          [r.opponent, r.competition, r.didNotPlay ? 'did not feature' : `${r.minutes}'`].filter(Boolean).join(' · '),
+        );
+      }
+    };
+    void check();
+    const id = setInterval(() => { void check(); }, 30_000);
+    return () => {
+      alive = false;
+      clearInterval(id);
+    };
+  }, [loaded, isStaff, notifyAvailability]);
 
   const markAllRead = useCallback(() => setFeed((prev) => prev.map((n) => ({ ...n, read: true }))), []);
 

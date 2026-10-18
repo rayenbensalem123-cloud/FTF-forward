@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator, Alert, KeyboardAvoidingView, Linking, Modal, Platform, RefreshControl, ScrollView, StyleSheet, Text,
   TextInput, TouchableOpacity, View,
@@ -15,8 +15,10 @@ import { useLanguage } from '@/context/LanguageContext';
 import { usePlayers } from '@/context/PlayersContext';
 import { RS } from '@/i18n/reportStrings';
 import {
-  addReport, buildPayload, deleteReport, emptyForm, fetchReports, setVerified, type ClubReport, type ReportForm,
+  addReport, buildPayload, deleteReport, emptyForm, fetchReports, setVerified, COMPETITIONS, POSITIONS,
+  type ClubReport, type ReportForm,
 } from '@/lib/clubReports';
+import type { Position } from '@/types';
 
 type Filter = 'pending' | 'all';
 
@@ -34,12 +36,23 @@ export default function ReportsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<Filter>('pending');
   const [formOpen, setFormOpen] = useState(false);
+  const [sent, setSent] = useState(false);
+  const sentTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const params = useLocalSearchParams<{ new?: string }>();
 
   const memberId = user?.memberId ?? null;
   const canVerify = can('editPlayer') || can('addPlayer');
   const isStaff = canVerify || user?.permissions?.viewClubReports === true;
   const nameOf = useMemo(() => new Map(players.map((p) => [Number(p.id), p.name])), [players]);
+  // Her squad position is the likeliest answer for "where did you play".
+  const myPosition = useMemo(
+    () => players.find((p) => Number(p.id) === memberId)?.position ?? null,
+    [players, memberId],
+  );
+
+  useEffect(() => () => {
+    if (sentTimer.current) clearTimeout(sentTimer.current);
+  }, []);
 
   const load = useCallback(async () => {
     try {
@@ -124,6 +137,11 @@ export default function ReportsScreen() {
             <Text style={styles.logText}>{T.logMatch}</Text>
           </TouchableOpacity>
         )}
+        {sent && (
+          <View style={styles.sentNote}>
+            <Text style={styles.sentText}>{T.notifySent}</Text>
+          </View>
+        )}
         {!canLog && !isStaff && <Text style={styles.empty}>{T.notLinked}</Text>}
 
         {loading ? (
@@ -152,9 +170,13 @@ export default function ReportsScreen() {
           onClose={() => setFormOpen(false)}
           onSaved={async () => {
             setFormOpen(false);
+            setSent(true);
+            if (sentTimer.current) clearTimeout(sentTimer.current);
+            sentTimer.current = setTimeout(() => setSent(false), 7000);
             await load();
           }}
           memberId={memberId}
+          defaultPosition={myPosition}
         />
       )}
     </SafeAreaView>
@@ -237,16 +259,16 @@ function Toggle({ options, value, onChange }: { options: { value: string; label:
   );
 }
 
-function ReportForm_({ T, memberId, onClose, onSaved }: { T: (typeof RS)['en']; memberId: number; onClose: () => void; onSaved: () => void }) {
-  const [f, setF] = useState<ReportForm>(emptyForm);
+function ReportForm_({ T, memberId, defaultPosition, onClose, onSaved }: { T: (typeof RS)['en']; memberId: number; defaultPosition?: Position | null; onClose: () => void; onSaved: () => void }) {
+  const [f, setF] = useState<ReportForm>({ ...emptyForm, competition: 'League', position: defaultPosition ?? '' });
   const [saving, setSaving] = useState(false);
   const set = <K extends keyof ReportForm>(k: K, v: ReportForm[K]) => setF((p) => ({ ...p, [k]: v }));
   const num = (k: keyof ReportForm) => (v: string) => set(k, digits(v) as any);
 
   const save = async () => {
-    const { payload, error } = buildPayload(f, todayIso());
+    const { payload } = buildPayload(f, todayIso());
     if (!payload) {
-      Alert.alert(T.logMatch, error === 'opponent' ? T.needOpponent : T.needDate);
+      Alert.alert(T.logMatch, T.needOpponent);
       return;
     }
     setSaving(true);
@@ -276,19 +298,26 @@ function ReportForm_({ T, memberId, onClose, onSaved }: { T: (typeof RS)['en']; 
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ gap: space.md, paddingBottom: space.lg }} keyboardShouldPersistTaps="handled">
-            {input(T.datePh, f.date, (v) => set('date', v), { keyboardType: 'numbers-and-punctuation', maxLength: 10 })}
             {input(T.opponentPh, f.opponent, (v) => set('opponent', v))}
-            <View style={{ flexDirection: 'row', gap: space.sm }}>
-              <View style={{ flex: 1 }}>{input(T.competitionPh, f.competition, (v) => set('competition', v))}</View>
-              <View style={{ width: 110 }}>{input(T.resultPh, f.result, (v) => set('result', v))}</View>
-            </View>
+
+            {label(T.competitionLabel)}
+            <Toggle
+              value={f.competition}
+              onChange={(v) => set('competition', v)}
+              options={COMPETITIONS.map((c) => ({ value: c, label: c === 'League' ? T.league : c === 'Cup' ? T.cup : T.friendly }))}
+            />
+
+            {label(T.resultLabel)}
+            {input(T.resultPh, f.result, (v) => set('result', v))}
+            <Text style={styles.autoDate}>{T.autoDate}</Text>
 
             {label(T.playedQuestion)}
             <Toggle value={f.didNotPlay ? 'no' : 'yes'} onChange={(v) => set('didNotPlay', v === 'no')} options={[{ value: 'yes', label: T.playedYes }, { value: 'no', label: T.playedNo }]} />
 
             {!f.didNotPlay && (
               <>
-                {input(T.positionPh, f.position, (v) => set('position', v))}
+                {label(T.positionLabel)}
+                <Toggle value={f.position} onChange={(v) => set('position', v)} options={POSITIONS.map((p) => ({ value: p, label: p }))} />
                 <View style={styles.grid}>
                   <View style={styles.cell}>{label(T.mins)}{input('0', f.minutes, num('minutes'), { keyboardType: 'number-pad' })}</View>
                   <View style={styles.cell}>{label(T.goals)}{input('0', f.goals, num('goals'), { keyboardType: 'number-pad' })}</View>
@@ -343,6 +372,9 @@ const styles = StyleSheet.create({
   empty: { color: colors.muted, fontSize: 13, textAlign: 'center', paddingVertical: space.xl },
   logBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', borderColor: 'rgba(227,6,19,0.5)' },
   logText: { color: colors.red, fontWeight: '800', fontSize: 13 },
+  sentNote: { backgroundColor: colors.greenSoft, borderRadius: radius.md, borderWidth: 1, borderColor: colors.green, padding: space.md },
+  sentText: { color: colors.green, fontSize: 12, fontWeight: '800' },
+  autoDate: { color: colors.muted, fontSize: 11, fontStyle: 'italic', marginTop: -space.xs },
   rowTop: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },
   who: { color: colors.white, fontSize: 12, fontWeight: '800', marginBottom: 2 },
   opp: { color: colors.white, fontSize: 16, fontWeight: '800' },

@@ -9,6 +9,12 @@ export async function fetchReports(): Promise<ClubReport[]> {
   return rows.map(reportFromDb);
 }
 
+/** One player's season, for her card. Staff only see it because of row-level security. */
+export async function fetchReportsForMember(memberId: number): Promise<ClubReport[]> {
+  const rows = await select<any>('club_match_reports', `select=*&member_id=eq.${memberId}&order=match_date.desc.nullslast,id.desc&limit=200`);
+  return rows.map(reportFromDb);
+}
+
 export async function addReport(memberId: number, payload: Record<string, unknown>): Promise<ClubReport> {
   const row = await insert('club_match_reports', { member_id: memberId, submitted_by: currentSession()?.userId ?? null, ...payload });
   return reportFromDb(row);

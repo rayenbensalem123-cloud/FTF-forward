@@ -5,10 +5,12 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ClipboardList, Pencil, Send, X } from 'lucide-react-native';
+import { ClipboardList, Pencil, Send, ShieldCheck, X } from 'lucide-react-native';
 import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { RS } from '@/i18n/reportStrings';
+import { fetchReportsForMember, type ClubReport } from '@/lib/clubReports';
 import { formatDate } from '@/lib/format';
 import type { Player } from '@/types';
 import { FitnessBadge, STATUS_STYLE } from './FitnessBadge';
@@ -23,16 +25,18 @@ interface Props {
 export function PlayerSheet({ player, onClose }: Props) {
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { can } = useAuth();
   const router = useRouter();
   const canEdit = can('editPlayer') || can('editMedical');
+  const R = RS[language];
 
   // Keep the last player mounted while the close animation runs.
   const [shown, setShown] = useState<Player | null>(player);
   const [composing, setComposing] = useState(false);
   const [draft, setDraft] = useState('');
   const [showLog, setShowLog] = useState(false);
+  const [reports, setReports] = useState<ClubReport[]>([]);
 
   const progress = useRef(new Animated.Value(0)).current;
   const drag = useRef(new Animated.Value(0)).current;
@@ -57,6 +61,19 @@ export function PlayerSheet({ player, onClose }: Props) {
       });
     }
   }, [player, progress, drag]);
+
+  // Her whole season on the card, so the rest of the staff do not have to go
+  // to the reports screen to see what she has logged.
+  const shownId = shown?.id ?? null;
+  useEffect(() => {
+    if (!shownId) return;
+    let alive = true;
+    setReports([]);
+    fetchReportsForMember(Number(shownId))
+      .then((rows) => { if (alive) setReports(rows); })
+      .catch(() => { if (alive) setReports([]); });
+    return () => { alive = false; };
+  }, [shownId]);
 
   // Drag the handle area down to dismiss.
   const pan = useRef(
@@ -141,6 +158,37 @@ export function PlayerSheet({ player, onClose }: Props) {
                 )}
               </View>
 
+              {/* Her season of club matches, the same list the reports tab shows */}
+              <View style={styles.panel}>
+                <Text style={styles.section}>{R.seasonReports}</Text>
+                {reports.length === 0 ? (
+                  <Text style={styles.medicalNote}>{R.seasonEmpty}</Text>
+                ) : (
+                  reports.map((r) => (
+                    <View key={r.id} style={styles.repRow}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.repOpp}>
+                          {r.opponent || R.unknownOpponent}
+                          {r.result ? `  ${r.result}` : ''}
+                        </Text>
+                        <Text style={styles.repMeta}>
+                          {[r.date ? formatDate(r.date) : '', r.competition, r.didNotPlay ? R.didNotPlay : `${r.minutes}' ${R.mins}`]
+                            .filter(Boolean).join('  ·  ')}
+                        </Text>
+                      </View>
+                      {r.verified ? (
+                        <View style={styles.repVerified}>
+                          <ShieldCheck size={12} color={colors.green} />
+                          <Text style={styles.repVerifiedText}>{R.verified}</Text>
+                        </View>
+                      ) : (
+                        <Text style={styles.repPending}>{R.pending}</Text>
+                      )}
+                    </View>
+                  ))
+                )}
+              </View>
+
               {/* Actions */}
               {composing && (
                 <TextInput
@@ -211,6 +259,12 @@ const styles = StyleSheet.create({
   statLabel: { color: colors.muted, fontSize: 11, marginTop: 2 },
   panel: { backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.hairline, padding: space.lg },
   medicalNote: { color: colors.white, fontSize: 14, lineHeight: 20 },
+  repRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, borderTopWidth: 1, borderTopColor: colors.line },
+  repOpp: { color: colors.white, fontSize: 14, fontWeight: '800' },
+  repMeta: { color: colors.muted, fontSize: 12, marginTop: 2 },
+  repVerified: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.greenSoft, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3 },
+  repVerifiedText: { color: colors.green, fontSize: 10, fontWeight: '800' },
+  repPending: { color: colors.amber, fontSize: 10, fontWeight: '800', textTransform: 'uppercase' },
   checkup: { color: colors.muted, fontSize: 12, marginTop: 8 },
   log: { marginTop: 12, gap: 10, borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 12 },
   logRow: { gap: 2 },
