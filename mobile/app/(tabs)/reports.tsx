@@ -316,6 +316,9 @@ function ReportForm_({ T, memberId, defaultPosition, onClose, onSaved }: { T: (t
 
             {!f.didNotPlay && (
               <>
+                {label(T.startingQuestion)}
+                <Toggle value={f.isStarting} onChange={(v) => set('isStarting', v)} options={[{ value: 'yes', label: T.startedLabel }, { value: 'no', label: T.benchLabel }]} />
+
                 {label(T.positionLabel)}
                 <Toggle value={f.position} onChange={(v) => set('position', v)} options={POSITIONS.map((p) => ({ value: p, label: p }))} />
                 <View style={styles.grid}>
@@ -327,9 +330,6 @@ function ReportForm_({ T, memberId, defaultPosition, onClose, onSaved }: { T: (t
                     <View style={{ flex: 1 }}>{label(T.rc)}{input('0', f.red, num('red'), { keyboardType: 'number-pad' })}</View>
                   </View>
                 </View>
-
-                {label(T.startingQuestion)}
-                <Toggle value={f.isStarting} onChange={(v) => set('isStarting', v)} options={[{ value: 'yes', label: T.startedLabel }, { value: 'no', label: T.benchLabel }]} />
 
                 {label(T.ratingLabel)}
                 {input(T.ratingPh, f.rating, (v) => {

@@ -2,10 +2,9 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
-import { Tent, Newspaper, Users, Bell, Calendar, ClipboardList, Gamepad2, IdCard, Trophy, User, Video } from 'lucide-react-native';
+import { Tent, Newspaper, Users, Bell, ClipboardList, Gamepad2, IdCard, Trophy, User, Video } from 'lucide-react-native';
 import { AppHeader } from '@/components/AppHeader';
 import { Card } from '@/components/Card';
-import { ToolRow } from '@/components/ToolRow';
 import { NT } from '@/i18n/toolStrings';
 import { ForwardChevron } from '@/components/ForwardChevron';
 import { colors, radius, sectionTitle, space } from '@/constants/theme';
@@ -19,7 +18,6 @@ import type { StringKey } from '@/i18n/strings';
  * listed here -- Profile stays in Settings because it is not a staff tab.
  */
 const TOOLS: { href: Href; icon: typeof Video; title: StringKey; desc: StringKey }[] = [
-  { href: '/more/camp-schedule', icon: Calendar, title: 'tabCampSchedule', desc: 'moreCampScheduleDesc' },
   { href: '/reports', icon: ClipboardList, title: 'tabReports', desc: 'moreReportsDesc' },
   { href: '/more/meetings', icon: Video, title: 'tabMeetings', desc: 'moreMeetingsDesc' },
   { href: '/more/career', icon: Trophy, title: 'tabCareer', desc: 'moreCareerDesc' },
@@ -45,14 +43,22 @@ export default function MoreScreen() {
 
         <View style={styles.group}>
           <Text style={styles.groupTitle}>{t('moreTools')}</Text>
-          <Card style={{ paddingVertical: space.xs }}>
-            {TOOLS.map((it, i) => (
-              <Row key={String(i) + it.title} item={it} first={i === 0} />
-            ))}
-            <ToolRow first={false} item={{ href: '/more/camps', icon: Tent, title: N.camps, desc: N.campsDesc }} />
-            <ToolRow first={false} item={{ href: '/more/news', icon: Newspaper, title: N.news, desc: N.newsDesc }} />
-            <ToolRow first={false} item={{ href: '/more/staff', icon: Users, title: N.staff, desc: N.staffDesc }} />
-          </Card>
+          <View style={styles.grid}>
+            {[
+              ...TOOLS.map((it) => ({ href: it.href, icon: it.icon, label: t(it.title) })),
+              { href: '/more/camps' as Href, icon: Tent, label: N.camps },
+              { href: '/more/news' as Href, icon: Newspaper, label: N.news },
+              { href: '/more/staff' as Href, icon: Users, label: N.staff },
+            ].map((it) => {
+              const Icon = it.icon;
+              return (
+                <TouchableOpacity key={it.label} style={styles.tile} onPress={() => router.push(it.href)} activeOpacity={0.75} accessibilityRole="button" accessibilityLabel={it.label}>
+                  <View style={styles.iconWrap}><Icon color={colors.white} size={20} /></View>
+                  <Text style={styles.tileText} numberOfLines={2}>{it.label}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
 
         <View style={styles.group}>
@@ -103,6 +109,12 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.navy },
   content: { padding: space.lg, gap: space.lg, paddingBottom: space.xl * 2 },
   group: { gap: 10 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md },
+  tile: {
+    width: '47.8%', minHeight: 92, backgroundColor: colors.card, borderRadius: radius.md,
+    borderWidth: 1, borderColor: colors.hairline, padding: space.md, gap: 10, justifyContent: 'space-between',
+  },
+  tileText: { color: colors.white, fontSize: 14, fontWeight: '700' },
   groupTitle: sectionTitle,
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: 14 },
   divider: { borderTopWidth: 1, borderTopColor: colors.hairline },

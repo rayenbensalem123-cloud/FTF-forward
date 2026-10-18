@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ForwardChevron } from '@/components/ForwardChevron';
-import { colors, radius, space } from '@/constants/theme';
+import { colors, fonts, radius, space } from '@/constants/theme';
 import type { Player } from '@/types';
 import { Avatar } from './Avatar';
-import { FitnessBadge } from './FitnessBadge';
 
+/** Squad row: photo, jersey number, name with "Position · Club", chevron. No status. */
 export function PlayerRow({ player, onPress }: { player: Player; onPress: (p: Player) => void }) {
   return (
     <TouchableOpacity
@@ -15,16 +15,13 @@ export function PlayerRow({ player, onPress }: { player: Player; onPress: (p: Pl
       accessibilityRole="button"
       accessibilityLabel={`${player.name}, number ${player.number}, ${player.position}`}
     >
-      <Avatar name={player.name} number={player.number} photoUrl={player.photoUrl} size={50} />
+      <Avatar name={player.name} size={48} photoUrl={player.photoUrl} />
+      <Text style={styles.number}>{player.number || '–'}</Text>
       <View style={styles.center}>
         <Text style={styles.name} numberOfLines={1}>{player.name}</Text>
-        <View style={styles.meta}>
-          <View style={styles.pill}><Text style={styles.pillText}>{player.position}</Text></View>
-          <Text style={styles.club} numberOfLines={1}>{player.club}</Text>
-        </View>
-      </View>
-      <View style={styles.right}>
-        <FitnessBadge status={player.status} />
+        <Text style={styles.meta} numberOfLines={1}>
+          {player.position}{player.club ? ` · ${player.club}` : ''}
+        </Text>
       </View>
       <ForwardChevron />
     </TouchableOpacity>
@@ -34,13 +31,10 @@ export function PlayerRow({ player, onPress }: { player: Player; onPress: (p: Pl
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.card,
-    borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, padding: space.md,
+    borderRadius: radius.md, borderWidth: 1, borderColor: colors.hairline, padding: space.md, minHeight: 68,
   },
-  center: { flex: 1, minWidth: 0, gap: 5 },
-  name: { color: colors.white, fontSize: 15, fontWeight: '800' },
-  meta: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  pill: { backgroundColor: colors.whiteSoft, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 2 },
-  pillText: { color: colors.white, fontSize: 10, fontWeight: '800', letterSpacing: 0.6 },
-  club: { color: colors.muted, fontSize: 12, flexShrink: 1 },
-  right: { alignItems: 'flex-end' },
+  number: { width: 30, textAlign: 'center', color: colors.red, fontFamily: fonts.display, fontSize: 22 },
+  center: { flex: 1, minWidth: 0, gap: 3 },
+  name: { color: colors.white, fontSize: 15, fontWeight: '700' },
+  meta: { color: colors.muted, fontSize: 12 },
 });

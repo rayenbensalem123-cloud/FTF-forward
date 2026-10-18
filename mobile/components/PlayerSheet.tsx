@@ -13,7 +13,6 @@ import { RS } from '@/i18n/reportStrings';
 import { fetchReportsForMember, type ClubReport } from '@/lib/clubReports';
 import { formatDate } from '@/lib/format';
 import type { Player } from '@/types';
-import { FitnessBadge, STATUS_STYLE } from './FitnessBadge';
 import { PlatformCard } from './PlatformCard';
 
 interface Props {
@@ -135,16 +134,11 @@ export function PlayerSheet({ player, onClose }: Props) {
             >
               {/* The platform's player card */}
               <PlatformCard player={shown} />
-              <View style={styles.statusRow}><FitnessBadge status={shown.status} large /></View>
 
               {/* Medical */}
-              <View style={[styles.panel, { borderColor: STATUS_STYLE[shown.status].color }]}>
+              <View style={styles.panel}>
                 <Text style={styles.section}>{t('medical')}</Text>
-                {shown.status === 'unknown' ? (
-                  <Text style={styles.medicalNote}>{t('unknownStatus')}</Text>
-                ) : (
-                  <Text style={styles.medicalNote}>{shown.medicalNote || (shown.medicalLog.length === 0 ? t('noMedicalData') : '')}</Text>
-                )}
+                <Text style={styles.medicalNote}>{shown.medicalNote || (shown.medicalLog.length === 0 ? t('noMedicalData') : '')}</Text>
                 <Text style={styles.checkup}>{t('yellowCards')}: {shown.yellowCards} · {t('redCards')}: {shown.redCards}</Text>
                 {showLog && (
                   <View style={styles.log}>

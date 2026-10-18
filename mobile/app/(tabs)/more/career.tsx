@@ -6,7 +6,6 @@ import { CalendarPlus, ChevronRight, Film, IdCard } from 'lucide-react-native';
 import Svg, { Circle, Polyline } from 'react-native-svg';
 import { AppHeader } from '@/components/AppHeader';
 import { Card } from '@/components/Card';
-import { FitnessBadge } from '@/components/FitnessBadge';
 import { colors, radius, space } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -182,7 +181,6 @@ export default function CareerScreen() {
 
             <Card style={{ gap: space.sm }}>
               <Text style={styles.section}>{T.injuryTimeline}</Text>
-              {player && <FitnessBadge status={player.status} />}
               {!player || player.medicalLog.length === 0 ? (
                 <Text style={styles.emptySmall}>{T.noInjuries}</Text>
               ) : (
@@ -190,7 +188,7 @@ export default function CareerScreen() {
                   {player.medicalLog.map((e, i) => (
                     <View key={`${e.date}-${i}`} style={styles.timelineRow}>
                       <View style={styles.timelineRail}>
-                        <View style={[styles.timelineDot, i === 0 && player.status !== 'fit' && { backgroundColor: colors.red }]} />
+                        <View style={[styles.timelineDot, i === 0 && { backgroundColor: colors.red }]} />
                         {i < player.medicalLog.length - 1 && <View style={styles.timelineLine} />}
                       </View>
                       <View style={{ flex: 1, paddingBottom: space.md }}>

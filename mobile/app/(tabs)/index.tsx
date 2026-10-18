@@ -8,9 +8,7 @@ import { Avatar } from '@/components/Avatar';
 import { BingoTeaser } from '@/components/BingoTeaser';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
-import { CheckInCard } from '@/components/CheckIn';
 import { FeatureCard } from '@/components/FeatureCard';
-import { FitnessBadge } from '@/components/FitnessBadge';
 import { MatchHero } from '@/components/MatchHero';
 import { MatchTravelCard } from '@/components/MatchTravelCard';
 import { NewsTeaser } from '@/components/NewsTeaser';
@@ -129,7 +127,6 @@ export default function HomeScreen() {
                       {me ? `${me.position} · #${me.number}` : t('rolePlayer')}
                     </Text>
                   </View>
-                  {me && <FitnessBadge status={me.status} large />}
                 </View>
                 <View style={styles.statGrid}>
                   <StatCell value={me?.caps ?? 0} label={t('caps')} />
@@ -145,7 +142,6 @@ export default function HomeScreen() {
             )}
 
             {/* Today's action first, then staff news, then match logistics. */}
-            {user?.memberId != null && <CheckInCard memberId={user.memberId} />}
             <AnnouncementsCard />
             <MatchTravelCard />
           </>
