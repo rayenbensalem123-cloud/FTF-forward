@@ -93,7 +93,7 @@ export function memberToPlayer(r: any, injuries: InjuryRow[], canViewMedical: bo
     age: ageFromBirthdate(r.birthdate),
     birthdate: r.birthdate || '',
     imagePath: r.image_path || undefined,
-    photoUrl: typeof r.image_url === 'string' && /^https?:/.test(r.image_url) ? r.image_url : undefined,
+    photoUrl: typeof r.image_url === 'string' && /^(https?:|data:image\/(?!svg))/.test(r.image_url) ? r.image_url : undefined,
     caps: toNum(r.nat_matches),
     height: toNum(r.height),
     leagueRegion: r.league_region || '',

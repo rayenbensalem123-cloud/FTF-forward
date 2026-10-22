@@ -585,6 +585,38 @@ export default function EliteSquadApp() {
     return ()=>{alive=false}
   },[user,members,form?.imagePath,form?.passportImage])
 
+  // Photos added while offline are kept as inline data URLs (the upload failed),
+  // which never reach the private bucket and so never show up on other devices.
+  // Once we are online and signed in, upload them and swap in the storage path.
+  const migratingPhotos=useRef<Set<string>>(new Set())
+  const [onlineTick,setOnlineTick]=useState(0)
+  useEffect(()=>{
+    const on=()=>setOnlineTick(t=>t+1)
+    window.addEventListener('online',on)
+    return ()=>window.removeEventListener('online',on)
+  },[])
+  useEffect(()=>{
+    if(!user||(typeof navigator!=='undefined'&&navigator.onLine===false))return
+    const pending=members.filter((m:any)=>m&&!m.imagePath&&typeof m.image==='string'&&m.image.startsWith('data:image/')&&!m.image.startsWith('data:image/svg')&&!migratingPhotos.current.has(String(m.id)))
+    if(pending.length===0)return
+    pending.forEach((m:any)=>migratingPhotos.current.add(String(m.id)))
+    ;(async()=>{
+      for(const m of pending){
+        try{
+          const blob=await (await fetch(m.image)).blob()
+          const ext=(blob.type.split('/')[1]||'jpg').replace('jpeg','jpg')
+          const fd=new FormData()
+          fd.append('file',blob,`${String(m.name||'player').replace(/[^a-zA-Z0-9]/g,'_')}.${ext}`)
+          const r=await fetch('/api/upload',{method:'POST',headers:await authHeaders(),body:fd})
+          const d=await r.json()
+          if(d.path&&d.url&&d.url!=='/placeholder.jpg'){
+            setMembers((p:any[])=>p.map(x=>x.id===m.id?{...x,image:d.url,imagePath:d.path}:x))
+          }else migratingPhotos.current.delete(String(m.id))
+        }catch{migratingPhotos.current.delete(String(m.id))}
+      }
+    })()
+  },[user,members,onlineTick])
+
   // Passports are signed on demand, for the one card actually open. Signing all
   // 16 up front made the visible document wait behind 15 round trips it had no
   // use for, which read as a blank card for a beat before the image arrived.
