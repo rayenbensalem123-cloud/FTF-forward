@@ -16,7 +16,15 @@
           "calendarPermission": "Tunisia WNT adds the national camps you are called up to onto your calendar so you don't miss one."
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#0C1F3D"
+        }
+      ]
     ],
     "extra": {
       "eas": {
@@ -35,11 +43,6 @@
         "backgroundColor": "#0C1F3D"
       }
     },
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#0C1F3D"
-    }
+    "icon": "./assets/icon.png"
   }
 }
