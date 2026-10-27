@@ -111,13 +111,13 @@ export default function ReportsScreen() {
     ]);
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
+    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.white} />}
       >
-        <AppHeader showBell={false} />
+        <AppHeader showBell={false} back />
         <View>
           <Text style={styles.title}>{T.title}</Text>
           <Text style={styles.sub}>{isStaff ? `${pendingCount} ${T.waiting}` : T.sub}</Text>

@@ -43,6 +43,10 @@ export default function RootLayout() {
                 <CampCalendarSync />
                 <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.navy } }}>
                   <Stack.Screen name="(tabs)" />
+                  {/* Reports is a pushed page, not a tab: SDK 58's navigator
+                      redirects away from tabs marked `href: null`, which sent
+                      every "Log a match" tap back to the home tab. */}
+                  <Stack.Screen name="reports" />
                   <Stack.Screen name="sign-in" options={{ animation: 'fade' }} />
                   <Stack.Screen name="sign-up" options={{ animation: 'fade' }} />
                   <Stack.Screen name="forgot-password" options={{ animation: 'fade' }} />

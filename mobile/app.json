@@ -32,12 +32,14 @@
       }
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "tn.tunisiawnt.app"
     },
     "android": {
       "package": "tn.tunisiawnt.app",
       "versionCode": 1,
       "backgroundColor": "#0C1F3D",
+      "predictiveBackGestureEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0C1F3D"

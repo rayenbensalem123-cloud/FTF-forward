@@ -42,7 +42,14 @@ export function AppHeader({
   return (
     <View style={styles.row}>
       {back && (
-        <TouchableOpacity style={styles.round} onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={t('back')}>
+        <TouchableOpacity
+          style={styles.round}
+          // Deep links (a push notification, /reports?new=1) can open a page
+          // with nothing behind it; fall back to the tabs instead of a no-op.
+          onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)'))}
+          accessibilityRole="button"
+          accessibilityLabel={t('back')}
+        >
           <ChevronLeft color={colors.white} size={22} />
         </TouchableOpacity>
       )}

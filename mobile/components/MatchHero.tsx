@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MapPin } from 'lucide-react-native';
 import { colors, fonts, radius, space } from '@/constants/theme';
@@ -32,12 +32,10 @@ export function MatchHero({ match }: { match: Match | null }) {
   const dateLabel = match ? formatDate(match.date) : '';
 
   return (
-    <ImageBackground
-      source={require('../assets/home-bg.jpg')}
-      style={styles.card}
-      imageStyle={styles.photo}
-      accessibilityLabel={t('nextMatch')}
-    >
+    <View style={styles.card} accessibilityLabel={t('nextMatch')}>
+      {/* RN 0.88 deprecates ImageBackground; this is its documented replacement:
+          an absolutely positioned cover Image under the content. */}
+      <Image source={require('../assets/home-bg.jpg')} style={styles.photo} resizeMode="cover" accessible={false} />
       <LinearGradient
         colors={['rgba(6,12,24,0.78)', 'rgba(6,12,24,0.32)', 'rgba(6,12,24,0.55)']}
         start={{ x: 0, y: 0 }}
@@ -99,13 +97,13 @@ export function MatchHero({ match }: { match: Match | null }) {
           {match?.venue ? <WeatherChip venue={match.venue} date={match.date} /> : null}
         </View>
       </LinearGradient>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: { borderRadius: radius.card, overflow: 'hidden' },
-  photo: { borderRadius: radius.card },
+  photo: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderRadius: radius.card },
   scrim: { padding: space.lg, justifyContent: 'flex-end' },
   // One top line: the eyebrow on the left, the competition on the right.
   topRow: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space.sm },

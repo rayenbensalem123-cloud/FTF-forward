@@ -8,17 +8,17 @@ import * as Notifications from 'expo-notifications';
  * from a database trigger (supabase-push.sql) and the token is registered from
  * lib/pushTokens.ts.
  *
- * Written for expo-notifications in SDK 53 or newer.
+ * Written for expo-notifications in SDK 53 or newer. SDK 58 shows foreground
+ * notifications by default, so this handler only decides what to suppress:
+ * no sound, no badge. `shouldShowAlert` is gone -- banner + list replace it.
  */
 Notifications.setNotificationHandler({
-  handleNotification: async () =>
-    ({
-      shouldShowAlert: true,
-      shouldShowBanner: true,
-      shouldShowList: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }) as Notifications.NotificationBehavior,
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
 });
 
 async function ensureChannel(): Promise<void> {

@@ -13,8 +13,10 @@ import { useLanguage } from '@/context/LanguageContext';
  *   player : Home · Schedule · Games · Profile
  *
  * Camp is the coach's editor for the daily program. Reports (the club match
- * form) is reached from the player's home or the More grid, so it stays
- * mounted but hidden from the tab bar.
+ * form) is a page pushed on top of the tabs from the player's home or the More
+ * grid. It is deliberately NOT a tab: `href: null` would hide it in SDK 58 and
+ * also make the navigator redirect away from it, which sent every "Log a
+ * match" tap back to the home tab.
  */
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
@@ -42,7 +44,16 @@ export default function TabsLayout() {
     sceneStyle: { backgroundColor: colors.navy },
   };
 
-  const hidden = { href: null } as const;
+  /**
+   * Tabs the signed-in role must not see, kept out of the bar but still
+   * navigable. Deliberately NOT `{ href: null }`: in expo-router 58 that maps
+   * to `hidden: true`, and `useVisibleTabsWithRedirect` replaces any navigation
+   * to a hidden route with the first visible tab. Players would then lose every
+   * Profile > Tools link (career, camps, news, … are routes inside the hidden
+   * `more` tab) and staff would lose More > Profile. Rendering the item with no
+   * width keeps the route on the navigator while showing only that role's tabs.
+   */
+  const outOfBar = { tabBarItemStyle: { display: 'none' } } as const;
 
   return (
     <Tabs screenOptions={options}>
@@ -56,8 +67,8 @@ export default function TabsLayout() {
       <Tabs.Screen name="squad" options={isStaff ? {
         title: t('tabSquad'),
         tabBarIcon: ({ color, size }) => <Users color={color} size={size} />,
-      } : hidden} />
-      <Tabs.Screen name="schedule" options={isStaff ? hidden : {
+      } : outOfBar} />
+      <Tabs.Screen name="schedule" options={isStaff ? outOfBar : {
         title: t('tabSchedule'),
         tabBarIcon: ({ color, size }) => <CalendarDays color={color} size={size} />,
       }} />
@@ -71,17 +82,16 @@ export default function TabsLayout() {
       <Tabs.Screen name="camp" options={isStaff ? {
         title: 'Camp',
         tabBarIcon: ({ color, size }) => <CalendarDays color={color} size={size} />,
-      } : hidden} />
+      } : outOfBar} />
       <Tabs.Screen name="more" options={isStaff ? {
         title: 'More',
         tabBarIcon: ({ color, size }) => <LayoutGrid color={color} size={size} />,
-      } : hidden} />
-      <Tabs.Screen name="profile" options={isStaff ? hidden : {
+      } : outOfBar} />
+      <Tabs.Screen name="profile" options={isStaff ? outOfBar : {
         title: t('tabProfile'),
         tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
       }} />
-      <Tabs.Screen name="reports" options={hidden} />
-      <Tabs.Screen name="stats" options={hidden} />
+      <Tabs.Screen name="stats" options={outOfBar} />
     </Tabs>
   );
 }
