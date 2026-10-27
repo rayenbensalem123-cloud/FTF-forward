@@ -37,7 +37,7 @@ export default function IdCardScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
+    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <AppHeader back showBell={false} />
         <Text style={styles.title}>{T.idCard}</Text>
